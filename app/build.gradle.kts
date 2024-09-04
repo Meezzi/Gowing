@@ -1,7 +1,13 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.google.gms.google.service)
 }
+
+val properties = Properties()
+properties.load(project.rootProject.file("local.properties").inputStream())
 
 android {
     namespace = "com.meezzi.localtalk"
@@ -13,6 +19,8 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
+
+        buildConfigField("String", "GOOGLE_CLIENT_ID", properties["google_client_id"] as String)
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -38,6 +46,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -56,6 +65,8 @@ dependencies {
 
     // Compose
     implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.lifecycle.runtime.compose.android)
     implementation(platform(libs.androidx.compose.bom))
 
     // UI
@@ -65,6 +76,22 @@ dependencies {
 
     // Material3
     implementation(libs.androidx.material3)
+
+    // Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth.ktx)
+    implementation(libs.firebase.analytics.ktx)
+
+    // Google Play Service
+    implementation(libs.play.services.auth)
+
+    // Google Auth
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.play.services.auth)
+    implementation(libs.googleid)
+
+    // Image Loading
+    implementation(libs.coil.compose)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
