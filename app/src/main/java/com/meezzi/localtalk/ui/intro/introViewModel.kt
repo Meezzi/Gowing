@@ -38,6 +38,24 @@ class IntroViewModel(private val authRepository: AuthRepository) : ViewModel() {
         }
     }
 
+    suspend fun hasUserData(): Boolean {
+        val user = _authState.value ?: return false
+        var hasUserData = false
+
+        val docRef = db.collection("profiles").document(user.uid)
+
+        docRef.get()
+            .addOnSuccessListener { document ->
+                if (document.data?.get("nickname") != null) {
+                    hasUserData = true
+                }
+            }.addOnFailureListener { exception ->
+                hasUserData = false
+            }.await()
+
+        return hasUserData
+    }
+
     companion object {
         fun provideFactory(repository: AuthRepository) = viewModelFactory {
             initializer {

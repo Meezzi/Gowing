@@ -1,7 +1,9 @@
 package com.meezzi.localtalk.ui.common
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -10,15 +12,31 @@ import com.google.firebase.auth.FirebaseAuth
 import com.meezzi.localtalk.ui.home.screens.HomeScreen
 import com.meezzi.localtalk.ui.intro.IntroViewModel
 import com.meezzi.localtalk.ui.intro.screens.LoginScreen
+import com.meezzi.localtalk.ui.profile.CreateProfileScreen
+import com.meezzi.localtalk.ui.profile.ProfileViewModel
 
 @Composable
-fun SignInNavigation(introViewModel: IntroViewModel) {
+fun SignInNavigation(introViewModel: IntroViewModel, profileViewModel: ProfileViewModel) {
+
     val navController = rememberNavController()
 
     val user by introViewModel.authState.collectAsStateWithLifecycle()
 
-    val startDestination = if (user == null) Screens.Login.name else
-        Screens.Home.name
+    val startDestination = remember {
+        if (FirebaseAuth.getInstance().currentUser != null) {
+            Screens.Home.name
+        } else {
+            Screens.Login.name
+        }
+    }
+
+    LaunchedEffect(user) {
+        if (user != null) {
+            val hasData = introViewModel.hasUserData()
+            val destination = if (hasData) Screens.Home.name else Screens.CreateProfile.name
+            navController.navigate(destination)
+        }
+    }
 
     NavHost(
         navController = navController,
@@ -29,6 +47,15 @@ fun SignInNavigation(introViewModel: IntroViewModel) {
                 onSignInClick = {
                     introViewModel.signInWithGoogle()
                 },
+            )
+        }
+
+        composable(Screens.CreateProfile.name) {
+            CreateProfileScreen(
+                onProfileSaved = { nickname ->
+                    profileViewModel.saveUserProfile(nickname)
+                    navController.navigate(Screens.Home.name)
+                }
             )
         }
 
