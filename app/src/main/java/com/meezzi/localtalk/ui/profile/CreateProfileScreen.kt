@@ -26,7 +26,7 @@ import com.meezzi.localtalk.ui.common.TextBodyMedium
 import com.meezzi.localtalk.ui.common.TextTitleLarge
 
 @Composable
-fun CreateProfileScreen(onProfileSaved: () -> Unit) {
+fun CreateProfileScreen(onProfileSaved: (String) -> Unit) {
 
     var nickname by remember { mutableStateOf("") }
 
@@ -60,15 +60,18 @@ fun CreateProfileScreen(onProfileSaved: () -> Unit) {
 
             Spacer(modifier = Modifier.height(50.dp))
         }
-        SaveProfileButton(onProfileSaved)
+        SaveProfileButton(nickname, onProfileSaved)
 
     }
 }
 
 @Composable
-private fun SaveProfileButton(onProfileSaved: () -> Unit) {
+private fun SaveProfileButton(
+    nickname: String,
+    onProfileSaved: (String,) -> Unit
+) {
     Button(
-        onClick = { onProfileSaved() },
+        onClick = { onProfileSaved(nickname) },
         modifier = Modifier
             .fillMaxWidth()
             .height(50.dp),
