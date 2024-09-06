@@ -11,9 +11,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,9 +27,14 @@ import com.meezzi.localtalk.ui.common.TextBodyMedium
 import com.meezzi.localtalk.ui.common.TextTitleLarge
 
 @Composable
-fun CreateProfileScreen(onProfileSaved: (String) -> Unit) {
+fun CreateProfileScreen(
+    onProfileSaved: (String) -> Unit,
+    profileViewModel: ProfileViewModel
+) {
 
-    var nickname by remember { mutableStateOf("") }
+    var nickname by rememberSaveable { mutableStateOf("") }
+    val isNicknameValid by profileViewModel.isNicknameValid.collectAsState()
+    val nicknameErrorMessage by profileViewModel.nicknameErrorMessage.collectAsState()
 
     Column(
         modifier = Modifier
@@ -49,6 +55,8 @@ fun CreateProfileScreen(onProfileSaved: (String) -> Unit) {
             EditNicknameField(
                 nickname = nickname,
                 onNicknameChange = { newNickname -> nickname = newNickname },
+                nicknameErrorMessage = nicknameErrorMessage,
+                profileViewModel = profileViewModel,
             )
 
             Spacer(modifier = Modifier.height(10.dp))
@@ -60,7 +68,7 @@ fun CreateProfileScreen(onProfileSaved: (String) -> Unit) {
 
             Spacer(modifier = Modifier.height(50.dp))
         }
-        SaveProfileButton(nickname, onProfileSaved)
+        SaveProfileButton(nickname, isNicknameValid, onProfileSaved)
 
     }
 }
@@ -68,7 +76,8 @@ fun CreateProfileScreen(onProfileSaved: (String) -> Unit) {
 @Composable
 private fun SaveProfileButton(
     nickname: String,
-    onProfileSaved: (String,) -> Unit
+    isNicknameValid: Boolean,
+    onProfileSaved: (String) -> Unit
 ) {
     Button(
         onClick = { onProfileSaved(nickname) },
@@ -76,21 +85,35 @@ private fun SaveProfileButton(
             .fillMaxWidth()
             .height(50.dp),
         shape = RectangleShape,
+        enabled = isNicknameValid,
     ) {
         TextTitleLarge(stringResource(R.string.save))
     }
 }
 
-
 @Composable
 fun EditNicknameField(
     nickname: String,
     onNicknameChange: (String) -> Unit,
+    nicknameErrorMessage: String?,
+    profileViewModel: ProfileViewModel,
 ) {
     OutlinedTextField(
         value = nickname,
-        onValueChange = onNicknameChange,
+        onValueChange = { text ->
+            onNicknameChange(text)
+            profileViewModel.onNicknameChange(text)
+        },
         label = { Text(stringResource(R.string.nickname)) },
+        isError = nicknameErrorMessage != null,
+        supportingText = {
+            if (nicknameErrorMessage != null) {
+                Text(
+                    text = nicknameErrorMessage,
+                    color = Color.Red
+                )
+            }
+        },
         placeholder = { Text(stringResource(R.string.nickname)) },
         modifier = Modifier
             .fillMaxWidth()

@@ -57,7 +57,8 @@ fun SignInNavigation(introViewModel: IntroViewModel, profileViewModel: ProfileVi
                 onProfileSaved = { nickname ->
                     profileViewModel.saveUserProfile(nickname)
                     navController.popBackStack()
-                }
+                },
+                profileViewModel = profileViewModel,
             )
         }
 

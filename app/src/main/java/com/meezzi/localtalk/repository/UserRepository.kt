@@ -4,6 +4,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.firestore
 import com.meezzi.localtalk.data.User
+import kotlinx.coroutines.tasks.await
 
 class UserRepository {
 
@@ -11,6 +12,18 @@ class UserRepository {
 
     private val currentUser
         get() = FirebaseAuth.getInstance().currentUser
+
+    suspend fun isNicknameDuplicate(nickname: String): Boolean {
+        return try {
+            val querySnapshot = db.collection("profiles")
+                .whereEqualTo("nickname", nickname)
+                .get()
+                .await()
+            !querySnapshot.isEmpty
+        } catch (e: Exception) {
+            false
+        }
+    }
 
     fun saveProfileData(nickname: String, onComplete: (Boolean) -> Unit) {
         val profile = User(
