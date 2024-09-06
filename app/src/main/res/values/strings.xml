@@ -4,6 +4,8 @@
     <!--   공통   -->
     <string name="save">저장</string>
     <string name="nickname">닉네임</string>
+    <string name="written_post">작성한 글</string>
+    <string name="recommended_post">추천 글</string>
 
     <!--   로그인 화면   -->
     <string name="sign_in_with_google">구글 로그인</string>
