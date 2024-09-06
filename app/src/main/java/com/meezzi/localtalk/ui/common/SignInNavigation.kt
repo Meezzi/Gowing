@@ -9,10 +9,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.auth.FirebaseAuth
+import com.meezzi.localtalk.repository.UserRepository
 import com.meezzi.localtalk.ui.home.screens.HomeScreen
 import com.meezzi.localtalk.ui.intro.IntroViewModel
 import com.meezzi.localtalk.ui.intro.screens.LoginScreen
 import com.meezzi.localtalk.ui.profile.CreateProfileScreen
+import com.meezzi.localtalk.ui.profile.ProfileScreen
 import com.meezzi.localtalk.ui.profile.ProfileViewModel
 
 @Composable
@@ -54,7 +56,7 @@ fun SignInNavigation(introViewModel: IntroViewModel, profileViewModel: ProfileVi
             CreateProfileScreen(
                 onProfileSaved = { nickname ->
                     profileViewModel.saveUserProfile(nickname)
-                    navController.navigate(Screens.Home.name)
+                    navController.popBackStack()
                 }
             )
         }
@@ -68,6 +70,15 @@ fun SignInNavigation(introViewModel: IntroViewModel, profileViewModel: ProfileVi
                     navController.popBackStack()
                     navController.navigate(Screens.Login.name)
                 })
+        }
+
+        composable(Screens.Profile.name) {
+            ProfileScreen(
+                onEditProfileClick = {
+                    navController.navigate(Screens.CreateProfile.name)
+                },
+                profileViewModel = ProfileViewModel(UserRepository())
+            )
         }
     }
 }

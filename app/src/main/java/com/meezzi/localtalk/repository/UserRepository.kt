@@ -27,4 +27,26 @@ class UserRepository {
                 .addOnFailureListener { onComplete(false) }
         } ?: onComplete(false)
     }
+
+    fun getProfileData(onComplete: (String, String) -> Unit) {
+
+        currentUser?.let { user ->
+            db.collection("profiles")
+                .document(user.uid)
+                .get()
+                .addOnSuccessListener { document ->
+                    if (document != null && document.exists()) {
+                        val nickname = document.getString("nickname") ?: ""
+                        val profileImageUrl = document.getString("profileImageUrl") ?: ""
+
+                        onComplete(nickname, profileImageUrl)
+                    } else {
+                        onComplete("", "")
+                    }
+                }
+                .addOnFailureListener {
+                    onComplete("", "")
+                }
+        } ?: onComplete("", "")
+    }
 }
