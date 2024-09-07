@@ -58,6 +58,7 @@ fun SignInNavigation(introViewModel: IntroViewModel, profileViewModel: ProfileVi
                     profileViewModel.saveUserProfile(nickname)
                     navController.popBackStack()
                 },
+                onEditProfileImage = {},
                 profileViewModel = profileViewModel,
             )
         }
