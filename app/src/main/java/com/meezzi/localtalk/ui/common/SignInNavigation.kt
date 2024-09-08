@@ -54,10 +54,11 @@ fun SignInNavigation(introViewModel: IntroViewModel, profileViewModel: ProfileVi
 
         composable(Screens.CreateProfile.name) {
             CreateProfileScreen(
-                onProfileSaved = { nickname ->
-                    profileViewModel.saveUserProfile(nickname)
-                    navController.popBackStack()
-                }
+                onProfileSaved = { nickname, profileImage ->
+                    profileViewModel.saveUserProfile(nickname, profileImage)
+                    navController.navigate(Screens.Profile.name)
+                },
+                profileViewModel = profileViewModel,
             )
         }
 

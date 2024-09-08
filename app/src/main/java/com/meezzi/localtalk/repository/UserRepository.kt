@@ -1,23 +1,53 @@
 package com.meezzi.localtalk.repository
 
+import android.net.Uri
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.firestore
+import com.google.firebase.storage.storage
 import com.meezzi.localtalk.data.User
+import kotlinx.coroutines.tasks.await
 
 class UserRepository {
 
     val db = Firebase.firestore
+    val storage = Firebase.storage
+    var storageRef = storage.reference
 
     private val currentUser
         get() = FirebaseAuth.getInstance().currentUser
 
-    fun saveProfileData(nickname: String, onComplete: (Boolean) -> Unit) {
+    suspend fun isNicknameDuplicate(nickname: String): Boolean {
+        return try {
+            val querySnapshot = db.collection("profiles")
+                .whereEqualTo("nickname", nickname)
+                .get()
+                .await()
+            !querySnapshot.isEmpty
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    private fun saveProfileImage(profileImageUri: Uri?) {
+        val imageRef = storageRef.child("images/${currentUser?.uid}_profile_image")
+        val uploadTask = profileImageUri?.let { imageRef.putFile(it) }
+
+        uploadTask?.addOnFailureListener {
+
+        }?.addOnSuccessListener { taskSnapshot ->
+
+        }
+    }
+
+    fun saveProfileData(nickname: String, profileImageUri: Uri?, onComplete: (Boolean) -> Unit) {
         val profile = User(
             userId = currentUser?.uid.toString(),
             nickname = nickname,
-            profileImageUrl = null,
+            profileImageUrl = profileImageUri,
         )
+
+        saveProfileImage(profileImageUri)
 
         currentUser?.let { user ->
             db.collection("profiles")
@@ -28,7 +58,19 @@ class UserRepository {
         } ?: onComplete(false)
     }
 
-    fun getProfileData(onComplete: (String, String) -> Unit) {
+    fun getProfileImageUri(onComplete: (Uri?) -> Unit) {
+        currentUser?.let { user ->
+            val profileImageRef = storageRef.child("images/${currentUser?.uid}_profile_image")
+
+            profileImageRef.downloadUrl.addOnSuccessListener { uri ->
+                onComplete(uri)
+            }.addOnFailureListener {
+                onComplete(null)
+            }
+        } ?: onComplete(null)
+    }
+
+    fun getProfileData(onComplete: (String) -> Unit) {
 
         currentUser?.let { user ->
             db.collection("profiles")
@@ -37,16 +79,14 @@ class UserRepository {
                 .addOnSuccessListener { document ->
                     if (document != null && document.exists()) {
                         val nickname = document.getString("nickname") ?: ""
-                        val profileImageUrl = document.getString("profileImageUrl") ?: ""
-
-                        onComplete(nickname, profileImageUrl)
+                        onComplete(nickname)
                     } else {
-                        onComplete("", "")
+                        onComplete("")
                     }
                 }
                 .addOnFailureListener {
-                    onComplete("", "")
+                    onComplete("")
                 }
-        } ?: onComplete("", "")
+        } ?: onComplete("")
     }
 }

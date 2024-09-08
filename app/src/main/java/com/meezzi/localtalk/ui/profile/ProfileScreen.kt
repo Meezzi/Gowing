@@ -1,5 +1,6 @@
 package com.meezzi.localtalk.ui.profile
 
+import android.net.Uri
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
@@ -26,6 +27,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberAsyncImagePainter
 import com.meezzi.localtalk.R
 
 @Composable
@@ -36,7 +38,7 @@ fun ProfileScreen(
 
     val nickname by profileViewModel.nickname.collectAsState()
     val region by profileViewModel.region.collectAsState()
-    val profileImageUrl by profileViewModel.profileImageUrl.collectAsState()
+    val profileImageUri by profileViewModel.profileImageUri.collectAsState()
 
     Column(
         modifier = Modifier
@@ -46,7 +48,12 @@ fun ProfileScreen(
     ) {
         Spacer(modifier = Modifier.padding(25.dp))
 
-        ProfileHeader(nickname, region, profileImageUrl, onEditProfileClick = onEditProfileClick)
+        ProfileHeader(
+            nickname,
+            region,
+            profileImageUri,
+            onEditProfileClick = onEditProfileClick
+        )
 
         Spacer(modifier = Modifier.padding(10.dp))
 
@@ -88,7 +95,7 @@ fun CustomButton(
 fun ProfileHeader(
     name: String,
     region: String,
-    profileImage: String,
+    profileImage: Uri?,
     onEditProfileClick: () -> Unit,
 ) {
     Row(
@@ -99,8 +106,15 @@ fun ProfileHeader(
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
+
+            val painter = if (profileImage != null) {
+                rememberAsyncImagePainter(model = profileImage)
+            } else {
+                painterResource(id = R.drawable.ic_default_profile)
+            }
+
             Image(
-                painter = painterResource(id = R.drawable.ic_default_profile),
+                painter = painter,
                 contentDescription = "Profile Image",
                 modifier = Modifier
                     .size(60.dp)
