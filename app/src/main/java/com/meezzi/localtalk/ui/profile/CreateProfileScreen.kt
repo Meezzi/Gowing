@@ -1,5 +1,8 @@
 package com.meezzi.localtalk.ui.profile
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -29,19 +32,26 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberAsyncImagePainter
 import com.meezzi.localtalk.R
 import com.meezzi.localtalk.ui.common.TextTitleLarge
 
 @Composable
 fun CreateProfileScreen(
-    onProfileSaved: (String) -> Unit,
-    onEditProfileImage: () -> Unit,
+    onProfileSaved: (String, Uri?) -> Unit,
     profileViewModel: ProfileViewModel
 ) {
+    var profileImageUri by rememberSaveable { mutableStateOf<Uri?>(null) }
 
     var nickname by rememberSaveable { mutableStateOf("") }
     val isNicknameValid by profileViewModel.isNicknameValid.collectAsState()
     val nicknameErrorMessage by profileViewModel.nicknameErrorMessage.collectAsState()
+
+    val galleryLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        profileImageUri = uri
+    }
 
     Column(
         modifier = Modifier
@@ -59,7 +69,12 @@ fun CreateProfileScreen(
 
             Spacer(modifier = Modifier.height(40.dp))
 
-            ProfileImage(onEditProfileImage)
+            ProfileImage(
+                profileImageUri = profileImageUri,
+                onEditProfileImage = {
+                    galleryLauncher.launch("image/*")
+                }
+            )
 
             Spacer(modifier = Modifier.height(20.dp))
 
@@ -73,15 +88,25 @@ fun CreateProfileScreen(
             Spacer(modifier = Modifier.height(10.dp))
 
         }
-        SaveProfileButton(nickname, isNicknameValid, onProfileSaved)
+        SaveProfileButton(nickname, profileImageUri, isNicknameValid, onProfileSaved)
 
     }
 }
 
 @Composable
-private fun ProfileImage(onEditProfileImage: () -> Unit) {
+private fun ProfileImage(
+    profileImageUri: Uri?,
+    onEditProfileImage: () -> Unit
+) {
+
+    val painter = if (profileImageUri != null) {
+        rememberAsyncImagePainter(model = profileImageUri)
+    } else {
+        painterResource(id = R.drawable.ic_default_profile)
+    }
+
     Image(
-        painter = painterResource(id = R.drawable.ic_default_profile),
+        painter = painter,
         contentDescription = "Profile Image",
         modifier = Modifier
             .size(120.dp)
@@ -94,11 +119,12 @@ private fun ProfileImage(onEditProfileImage: () -> Unit) {
 @Composable
 private fun SaveProfileButton(
     nickname: String,
+    profileImage: Uri?,
     isNicknameValid: Boolean,
-    onProfileSaved: (String) -> Unit
+    onProfileSaved: (String, Uri?) -> Unit
 ) {
     Button(
-        onClick = { onProfileSaved(nickname) },
+        onClick = { onProfileSaved(nickname, profileImage) },
         modifier = Modifier
             .fillMaxWidth()
             .height(50.dp),

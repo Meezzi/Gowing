@@ -1,5 +1,6 @@
 package com.meezzi.localtalk.ui.profile
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
@@ -17,8 +18,8 @@ class ProfileViewModel(private val userRepository: UserRepository) : ViewModel()
     private val _region = MutableStateFlow("닉네임")
     val region: StateFlow<String> = _region
 
-    private val _profileImageUrl = MutableStateFlow("닉네임")
-    val profileImageUrl: StateFlow<String> = _profileImageUrl
+    private val _profileImageUri = MutableStateFlow<Uri?>(null)
+    val profileImageUri: StateFlow<Uri?> = _profileImageUri
 
     private val _isNicknameValid = MutableStateFlow(false)
     val isNicknameValid: StateFlow<Boolean> = _isNicknameValid
@@ -33,10 +34,11 @@ class ProfileViewModel(private val userRepository: UserRepository) : ViewModel()
         loadUserProfile()
     }
 
-    fun saveUserProfile(nickname: String) {
-        userRepository.saveProfileData(nickname) { success ->
+    fun saveUserProfile(nickname: String, profileImage: Uri?) {
+        userRepository.saveProfileData(nickname, profileImage) { success ->
             if (success) {
                 _nickname.value = nickname
+                _profileImageUri.value = profileImage
             } else {
                 _errorMessage.value = "저장 실패"
             }
@@ -50,7 +52,7 @@ class ProfileViewModel(private val userRepository: UserRepository) : ViewModel()
 
     private fun validateNickname(nickname: String) {
         viewModelScope.launch {
-            val isValidLength =nickname.length in 2..15
+            val isValidLength = nickname.length in 2..15
             val isDuplicate = if (isValidLength) userRepository.isNicknameDuplicate(nickname) else false
 
             _isNicknameValid.value = isValidLength && !isDuplicate
@@ -63,9 +65,12 @@ class ProfileViewModel(private val userRepository: UserRepository) : ViewModel()
     }
 
     private fun loadUserProfile() {
-        userRepository.getProfileData { nickname, profileImageUrl ->
+        userRepository.getProfileData { nickname ->
             _nickname.value = nickname
-            _profileImageUrl.value = profileImageUrl
+        }
+
+        userRepository.getProfileImageUri { uri ->
+            _profileImageUri.value = uri
         }
     }
 
