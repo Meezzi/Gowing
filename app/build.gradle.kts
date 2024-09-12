@@ -87,6 +87,10 @@ dependencies {
 
     // Google Play Service
     implementation(libs.play.services.auth)
+    implementation(libs.play.services.location)
+
+    // Google Permission
+    implementation(libs.google.accompanist.permissions)
 
     // Google Auth
     implementation(libs.androidx.credentials)

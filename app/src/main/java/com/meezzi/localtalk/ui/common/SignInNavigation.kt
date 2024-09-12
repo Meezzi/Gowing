@@ -10,6 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.meezzi.localtalk.repository.UserRepository
+import com.meezzi.localtalk.ui.home.HomeViewModel
 import com.meezzi.localtalk.ui.home.screens.HomeScreen
 import com.meezzi.localtalk.ui.intro.IntroViewModel
 import com.meezzi.localtalk.ui.intro.screens.LoginScreen
@@ -18,7 +19,11 @@ import com.meezzi.localtalk.ui.profile.ProfileScreen
 import com.meezzi.localtalk.ui.profile.ProfileViewModel
 
 @Composable
-fun SignInNavigation(introViewModel: IntroViewModel, profileViewModel: ProfileViewModel) {
+fun SignInNavigation(
+    introViewModel: IntroViewModel,
+    profileViewModel: ProfileViewModel,
+    homeViewModel: HomeViewModel,
+) {
 
     val navController = rememberNavController()
 
@@ -64,13 +69,8 @@ fun SignInNavigation(introViewModel: IntroViewModel, profileViewModel: ProfileVi
 
         composable(Screens.Home.name) {
             HomeScreen(
-                currentUser = FirebaseAuth.getInstance().currentUser,
-                onSignOutClick = {
-                    introViewModel.signOutWithGoogle()
-
-                    navController.popBackStack()
-                    navController.navigate(Screens.Login.name)
-                })
+                homeViewModel = homeViewModel,
+            )
         }
 
         composable(Screens.Profile.name) {
