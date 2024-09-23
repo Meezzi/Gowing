@@ -11,6 +11,7 @@ import com.meezzi.localtalk.repository.UserRepository
 import com.meezzi.localtalk.ui.common.SignInNavigation
 import com.meezzi.localtalk.ui.home.HomeViewModel
 import com.meezzi.localtalk.ui.intro.IntroViewModel
+import com.meezzi.localtalk.ui.navigation.MainNavigationView
 import com.meezzi.localtalk.ui.profile.ProfileViewModel
 import com.meezzi.localtalk.ui.theme.LocalTalkTheme
 
@@ -40,6 +41,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             LocalTalkTheme {
                 SignInNavigation(introViewModel, profileViewModel, homeViewModel)
+                MainNavigationView()
             }
         }
     }

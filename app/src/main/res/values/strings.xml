@@ -7,6 +7,10 @@
     <string name="written_post">작성한 글</string>
     <string name="recommended_post">추천 글</string>
     <string name="confirm">확인</string>
+    <string name="home">홈</string>
+    <string name="board">게시판</string>
+    <string name="chat">채팅</string>
+    <string name="profile">프로필</string>
 
     <!--   로그인 화면   -->
     <string name="sign_in_with_google">구글 로그인</string>
