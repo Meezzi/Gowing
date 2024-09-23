@@ -1,5 +1,6 @@
 package com.meezzi.localtalk.ui.home.screens
 
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -14,4 +15,6 @@ fun HomeScreen(homeViewModel: HomeViewModel) {
     if (!locationPermissionGranted) {
         RequestLocationPermission()
     }
+
+    Text(text = "HomeScreen")
 }
