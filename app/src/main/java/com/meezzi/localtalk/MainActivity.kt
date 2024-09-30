@@ -31,7 +31,7 @@ class MainActivity : ComponentActivity() {
 
     private val homeViewModel by viewModels<HomeViewModel> {
         HomeViewModel.provideFactory(
-            HomeRepository()
+            HomeRepository(this)
         )
     }
 

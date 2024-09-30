@@ -28,7 +28,7 @@ fun MainNavHost(navController: NavHostController) {
     ) {
 
         composable(Screen.Home.route) {
-            val homeRepository = HomeRepository()
+            val homeRepository = HomeRepository(LocalContext.current)
             val homeViewModel = HomeViewModel(homeRepository)
             HomeScreen(
                 homeViewModel = homeViewModel
@@ -43,7 +43,7 @@ fun MainNavHost(navController: NavHostController) {
             ChatScreen()
         }
 
-        composable(Screens.Profile.name) {
+        composable(Screen.Profile.route) {
             ProfileScreen(
                 onEditProfileClick = {
                     navController.navigate(Screens.CreateProfile.name)

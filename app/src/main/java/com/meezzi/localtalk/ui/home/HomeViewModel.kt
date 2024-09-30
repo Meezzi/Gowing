@@ -12,16 +12,12 @@ import kotlinx.coroutines.launch
 
 class HomeViewModel(private val homeRepository: HomeRepository) : ViewModel() {
 
-    private val _locationPermissionGranted = MutableStateFlow(false)
-    val locationPermissionGranted: StateFlow<Boolean> = _locationPermissionGranted.asStateFlow()
+    private val _address = MutableStateFlow("")
+    val address: StateFlow<String> = _address.asStateFlow()
 
-    init {
-        checkLocationPermission()
-    }
-
-    private fun checkLocationPermission() {
+    fun getAddress() {
         viewModelScope.launch {
-            _locationPermissionGranted.value = permissionRepository.hasLocationPermission()
+            _address.value = homeRepository.getCurrentLocation()
         }
     }
 
