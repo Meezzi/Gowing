@@ -10,7 +10,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.meezzi.localtalk.repository.PermissionRepository
+import com.meezzi.localtalk.repository.HomeRepository
 import com.meezzi.localtalk.repository.UserRepository
 import com.meezzi.localtalk.ui.board.BoardScreen
 import com.meezzi.localtalk.ui.chat.ChatScreen
@@ -28,8 +28,8 @@ fun MainNavHost(navController: NavHostController) {
     ) {
 
         composable(Screen.Home.route) {
-            val permissionRepository = PermissionRepository(LocalContext.current)
-            val homeViewModel = HomeViewModel(permissionRepository)
+            val homeRepository = HomeRepository()
+            val homeViewModel = HomeViewModel(homeRepository)
             HomeScreen(
                 homeViewModel = homeViewModel
             )

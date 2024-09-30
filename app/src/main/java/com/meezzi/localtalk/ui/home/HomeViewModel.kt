@@ -4,13 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.meezzi.localtalk.repository.PermissionRepository
+import com.meezzi.localtalk.repository.HomeRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class HomeViewModel(private val permissionRepository: PermissionRepository) : ViewModel() {
+class HomeViewModel(private val homeRepository: HomeRepository) : ViewModel() {
 
     private val _locationPermissionGranted = MutableStateFlow(false)
     val locationPermissionGranted: StateFlow<Boolean> = _locationPermissionGranted.asStateFlow()
@@ -26,7 +26,7 @@ class HomeViewModel(private val permissionRepository: PermissionRepository) : Vi
     }
 
     companion object {
-        fun provideFactory(repository: PermissionRepository) = viewModelFactory {
+        fun provideFactory(repository: HomeRepository) = viewModelFactory {
             initializer {
                 HomeViewModel(repository)
             }

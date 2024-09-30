@@ -6,7 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import com.meezzi.localtalk.repository.AuthRepository
-import com.meezzi.localtalk.repository.PermissionRepository
+import com.meezzi.localtalk.repository.HomeRepository
 import com.meezzi.localtalk.repository.UserRepository
 import com.meezzi.localtalk.ui.common.SignInNavigation
 import com.meezzi.localtalk.ui.home.HomeViewModel
@@ -31,7 +31,7 @@ class MainActivity : ComponentActivity() {
 
     private val homeViewModel by viewModels<HomeViewModel> {
         HomeViewModel.provideFactory(
-            PermissionRepository(this)
+            HomeRepository()
         )
     }
 
