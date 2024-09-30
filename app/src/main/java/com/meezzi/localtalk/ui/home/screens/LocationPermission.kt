@@ -2,15 +2,13 @@ package com.meezzi.localtalk.ui.home.screens
 
 import android.Manifest
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.runtime.Composable
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.meezzi.localtalk.ui.permission.PermissionScreen
 
 @Composable
-fun CheckPermissions() {
+fun CheckPermissions(onPermissionsGranted: @Composable () -> Unit) {
     val permissions = listOf(
         Manifest.permission.ACCESS_COARSE_LOCATION,
         Manifest.permission.ACCESS_FINE_LOCATION,
@@ -20,7 +18,7 @@ fun CheckPermissions() {
         permissions = permissions,
         requiredPermissions = listOf(permissions.first()),
         onGranted = {
-            HomeContent()
+            onPermissionsGranted()
         },
     )
 }
@@ -30,7 +28,7 @@ fun CheckPermissions() {
 fun PermissionBox(
     permissions: List<String>,
     requiredPermissions: List<String> = permissions,
-    onGranted: @Composable BoxScope.(List<String>) -> Unit,
+    onGranted: @Composable () -> Unit,
 ) {
     val permissionState = rememberMultiplePermissionsState(permissions = permissions)
     val allRequiredPermissionsGranted =
@@ -38,11 +36,7 @@ fun PermissionBox(
 
     Box {
         if (allRequiredPermissionsGranted) {
-            onGranted(
-                permissionState.permissions
-                    .filter { it.status.isGranted }
-                    .map { it.permission },
-            )
+            onGranted()
         } else {
             PermissionScreen(
                 state = permissionState,

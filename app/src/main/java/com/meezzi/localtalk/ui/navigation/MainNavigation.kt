@@ -1,5 +1,6 @@
 package com.meezzi.localtalk.ui.navigation
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -10,7 +11,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.meezzi.localtalk.repository.PermissionRepository
+import com.meezzi.localtalk.repository.HomeRepository
 import com.meezzi.localtalk.repository.UserRepository
 import com.meezzi.localtalk.ui.board.BoardScreen
 import com.meezzi.localtalk.ui.chat.ChatScreen
@@ -28,8 +29,8 @@ fun MainNavHost(navController: NavHostController) {
     ) {
 
         composable(Screen.Home.route) {
-            val permissionRepository = PermissionRepository(LocalContext.current)
-            val homeViewModel = HomeViewModel(permissionRepository)
+            val homeRepository = HomeRepository(LocalContext.current)
+            val homeViewModel = HomeViewModel(homeRepository)
             HomeScreen(
                 homeViewModel = homeViewModel
             )
@@ -43,7 +44,7 @@ fun MainNavHost(navController: NavHostController) {
             ChatScreen()
         }
 
-        composable(Screens.Profile.name) {
+        composable(Screen.Profile.route) {
             ProfileScreen(
                 onEditProfileClick = {
                     navController.navigate(Screens.CreateProfile.name)
@@ -54,6 +55,7 @@ fun MainNavHost(navController: NavHostController) {
     }
 }
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MainNavigationView() {
     val navController = rememberNavController()
@@ -61,7 +63,7 @@ fun MainNavigationView() {
     Scaffold(
         bottomBar = { BottomNavigationBar(navController) }
     ) {
-        Box(modifier = Modifier.padding(it)) {
+        Box(modifier = Modifier.padding()) {
             MainNavHost(navController = navController)
         }
     }
