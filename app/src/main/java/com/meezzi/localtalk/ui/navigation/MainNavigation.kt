@@ -1,5 +1,6 @@
 package com.meezzi.localtalk.ui.navigation
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -54,6 +55,7 @@ fun MainNavHost(navController: NavHostController) {
     }
 }
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MainNavigationView() {
     val navController = rememberNavController()
@@ -61,7 +63,7 @@ fun MainNavigationView() {
     Scaffold(
         bottomBar = { BottomNavigationBar(navController) }
     ) {
-        Box(modifier = Modifier.padding(it)) {
+        Box(modifier = Modifier.padding()) {
             MainNavHost(navController = navController)
         }
     }
