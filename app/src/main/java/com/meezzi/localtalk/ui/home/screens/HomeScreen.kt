@@ -1,5 +1,10 @@
 package com.meezzi.localtalk.ui.home.screens
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -24,4 +29,21 @@ fun TopAppBar(homeViewModel: HomeViewModel) {
 
     CustomTopAppBar(address)
 
+}
+
+@Composable
+fun AddPostFloatingButton(
+    onClick: () -> Unit,
+) {
+    ExtendedFloatingActionButton(
+        onClick = {
+            onClick()
+        },
+        icon = {
+            Icon(Icons.Filled.Add, "글 쓰기")
+        },
+        text = {
+            Text(text = "글 쓰기")
+        },
+    )
 }
