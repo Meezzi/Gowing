@@ -13,6 +13,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.meezzi.localtalk.repository.HomeRepository
 import com.meezzi.localtalk.repository.UserRepository
+import com.meezzi.localtalk.ui.addPost.AddPostScreen
 import com.meezzi.localtalk.ui.board.BoardScreen
 import com.meezzi.localtalk.ui.chat.ChatScreen
 import com.meezzi.localtalk.ui.home.HomeViewModel
@@ -51,6 +52,10 @@ fun MainNavHost(navController: NavHostController) {
                 },
                 profileViewModel = ProfileViewModel(UserRepository())
             )
+        }
+
+        composable(Screens.AddPost.name) {
+            AddPostScreen()
         }
     }
 }
