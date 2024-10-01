@@ -75,6 +75,8 @@ fun MainNavigationView() {
         bottomBar = { BottomNavigationBar(navController) },
         floatingActionButton = {
             if (currentDestination?.route == Screen.Home.route) {
+                AddPostFloatingButton {
+                    navController.navigate(Screens.AddPost.name)
                 }
             }
         }
