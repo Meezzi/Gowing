@@ -58,7 +58,10 @@ fun MainNavHost(navController: NavHostController) {
         }
 
         composable(Screens.AddPost.name) {
-            AddPostScreen()
+            AddPostScreen(
+                onNavigationBack =  {},
+                onSavePost = {}
+            )
         }
     }
 }
