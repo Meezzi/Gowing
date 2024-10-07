@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -15,6 +16,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.ArrowDropDown
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -48,6 +50,11 @@ fun AddPostScreen(
         topBar = {
             AddPostTopAppBar(onNavigationBack, onSavePost)
         },
+        bottomBar = {
+            AddPostBottomAppBar {
+
+            }
+        }
     ) { innerPadding ->
         Content(innerPadding) {
         }
@@ -174,5 +181,31 @@ fun CustomTextField(
                 innerTextField()
             }
         }
+    )
+}
+
+@Composable
+fun AddPostBottomAppBar(
+    onImageAdd: () -> Unit
+) {
+    BottomAppBar(
+        modifier = Modifier.height(100.dp),
+        actions = {
+            IconButton(
+                onClick = {
+                    onImageAdd()
+                },
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_add_image),
+                        contentDescription = stringResource(id = R.string.add_post_image),
+                        tint = Color.Gray,
+                    )
+                }
+            }
+        },
     )
 }

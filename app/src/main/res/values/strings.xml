@@ -38,6 +38,7 @@
     <string name="add_post_select_board">게시글의 주제를 선택해주세요.</string>
     <string name="add_post_title_label">제목을 입력하세요</string>
     <string name="add_post_content_label">내용을 입력하세요</string>
+    <string name="add_post_image">사진 추가</string>
 
     <!--   액션 공통   -->
     <string name="action_back">뒤로 가기</string>
