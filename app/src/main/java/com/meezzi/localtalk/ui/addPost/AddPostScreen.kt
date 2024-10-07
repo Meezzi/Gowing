@@ -1,5 +1,9 @@
 package com.meezzi.localtalk.ui.addPost
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,6 +30,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,13 +52,23 @@ fun AddPostScreen(
     onNavigationBack: () -> Unit,
     onSavePost: () -> Unit
 ) {
+    val selectedImageUris by addPostViewModel.selectedImageUris.collectAsState()
+
+    val multiplePhotoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickMultipleVisualMedia()
+    ) { uris ->
+        addPostViewModel.updateSelectedImageUris(uris)
+    }
+
     Scaffold(
         topBar = {
             AddPostTopAppBar(onNavigationBack, onSavePost)
         },
         bottomBar = {
             AddPostBottomAppBar {
-
+                multiplePhotoPickerLauncher.launch(
+                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                )
             }
         }
     ) { innerPadding ->
