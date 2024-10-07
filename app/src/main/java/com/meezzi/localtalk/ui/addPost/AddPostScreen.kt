@@ -43,6 +43,7 @@ import com.meezzi.localtalk.R
 
 @Composable
 fun AddPostScreen(
+    addPostViewModel: AddPostViewModel,
     onNavigationBack: () -> Unit,
     onSavePost: () -> Unit
 ) {
