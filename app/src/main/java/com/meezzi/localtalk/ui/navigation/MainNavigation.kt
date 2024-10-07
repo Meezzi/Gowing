@@ -75,7 +75,11 @@ fun MainNavigationView() {
 
 
     Scaffold(
-        bottomBar = { BottomNavigationBar(navController) },
+        bottomBar = {
+            if (currentDestination?.route != Screens.AddPost.name) {
+                BottomNavigationBar(navController)
+            }
+        },
         floatingActionButton = {
             if (currentDestination?.route == Screen.Home.route) {
                 AddPostFloatingButton {
