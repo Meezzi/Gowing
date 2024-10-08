@@ -208,7 +208,6 @@ private fun BoardSelector(onSelectBoard: () -> Unit) {
             text = stringResource(R.string.add_post_select_board),
             style = MaterialTheme.typography.titleMedium,
             color = Color.Gray,
-            modifier = Modifier.weight(1f)
         )
         Icon(
             imageVector = Icons.Outlined.ArrowDropDown,
@@ -227,10 +226,10 @@ fun CustomTextField(
     BasicTextField(
         value = title,
         onValueChange = onValueChange,
-        textStyle = textStyle,
         modifier = Modifier
             .padding(start = 20.dp, top = 5.dp, end = 20.dp, bottom = 5.dp)
             .fillMaxWidth(),
+        textStyle = textStyle,
         cursorBrush = SolidColor(Color.Gray),
         decorationBox = { innerTextField ->
             Box {
@@ -251,7 +250,6 @@ fun AddPostBottomAppBar(
     onImageAdd: () -> Unit
 ) {
     BottomAppBar(
-        modifier = Modifier.height(100.dp),
         actions = {
             IconButton(
                 onClick = {
@@ -269,5 +267,6 @@ fun AddPostBottomAppBar(
                 }
             }
         },
+        modifier = Modifier.height(100.dp),
     )
 }
