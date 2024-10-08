@@ -75,7 +75,6 @@ fun MainNavigationView() {
     val currentBackStack by navController.currentBackStackEntryAsState()
     val currentDestination = currentBackStack?.destination
 
-
     Scaffold(
         bottomBar = {
             if (currentDestination?.route != Screens.AddPost.name) {
