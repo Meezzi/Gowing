@@ -206,8 +206,8 @@ private fun BoardSelector(onSelectBoard: () -> Unit) {
     ) {
         Text(
             text = stringResource(R.string.add_post_select_board),
-            style = MaterialTheme.typography.titleMedium,
             color = Color.Gray,
+            style = MaterialTheme.typography.titleMedium,
         )
         Icon(
             imageVector = Icons.Outlined.ArrowDropDown,
