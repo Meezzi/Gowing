@@ -74,11 +74,13 @@ fun AddPostScreen(
             AddPostTopAppBar(onNavigationBack, onSavePost)
         },
         bottomBar = {
-            AddPostBottomAppBar {
-                multiplePhotoPickerLauncher.launch(
-                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                )
-            }
+            AddPostBottomAppBar(
+                onImageAdd = {
+                    multiplePhotoPickerLauncher.launch(
+                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                    )
+                }
+            )
         }
     ) { innerPadding ->
         Content(innerPadding, selectedImageUris) {
