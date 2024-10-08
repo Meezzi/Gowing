@@ -61,7 +61,7 @@ fun MainNavHost(navController: NavHostController) {
         composable(Screens.AddPost.name) {
             AddPostScreen(
                 addPostViewModel = AddPostViewModel(),
-                onNavigationBack =  {},
+                onNavigationBack = { navController.popBackStack() },
                 onSavePost = {}
             )
         }
