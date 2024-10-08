@@ -25,6 +25,6 @@ class AddPostViewModel : ViewModel() {
     }
 
     fun updateSelectedImageUris(uris: List<Uri>) {
-        _selectedImageUris.value = uris.toList()
+        _selectedImageUris.value = uris
     }
 }
