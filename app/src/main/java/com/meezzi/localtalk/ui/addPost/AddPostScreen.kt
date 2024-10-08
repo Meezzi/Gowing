@@ -37,9 +37,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -61,6 +58,9 @@ fun AddPostScreen(
     onNavigationBack: () -> Unit,
     onSavePost: () -> Unit
 ) {
+
+    val title by addPostViewModel.title.collectAsState()
+    val content by addPostViewModel.content.collectAsState()
     val selectedImageUris by addPostViewModel.selectedImageUris.collectAsState()
 
     val multiplePhotoPickerLauncher = rememberLauncherForActivityResult(
@@ -83,7 +83,14 @@ fun AddPostScreen(
             )
         }
     ) { innerPadding ->
-        Content(innerPadding, selectedImageUris) {
+        Content(
+            innerPadding,
+            title,
+            content,
+            selectedImageUris,
+            onTitleChange = { addPostViewModel.updateTitle(it) },
+            onContentChange = { addPostViewModel.updateContent(it) },
+        ) {
         }
     }
 }
@@ -120,11 +127,13 @@ private fun AddPostTopAppBar(
 @Composable
 fun Content(
     innerPadding: PaddingValues,
+    title: String,
+    content: String,
     selectedImageUris: List<Uri>,
+    onTitleChange: (String) -> Unit,
+    onContentChange: (String) -> Unit,
     onSelectBoard: () -> Unit,
 ) {
-    var title by remember { mutableStateOf("") }
-    var content by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -144,7 +153,7 @@ fun Content(
                 color = Color.Black,
                 fontWeight = FontWeight.SemiBold
             ),
-            onTitleChange = { title = it }
+            onValueChange = onTitleChange
         )
 
         CustomTextField(
@@ -154,7 +163,8 @@ fun Content(
                 fontSize = 18.sp,
                 color = Color.Black,
             ),
-            onTitleChange = { content = it })
+            onValueChange = onContentChange
+        )
 
         SelectedImagesRow(selectedImageUris)
     }
@@ -212,11 +222,11 @@ fun CustomTextField(
     label: String,
     title: String,
     textStyle: TextStyle,
-    onTitleChange: (String) -> Unit
+    onValueChange: (String) -> Unit
 ) {
     BasicTextField(
         value = title,
-        onValueChange = onTitleChange,
+        onValueChange = onValueChange,
         textStyle = textStyle,
         modifier = Modifier
             .padding(start = 20.dp, top = 5.dp, end = 20.dp, bottom = 5.dp)
