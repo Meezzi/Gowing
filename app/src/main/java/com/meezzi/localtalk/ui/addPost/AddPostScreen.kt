@@ -146,8 +146,8 @@ fun Content(
         BoardSelector(onSelectBoard)
 
         CustomTextField(
+            value = title,
             label = stringResource(R.string.add_post_title_label),
-            title = title,
             textStyle = TextStyle(
                 fontSize = 23.sp,
                 color = Color.Black,
@@ -157,8 +157,8 @@ fun Content(
         )
 
         CustomTextField(
+            value = content,
             label = stringResource(R.string.add_post_content_label),
-            title = content,
             textStyle = TextStyle(
                 fontSize = 18.sp,
                 color = Color.Black,
@@ -218,13 +218,13 @@ private fun BoardSelector(onSelectBoard: () -> Unit) {
 
 @Composable
 fun CustomTextField(
+    value: String,
     label: String,
-    title: String,
     textStyle: TextStyle,
     onValueChange: (String) -> Unit
 ) {
     BasicTextField(
-        value = title,
+        value = value,
         onValueChange = onValueChange,
         modifier = Modifier
             .padding(start = 20.dp, top = 5.dp, end = 20.dp, bottom = 5.dp)
@@ -233,7 +233,7 @@ fun CustomTextField(
         cursorBrush = SolidColor(Color.Gray),
         decorationBox = { innerTextField ->
             Box {
-                if (title.isEmpty()) {
+                if (value.isEmpty()) {
                     Text(
                         text = label,
                         style = TextStyle(fontSize = 20.sp, color = Color.LightGray)
