@@ -39,6 +39,7 @@
     <string name="add_post_title_label">제목을 입력하세요</string>
     <string name="add_post_content_label">내용을 입력하세요</string>
     <string name="add_post_image">사진 추가</string>
+    <string name="permission_dialog_media_content">사진 업로드를 하기 위해 해당 권한이 필요해요.\n설정에서 저장공간 권한을 허용해주세요.</string>
 
     <!--   액션 공통   -->
     <string name="action_back">뒤로 가기</string>
