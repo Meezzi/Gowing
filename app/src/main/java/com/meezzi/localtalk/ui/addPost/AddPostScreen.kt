@@ -1,7 +1,9 @@
 package com.meezzi.localtalk.ui.addPost
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Build
+import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -56,6 +58,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.meezzi.localtalk.R
+import com.meezzi.localtalk.ui.common.CustomPermissionRationaleDialog
 
 @Composable
 fun AddPostScreen(
@@ -111,6 +114,21 @@ fun AddPostScreen(
             )
         }
     ) { innerPadding ->
+
+        if (showPermissionRationaleDialog) {
+            CustomPermissionRationaleDialog(
+                text = stringResource(R.string.permission_dialog_media_content),
+                onDismiss = { showPermissionRationaleDialog = false },
+                onConfirm = {
+                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                        data = Uri.parse("package:${context.packageName}")
+                    }
+                    context.startActivity(intent)
+                }
+            )
+        }
+
         Content(
             innerPadding,
             title,
