@@ -86,6 +86,19 @@ fun AddPostScreen(
         addPostViewModel.updateSelectedImageUris(uris)
     }
 
+    val mediaPermission =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.RequestPermission()
+        ) { isGranted ->
+            if (isGranted) {
+                multiplePhotoPickerLauncher.launch(
+                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                )
+            } else {
+                showPermissionRationaleDialog = true
+            }
+        }
+
     Scaffold(
         topBar = {
             AddPostTopAppBar(onNavigationBack, onSavePost)
@@ -93,9 +106,7 @@ fun AddPostScreen(
         bottomBar = {
             AddPostBottomAppBar(
                 onImageAdd = {
-                    multiplePhotoPickerLauncher.launch(
-                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                    )
+                    mediaPermission.launch(permission)
                 }
             )
         }
