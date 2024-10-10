@@ -2,7 +2,6 @@ package com.meezzi.localtalk.ui.navigation
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -134,7 +133,11 @@ fun MainScreenView(
 
     Scaffold(
         bottomBar = {
-            if (currentDestination?.route != Screens.AddPost.name) {
+            if (currentDestination?.route == Screen.Home.route ||
+                currentDestination?.route == Screen.Board.route ||
+                currentDestination?.route == Screen.Chat.route ||
+                currentDestination?.route == Screen.Profile.route
+            ) {
                 BottomNavigationBar(navController)
             }
         },
