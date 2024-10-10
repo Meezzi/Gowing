@@ -122,7 +122,12 @@ fun MainNavHost(
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun MainNavigationView() {
+fun MainScreenView(
+    introViewModel: IntroViewModel,
+    profileViewModel: ProfileViewModel,
+    homeViewModel: HomeViewModel,
+    addPostViewModel: AddPostViewModel,
+) {
     val navController = rememberNavController()
     val currentBackStack by navController.currentBackStackEntryAsState()
     val currentDestination = currentBackStack?.destination
@@ -141,8 +146,14 @@ fun MainNavigationView() {
             }
         }
     ) {
-        Box(modifier = Modifier.padding()) {
-            MainNavHost(navController = navController)
+        Box {
+            MainNavHost(
+                navController,
+                introViewModel,
+                profileViewModel,
+                homeViewModel,
+                addPostViewModel
+            )
         }
     }
 }
