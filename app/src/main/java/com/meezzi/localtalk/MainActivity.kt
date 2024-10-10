@@ -7,8 +7,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import com.meezzi.localtalk.repository.AuthRepository
 import com.meezzi.localtalk.repository.HomeRepository
+import com.meezzi.localtalk.repository.PostSaveRepository
 import com.meezzi.localtalk.repository.UserRepository
-import com.meezzi.localtalk.ui.common.SignInNavigation
+import com.meezzi.localtalk.ui.addPost.AddPostViewModel
 import com.meezzi.localtalk.ui.home.HomeViewModel
 import com.meezzi.localtalk.ui.intro.IntroViewModel
 import com.meezzi.localtalk.ui.navigation.MainNavigationView
@@ -32,6 +33,12 @@ class MainActivity : ComponentActivity() {
     private val homeViewModel by viewModels<HomeViewModel> {
         HomeViewModel.provideFactory(
             HomeRepository(this)
+        )
+    }
+
+    private val addPostViewModel by viewModels<AddPostViewModel> {
+        AddPostViewModel.provideFactory(
+            PostSaveRepository()
         )
     }
 

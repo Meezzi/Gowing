@@ -27,6 +27,7 @@ import com.meezzi.localtalk.ui.profile.ProfileViewModel
 
 @Composable
 fun MainNavHost(navController: NavHostController) {
+    addPostViewModel: AddPostViewModel,
 
     NavHost(
         navController = navController,
@@ -60,7 +61,7 @@ fun MainNavHost(navController: NavHostController) {
 
         composable(Screens.AddPost.name) {
             AddPostScreen(
-                addPostViewModel = AddPostViewModel(),
+                addPostViewModel = addPostViewModel,
                 onNavigationBack = { navController.popBackStack() },
                 onSavePost = {}
             )
