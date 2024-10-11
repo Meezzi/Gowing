@@ -51,7 +51,11 @@ fun MainNavHost(
         if (user != null) {
             val hasData = introViewModel.hasUserData()
             val destination = if (hasData) Screen.Home.route else Screens.CreateProfile.name
-            navController.navigate(destination)
+            navController.navigate(destination) {
+                popUpTo(Screens.Login.name) {
+                    inclusive = true
+                }
+            }
         }
     }
 
