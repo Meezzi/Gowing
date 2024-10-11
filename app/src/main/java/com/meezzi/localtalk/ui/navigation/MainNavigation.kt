@@ -155,11 +155,11 @@ fun MainScreenView(
     ) {
         Box {
             MainNavHost(
-                navController,
-                introViewModel,
-                profileViewModel,
-                homeViewModel,
-                addPostViewModel
+                navController = navController,
+                introViewModel = introViewModel,
+                profileViewModel = profileViewModel,
+                homeViewModel = homeViewModel,
+                addPostViewModel = addPostViewModel
             )
         }
     }
