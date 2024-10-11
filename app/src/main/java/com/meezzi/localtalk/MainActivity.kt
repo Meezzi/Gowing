@@ -7,11 +7,12 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import com.meezzi.localtalk.repository.AuthRepository
 import com.meezzi.localtalk.repository.HomeRepository
+import com.meezzi.localtalk.repository.PostSaveRepository
 import com.meezzi.localtalk.repository.UserRepository
-import com.meezzi.localtalk.ui.common.SignInNavigation
+import com.meezzi.localtalk.ui.addPost.AddPostViewModel
 import com.meezzi.localtalk.ui.home.HomeViewModel
 import com.meezzi.localtalk.ui.intro.IntroViewModel
-import com.meezzi.localtalk.ui.navigation.MainNavigationView
+import com.meezzi.localtalk.ui.navigation.MainScreenView
 import com.meezzi.localtalk.ui.profile.ProfileViewModel
 import com.meezzi.localtalk.ui.theme.LocalTalkTheme
 
@@ -35,13 +36,23 @@ class MainActivity : ComponentActivity() {
         )
     }
 
+    private val addPostViewModel by viewModels<AddPostViewModel> {
+        AddPostViewModel.provideFactory(
+            PostSaveRepository()
+        )
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             LocalTalkTheme {
-                SignInNavigation(introViewModel, profileViewModel, homeViewModel)
-                MainNavigationView()
+                MainScreenView(
+                    introViewModel = introViewModel,
+                    profileViewModel = profileViewModel,
+                    homeViewModel = homeViewModel,
+                    addPostViewModel = addPostViewModel,
+                )
             }
         }
     }
