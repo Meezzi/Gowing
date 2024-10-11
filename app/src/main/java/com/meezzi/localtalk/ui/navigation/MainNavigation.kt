@@ -71,7 +71,7 @@ fun MainNavHost(
             CreateProfileScreen(
                 onProfileSaved = { nickname, profileImage ->
                     profileViewModel.saveUserProfile(nickname, profileImage)
-                    navController.navigate(Screens.Profile.name)
+                    navController.navigate(Screen.Home.route)
                 },
                 profileViewModel = profileViewModel,
             )
