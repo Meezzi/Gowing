@@ -22,3 +22,25 @@ enum class Categories(val displayName: String) {
     FIFTIES_BOARD("50대 모여라"),
     SIXTIES_BOARD("60대 모여라")
 }
+
+data class Post(
+    val city: String,
+    var category: CategorySection,
+    var authorId: String?,
+    val timestamp: String?,
+    val postId: String,
+    var title: String,
+    var content: String,
+    var postImageUrl: List<String>? = null,
+    val likes: Int,
+    val comments: List<Comment>? = null,
+)
+
+data class Comment(
+    val authorId: String,
+    val timestamp: String,
+    val postId: String,
+    val commentId: String,
+    val content: String,
+    val likes: Int,
+)
