@@ -62,6 +62,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.meezzi.localtalk.R
+import com.meezzi.localtalk.data.CategorySection
 import com.meezzi.localtalk.ui.common.CustomPermissionRationaleDialog
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -86,6 +87,8 @@ fun AddPostScreen(
     val sheetState = rememberModalBottomSheetState()
     val showBottomSheet by addPostViewModel.showBottomSheet.collectAsState()
 
+    val selectedCategory by addPostViewModel.selectedCategory.collectAsState()
+    val categories = addPostViewModel.categories
     val title by addPostViewModel.title.collectAsState()
     val content by addPostViewModel.content.collectAsState()
     val selectedImageUris by addPostViewModel.selectedImageUris.collectAsState()
@@ -138,18 +141,24 @@ fun AddPostScreen(
 
         Content(
             innerPadding,
+            selectedCategory = selectedCategory,
             title,
             content,
             selectedImageUris,
             onTitleChange = { addPostViewModel.updateTitle(it) },
             onContentChange = { addPostViewModel.updateContent(it) },
-        ) {
+            onSelectBoard = { addPostViewModel.setShowBottomSheet(true) }
         )
 
         if (showBottomSheet) {
 
             CategorySelectionBottomSheet(
                 sheetState = sheetState,
+                categories = categories,
+                onCategorySelected = { category ->
+                    addPostViewModel.selectCategory(category)
+                    addPostViewModel.setShowBottomSheet(false)
+                },
                 onDismissRequest = { addPostViewModel.setShowBottomSheet(false) }
             )
         }
@@ -160,14 +169,48 @@ fun AddPostScreen(
 @Composable
 fun CategorySelectionBottomSheet(
     sheetState: SheetState,
+    categories: List<CategorySection>,
+    onCategorySelected: (CategorySection) -> Unit,
     onDismissRequest: () -> Unit
 ) {
     ModalBottomSheet(
         onDismissRequest = { onDismissRequest() },
         sheetState = sheetState
     ) {
+        CategoryList(
+            categories = categories,
+            onCategorySelected = { category ->
+                onCategorySelected(category)
+                onDismissRequest()
+            }
+        )
     }
 }
+
+@Composable
+fun CategoryList(
+    categories: List<CategorySection>,
+    onCategorySelected: (CategorySection) -> Unit,
+) {
+    LazyColumn(modifier = Modifier.padding(16.dp)) {
+        item {
+            Text(
+                text = stringResource(R.string.add_post_select_board),
+                modifier = Modifier.padding(bottom = 16.dp),
+                style = MaterialTheme.typography.headlineSmall,
+            )
+        }
+
+        items(categories) { category ->
+            Text(
+                text = category.name,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        onCategorySelected(category)
+                    }
+                    .padding(vertical = 12.dp)
+            )
         }
     }
 }
@@ -204,6 +247,7 @@ private fun AddPostTopAppBar(
 @Composable
 fun Content(
     innerPadding: PaddingValues,
+    selectedCategory: CategorySection?,
     title: String,
     content: String,
     selectedImageUris: List<Uri>,
@@ -220,7 +264,10 @@ fun Content(
             .verticalScroll(rememberScrollState())
     ) {
 
-        BoardSelector(onSelectBoard)
+        BoardSelector(
+            selectedCategory = selectedCategory,
+            onSelectBoard = onSelectBoard
+        )
 
         CustomTextField(
             value = title,
@@ -271,24 +318,25 @@ private fun SelectedImagesRow(selectedImageUris: List<Uri>) {
 }
 
 @Composable
-private fun BoardSelector(onSelectBoard: () -> Unit) {
+private fun BoardSelector(
+    selectedCategory: CategorySection?,
+    onSelectBoard: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 20.dp, top = 5.dp, end = 20.dp, bottom = 5.dp)
-            .clickable {
-                onSelectBoard()
-            },
+            .padding(20.dp)
+            .clickable { onSelectBoard() },
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = stringResource(R.string.add_post_select_board),
+            text = selectedCategory?.name ?: stringResource(R.string.add_post_select_board_title),
             color = Color.Gray,
             style = MaterialTheme.typography.titleMedium,
         )
         Icon(
             imageVector = Icons.Outlined.ArrowDropDown,
-            contentDescription = stringResource(R.string.action_back)
+            contentDescription = stringResource(R.string.add_post_select_board_title)
         )
     }
 }

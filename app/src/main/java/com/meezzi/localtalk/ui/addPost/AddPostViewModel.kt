@@ -4,11 +4,19 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.meezzi.localtalk.data.Categories
+import com.meezzi.localtalk.data.CategorySection
+import com.meezzi.localtalk.data.Post
 import com.meezzi.localtalk.repository.PostSaveRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class AddPostViewModel(private val postSaveRepository: PostSaveRepository) : ViewModel() {
+    val categories: List<CategorySection> = Categories.entries.map { categoryType ->
+        CategorySection(id = categoryType.name.lowercase(), name = categoryType.displayName)
+    }
+
+    private val _selectedCategory = MutableStateFlow<CategorySection?>(null)
+    val selectedCategory: StateFlow<CategorySection?> = _selectedCategory
 
     private val _title = MutableStateFlow("")
     val title: StateFlow<String> = _title
@@ -18,6 +26,10 @@ class AddPostViewModel(private val postSaveRepository: PostSaveRepository) : Vie
 
     private val _selectedImageUris = MutableStateFlow<List<Uri>>(emptyList())
     val selectedImageUris: StateFlow<List<Uri>> = _selectedImageUris
+
+    fun selectCategory(category: CategorySection) {
+        _selectedCategory.value = category
+    }
 
     fun updateTitle(newTitle: String) {
         _title.value = newTitle
