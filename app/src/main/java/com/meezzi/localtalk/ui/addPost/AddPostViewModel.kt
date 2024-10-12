@@ -30,6 +30,12 @@ class AddPostViewModel(private val postSaveRepository: PostSaveRepository) : Vie
     fun updateSelectedImageUris(uris: List<Uri>) {
         _selectedImageUris.value = uris
     }
+    private val _showBottomSheet = MutableStateFlow(false)
+    val showBottomSheet: StateFlow<Boolean> = _showBottomSheet
+
+    fun setShowBottomSheet(show: Boolean) {
+        _showBottomSheet.value = show
+    }
 
     companion object {
         fun provideFactory(repository: PostSaveRepository) = viewModelFactory {
