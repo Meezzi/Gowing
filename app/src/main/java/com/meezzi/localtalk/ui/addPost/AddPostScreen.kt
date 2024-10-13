@@ -114,7 +114,19 @@ fun AddPostScreen(
 
     Scaffold(
         topBar = {
-            AddPostTopAppBar(onNavigationBack, onSavePost)
+            AddPostTopAppBar(
+                onNavigationBack = onNavigationBack,
+                onSavePost = {
+                    addPostViewModel.savePost(
+                        onSuccess = {
+                            // TODO("작성글 보는 화면으로 이동")
+                        },
+                        onFailure = { e ->
+                            // TODO("실패 원인 띄우기")
+                        }
+                    )
+                }
+            )
         },
         bottomBar = {
             AddPostBottomAppBar(
