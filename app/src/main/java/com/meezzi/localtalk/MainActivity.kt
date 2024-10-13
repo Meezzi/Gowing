@@ -38,7 +38,8 @@ class MainActivity : ComponentActivity() {
 
     private val addPostViewModel by viewModels<AddPostViewModel> {
         AddPostViewModel.provideFactory(
-            PostSaveRepository()
+            PostSaveRepository(),
+            homeViewModel,
         )
     }
 

@@ -8,8 +8,15 @@ import com.meezzi.localtalk.data.Categories
 import com.meezzi.localtalk.data.CategorySection
 import com.meezzi.localtalk.data.Post
 import com.meezzi.localtalk.repository.PostSaveRepository
+import com.meezzi.localtalk.ui.home.HomeViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
+
+class AddPostViewModel(
+    private val postSaveRepository: PostSaveRepository,
+    private val homeViewModel: HomeViewModel,
+) : ViewModel() {
 
     val categories: List<CategorySection> = Categories.entries.map { categoryType ->
         CategorySection(id = categoryType.name.lowercase(), name = categoryType.displayName)
@@ -50,9 +57,12 @@ import kotlinx.coroutines.flow.StateFlow
     }
 
     companion object {
-        fun provideFactory(repository: PostSaveRepository) = viewModelFactory {
+        fun provideFactory(
+            repository: PostSaveRepository,
+            homeViewModel: HomeViewModel
+        ) = viewModelFactory {
             initializer {
-                AddPostViewModel(repository)
+                AddPostViewModel(repository, homeViewModel)
             }
         }
     }
