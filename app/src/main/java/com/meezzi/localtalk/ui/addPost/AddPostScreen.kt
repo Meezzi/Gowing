@@ -127,7 +127,7 @@ fun AddPostScreen(
                 onSavePost = {
                     addPostViewModel.savePost(
                         onSuccess = {
-                            // TODO("작성글 보는 화면으로 이동")
+                            onSavePost()
                         },
                         onFailure = { e ->
                             // TODO("실패 원인 띄우기")

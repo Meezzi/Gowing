@@ -24,6 +24,7 @@ import com.meezzi.localtalk.ui.home.screens.AddPostFloatingButton
 import com.meezzi.localtalk.ui.home.screens.HomeScreen
 import com.meezzi.localtalk.ui.intro.IntroViewModel
 import com.meezzi.localtalk.ui.intro.screens.LoginScreen
+import com.meezzi.localtalk.ui.postdetail.PostDetailScreen
 import com.meezzi.localtalk.ui.profile.CreateProfileScreen
 import com.meezzi.localtalk.ui.profile.ProfileScreen
 import com.meezzi.localtalk.ui.profile.ProfileViewModel
@@ -117,7 +118,7 @@ fun MainNavHost(
             AddPostScreen(
                 addPostViewModel = addPostViewModel,
                 onNavigationBack = { navController.popBackStack() },
-                onSavePost = {}
+                onSavePost = { navController.navigate(Screens.PostDetail.name) }
             )
         }
 
