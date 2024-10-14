@@ -32,6 +32,7 @@ data class Post(
     val city: String,
     var category: CategorySection,
     var authorId: String?,
+    val authorName: String?,
     val time: Time?,
     val postId: String,
     var title: String,

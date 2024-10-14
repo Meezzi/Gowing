@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.google.firebase.auth.FirebaseAuth
 import com.meezzi.localtalk.data.Categories
 import com.meezzi.localtalk.data.CategorySection
 import com.meezzi.localtalk.data.Post
@@ -36,6 +37,9 @@ class AddPostViewModel(
     private val _selectedImageUris = MutableStateFlow<List<Uri>>(emptyList())
     val selectedImageUris: StateFlow<List<Uri>> = _selectedImageUris
 
+    private val _isAnonymous = MutableStateFlow(false)
+    val isAnonymous: StateFlow<Boolean> = _isAnonymous
+
     fun selectCategory(category: CategorySection) {
         _selectedCategory.value = category
     }
@@ -59,6 +63,10 @@ class AddPostViewModel(
         _showBottomSheet.value = show
     }
 
+    fun setAnonymous(isAnonymous: Boolean) {
+        _isAnonymous.value = isAnonymous
+    }
+
     fun savePost(
         onSuccess: () -> Unit,
         onFailure: (Exception) -> Unit
@@ -68,6 +76,13 @@ class AddPostViewModel(
 
         if (category != null && address.isNotEmpty()) {
             viewModelScope.launch {
+
+                val authorName =
+                    if (isAnonymous.value) "익명"
+                    else {
+                        FirebaseAuth.getInstance().currentUser?.displayName
+                    }
+
                 val post = Post(
                     city = address,
                     category = category,
@@ -75,6 +90,7 @@ class AddPostViewModel(
                     title = title.value,
                     content = content.value,
                     authorId = null,
+                    authorName = authorName,
                     time = TimeFormat().timeFormat(),
                     postImageUrl = selectedImageUris.value.map { it.toString() },
                     likes = 0,
