@@ -12,6 +12,7 @@ enum class Screens {
     CreateProfile,
     Profile,
     AddPost,
+    PostDetail,
 }
 
 sealed class Screen(

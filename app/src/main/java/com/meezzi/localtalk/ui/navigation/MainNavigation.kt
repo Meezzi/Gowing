@@ -120,6 +120,10 @@ fun MainNavHost(
                 onSavePost = {}
             )
         }
+
+        composable(Screens.PostDetail.name) {
+            PostDetailScreen()
+        }
     }
 }
 
