@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -30,6 +31,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.ArrowDropDown
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -95,6 +98,8 @@ fun AddPostScreen(
 
     val isSaveEnabled = title.isNotBlank() && content.isNotBlank() && selectedCategory != null
 
+    var isAnonymous by remember { mutableStateOf(false) }
+
     val multiplePhotoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickMultipleVisualMedia(maxItems = 10)
     ) { uris ->
@@ -133,6 +138,8 @@ fun AddPostScreen(
         },
         bottomBar = {
             AddPostBottomAppBar(
+                isAnonymous = isAnonymous,
+                onAnonymousChange = { isAnonymous = it },
                 onImageAdd = {
                     mediaPermission.launch(permission)
                 }
@@ -391,6 +398,8 @@ fun CustomTextField(
 
 @Composable
 fun AddPostBottomAppBar(
+    isAnonymous: Boolean,
+    onAnonymousChange: (Boolean) -> Unit,
     onImageAdd: () -> Unit
 ) {
     BottomAppBar(
@@ -409,6 +418,25 @@ fun AddPostBottomAppBar(
                         tint = Color.Gray,
                     )
                 }
+            }
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            Row(
+                modifier = Modifier.padding(10.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Checkbox(
+                    checked = isAnonymous,
+                    onCheckedChange = onAnonymousChange,
+                    modifier = Modifier.size(20.dp),
+                )
+                Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
+                Text(
+                    text = "익명",
+                    modifier = Modifier.clickable { onAnonymousChange(!isAnonymous) },
+                    style = MaterialTheme.typography.labelLarge,
+                )
             }
         },
         modifier = Modifier.height(100.dp),
