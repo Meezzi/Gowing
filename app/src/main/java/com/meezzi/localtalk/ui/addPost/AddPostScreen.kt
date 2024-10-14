@@ -433,7 +433,7 @@ fun AddPostBottomAppBar(
                 )
                 Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
                 Text(
-                    text = "익명",
+                    text = stringResource(R.string.anonymous),
                     modifier = Modifier.clickable { onAnonymousChange(!isAnonymous) },
                     style = MaterialTheme.typography.labelLarge,
                 )

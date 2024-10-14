@@ -16,6 +16,7 @@
     <string name="location">위치</string>
     <string name="write_post">글 쓰기</string>
     <string name="complete">완료</string>
+    <string name="anonymous">익명</string>
 
     <!--   로그인 화면   -->
     <string name="sign_in_with_google">구글 로그인</string>
