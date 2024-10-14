@@ -145,7 +145,8 @@ fun MainScreenView(
             if (currentDestination?.route == Screen.Home.route ||
                 currentDestination?.route == Screen.Board.route ||
                 currentDestination?.route == Screen.Chat.route ||
-                currentDestination?.route == Screen.Profile.route
+                currentDestination?.route == Screen.Profile.route ||
+                currentDestination?.route == Screens.PostDetail.name
             ) {
                 BottomNavigationBar(navController)
             }
