@@ -93,6 +93,8 @@ fun AddPostScreen(
     val content by addPostViewModel.content.collectAsState()
     val selectedImageUris by addPostViewModel.selectedImageUris.collectAsState()
 
+    val isSaveEnabled = title.isNotBlank() && content.isNotBlank() && selectedCategory != null
+
     val multiplePhotoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickMultipleVisualMedia(maxItems = 10)
     ) { uris ->
@@ -115,6 +117,7 @@ fun AddPostScreen(
     Scaffold(
         topBar = {
             AddPostTopAppBar(
+                isSaveEnabled = isSaveEnabled,
                 onNavigationBack = onNavigationBack,
                 onSavePost = {
                     addPostViewModel.savePost(
@@ -230,6 +233,7 @@ fun CategoryList(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun AddPostTopAppBar(
+    isSaveEnabled: Boolean,
     onNavigationBack: () -> Unit,
     onSavePost: () -> Unit
 ) {
@@ -246,7 +250,10 @@ private fun AddPostTopAppBar(
             }
         },
         actions = {
-            TextButton(onClick = { onSavePost() }) {
+            TextButton(
+                onClick = { onSavePost() },
+                enabled = isSaveEnabled,
+            ) {
                 Text(
                     text = stringResource(R.string.complete),
                     style = MaterialTheme.typography.labelLarge
