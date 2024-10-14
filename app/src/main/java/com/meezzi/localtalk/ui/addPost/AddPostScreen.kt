@@ -98,7 +98,7 @@ fun AddPostScreen(
 
     val isSaveEnabled = title.isNotBlank() && content.isNotBlank() && selectedCategory != null
 
-    var isAnonymous by remember { mutableStateOf(false) }
+    val isAnonymous by addPostViewModel.isAnonymous.collectAsState()
 
     val multiplePhotoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickMultipleVisualMedia(maxItems = 10)
@@ -139,7 +139,7 @@ fun AddPostScreen(
         bottomBar = {
             AddPostBottomAppBar(
                 isAnonymous = isAnonymous,
-                onAnonymousChange = { isAnonymous = it },
+                onAnonymousChange = { addPostViewModel.setAnonymous(it) },
                 onImageAdd = {
                     mediaPermission.launch(permission)
                 }

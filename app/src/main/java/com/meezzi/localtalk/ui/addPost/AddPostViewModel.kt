@@ -36,6 +36,9 @@ class AddPostViewModel(
     private val _selectedImageUris = MutableStateFlow<List<Uri>>(emptyList())
     val selectedImageUris: StateFlow<List<Uri>> = _selectedImageUris
 
+    private val _isAnonymous = MutableStateFlow(false)
+    val isAnonymous: StateFlow<Boolean> = _isAnonymous
+
     fun selectCategory(category: CategorySection) {
         _selectedCategory.value = category
     }
@@ -57,6 +60,10 @@ class AddPostViewModel(
 
     fun setShowBottomSheet(show: Boolean) {
         _showBottomSheet.value = show
+    }
+
+    fun setAnonymous(isAnonymous: Boolean) {
+        _isAnonymous.value = isAnonymous
     }
 
     fun savePost(
