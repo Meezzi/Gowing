@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -33,10 +34,13 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -58,8 +62,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.meezzi.localtalk.R
+import com.meezzi.localtalk.data.CategorySection
 import com.meezzi.localtalk.ui.common.CustomPermissionRationaleDialog
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddPostScreen(
     addPostViewModel: AddPostViewModel,
@@ -78,13 +84,19 @@ fun AddPostScreen(
     }
 
     var showPermissionRationaleDialog by remember { mutableStateOf(false) }
+    val sheetState = rememberModalBottomSheetState()
+    val showBottomSheet by addPostViewModel.showBottomSheet.collectAsState()
 
+    val selectedCategory by addPostViewModel.selectedCategory.collectAsState()
+    val categories = addPostViewModel.categories
     val title by addPostViewModel.title.collectAsState()
     val content by addPostViewModel.content.collectAsState()
     val selectedImageUris by addPostViewModel.selectedImageUris.collectAsState()
 
+    val isSaveEnabled = title.isNotBlank() && content.isNotBlank() && selectedCategory != null
+
     val multiplePhotoPickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickMultipleVisualMedia()
+        contract = ActivityResultContracts.PickMultipleVisualMedia(maxItems = 10)
     ) { uris ->
         addPostViewModel.updateSelectedImageUris(uris)
     }
@@ -104,7 +116,20 @@ fun AddPostScreen(
 
     Scaffold(
         topBar = {
-            AddPostTopAppBar(onNavigationBack, onSavePost)
+            AddPostTopAppBar(
+                isSaveEnabled = isSaveEnabled,
+                onNavigationBack = onNavigationBack,
+                onSavePost = {
+                    addPostViewModel.savePost(
+                        onSuccess = {
+                            // TODO("작성글 보는 화면으로 이동")
+                        },
+                        onFailure = { e ->
+                            // TODO("실패 원인 띄우기")
+                        }
+                    )
+                }
+            )
         },
         bottomBar = {
             AddPostBottomAppBar(
@@ -131,12 +156,76 @@ fun AddPostScreen(
 
         Content(
             innerPadding,
+            selectedCategory = selectedCategory,
             title,
             content,
             selectedImageUris,
             onTitleChange = { addPostViewModel.updateTitle(it) },
             onContentChange = { addPostViewModel.updateContent(it) },
-        ) {
+            onSelectBoard = { addPostViewModel.setShowBottomSheet(true) }
+        )
+
+        if (showBottomSheet) {
+
+            CategorySelectionBottomSheet(
+                sheetState = sheetState,
+                categories = categories,
+                onCategorySelected = { category ->
+                    addPostViewModel.selectCategory(category)
+                    addPostViewModel.setShowBottomSheet(false)
+                },
+                onDismissRequest = { addPostViewModel.setShowBottomSheet(false) }
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CategorySelectionBottomSheet(
+    sheetState: SheetState,
+    categories: List<CategorySection>,
+    onCategorySelected: (CategorySection) -> Unit,
+    onDismissRequest: () -> Unit
+) {
+    ModalBottomSheet(
+        onDismissRequest = { onDismissRequest() },
+        sheetState = sheetState
+    ) {
+        CategoryList(
+            categories = categories,
+            onCategorySelected = { category ->
+                onCategorySelected(category)
+                onDismissRequest()
+            }
+        )
+    }
+}
+
+@Composable
+fun CategoryList(
+    categories: List<CategorySection>,
+    onCategorySelected: (CategorySection) -> Unit,
+) {
+    LazyColumn(modifier = Modifier.padding(16.dp)) {
+        item {
+            Text(
+                text = stringResource(R.string.add_post_select_board),
+                modifier = Modifier.padding(bottom = 16.dp),
+                style = MaterialTheme.typography.headlineSmall,
+            )
+        }
+
+        items(categories) { category ->
+            Text(
+                text = category.name,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        onCategorySelected(category)
+                    }
+                    .padding(vertical = 12.dp)
+            )
         }
     }
 }
@@ -144,6 +233,7 @@ fun AddPostScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun AddPostTopAppBar(
+    isSaveEnabled: Boolean,
     onNavigationBack: () -> Unit,
     onSavePost: () -> Unit
 ) {
@@ -160,7 +250,10 @@ private fun AddPostTopAppBar(
             }
         },
         actions = {
-            TextButton(onClick = { onSavePost() }) {
+            TextButton(
+                onClick = { onSavePost() },
+                enabled = isSaveEnabled,
+            ) {
                 Text(
                     text = stringResource(R.string.complete),
                     style = MaterialTheme.typography.labelLarge
@@ -173,6 +266,7 @@ private fun AddPostTopAppBar(
 @Composable
 fun Content(
     innerPadding: PaddingValues,
+    selectedCategory: CategorySection?,
     title: String,
     content: String,
     selectedImageUris: List<Uri>,
@@ -189,7 +283,10 @@ fun Content(
             .verticalScroll(rememberScrollState())
     ) {
 
-        BoardSelector(onSelectBoard)
+        BoardSelector(
+            selectedCategory = selectedCategory,
+            onSelectBoard = onSelectBoard
+        )
 
         CustomTextField(
             value = title,
@@ -240,24 +337,25 @@ private fun SelectedImagesRow(selectedImageUris: List<Uri>) {
 }
 
 @Composable
-private fun BoardSelector(onSelectBoard: () -> Unit) {
+private fun BoardSelector(
+    selectedCategory: CategorySection?,
+    onSelectBoard: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 20.dp, top = 5.dp, end = 20.dp, bottom = 5.dp)
-            .clickable {
-                onSelectBoard()
-            },
+            .padding(20.dp)
+            .clickable { onSelectBoard() },
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = stringResource(R.string.add_post_select_board),
+            text = selectedCategory?.name ?: stringResource(R.string.add_post_select_board_title),
             color = Color.Gray,
             style = MaterialTheme.typography.titleMedium,
         )
         Icon(
             imageVector = Icons.Outlined.ArrowDropDown,
-            contentDescription = stringResource(R.string.action_back)
+            contentDescription = stringResource(R.string.add_post_select_board_title)
         )
     }
 }
