@@ -1,8 +1,8 @@
 package com.meezzi.localtalk.data
 
 data class CategorySection(
-    val id: String,
-    val name: String,
+    val id: String = "",
+    val name: String = ""
 )
 
 enum class Categories(val displayName: String) {
@@ -24,18 +24,18 @@ enum class Categories(val displayName: String) {
 }
 
 data class Post(
-    val city: String,
-    var category: CategorySection,
-    var authorId: String?,
-    val authorName: String?,
-    val date: String?,
-    val time: String?,
-    val postId: String,
-    var title: String,
-    var content: String,
+    val city: String = "",
+    var category: CategorySection = CategorySection(),
+    var authorId: String? = null,
+    val authorName: String? = "",
+    val date: String? = "",
+    val time: String? = "",
+    val postId: String = "",
+    var title: String = "",
+    var content: String = "",
     var postImageUrl: List<String>? = null,
-    val likes: Int,
-    val comments: List<Comment>? = null,
+    val likes: Int = 0,
+    val comments: List<Comment>? = null
 )
 
 data class Comment(
