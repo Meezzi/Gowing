@@ -68,7 +68,7 @@ class AddPostViewModel(
     }
 
     fun savePost(
-        onSuccess: () -> Unit,
+        onSuccess: (String, String, String) -> Unit,
         onFailure: (Exception) -> Unit
     ) {
         val category = selectedCategory.value
@@ -101,7 +101,9 @@ class AddPostViewModel(
                 postSaveRepository.savePostWithImages(
                     post = post,
                     imageUris = selectedImageUris.value,
-                    onSuccess = onSuccess,
+                    onSuccess = { city, categoryId, postId ->
+                        onSuccess(city, categoryId, postId)
+                    },
                     onFailure = onFailure
                 )
             }

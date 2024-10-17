@@ -19,7 +19,7 @@ class PostSaveRepository {
     fun savePostWithImages(
         post: Post,
         imageUris: List<Uri>?,
-        onSuccess: () -> Unit,
+        onSuccess: (String, String, String) -> Unit,
         onFailure: (Exception) -> Unit,
     ) {
         val postId = db.collection("posts").document().id
@@ -29,7 +29,12 @@ class PostSaveRepository {
                 uploadImage(uri, postId)
             }
         }
-        savePost(postId, post, onSuccess, onFailure)
+        savePost(
+            postId = postId,
+            post = post,
+            onSuccess = { onSuccess(post.city, post.category.id, postId) },
+            onFailure = onFailure
+        )
     }
 
     private fun uploadImage(
