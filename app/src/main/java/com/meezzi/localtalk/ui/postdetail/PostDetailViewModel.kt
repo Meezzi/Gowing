@@ -1,5 +1,6 @@
 package com.meezzi.localtalk.ui.postdetail
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
@@ -14,6 +15,9 @@ class PostDetailViewModel(private val postSaveRepository: PostSaveRepository) : 
 
     private val _post = MutableStateFlow<Post?>(null)
     val post: StateFlow<Post?> = _post
+
+    private val _profileImage = MutableStateFlow<Uri?>(null)
+    val profileImage: StateFlow<Uri?> = _profileImage
 
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage
@@ -34,6 +38,17 @@ class PostDetailViewModel(private val postSaveRepository: PostSaveRepository) : 
                 onFailure = { exception ->
                     _post.value = null
                     _errorMessage.value = exception.message
+                }
+            )
+        }
+    }
+
+    fun getProfileImage(authorId: String) {
+        viewModelScope.launch {
+            postSaveRepository.getProfileImageUri(
+                authorId = authorId,
+                onComplete = { uri ->
+                    _profileImage.value = uri
                 }
             )
         }
