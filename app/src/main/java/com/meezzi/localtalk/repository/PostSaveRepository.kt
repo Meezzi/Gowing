@@ -4,6 +4,7 @@ import android.net.Uri
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.firestore
+import com.google.firebase.firestore.toObject
 import com.google.firebase.storage.storage
 import com.meezzi.localtalk.data.Post
 
@@ -67,5 +68,32 @@ class PostSaveRepository {
             .set(postToSave)
             .addOnSuccessListener { onSuccess() }
             .addOnFailureListener { e -> onFailure(e) }
+    }
+
+    fun getPostById(
+        city: String,
+        category: String,
+        postId: String,
+        onSuccess: (Post) -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+
+        val postRef = db.collection("posts")
+            .document(city)
+            .collection(category)
+            .document(postId)
+
+        postRef.get()
+            .addOnSuccessListener { document ->
+                val post = document.toObject<Post>()
+                if (post != null) {
+                    onSuccess(post)
+                } else {
+                    onFailure(Exception("게시물을 찾을 수 없습니다."))
+                }
+            }
+            .addOnFailureListener { e ->
+                onFailure(e)
+            }
     }
 }
