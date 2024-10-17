@@ -91,7 +91,8 @@ class AddPostViewModel(
                     content = content.value,
                     authorId = null,
                     authorName = authorName,
-                    time = TimeFormat().timeFormat(),
+                    date = TimeFormat().getDate(),
+                    time = TimeFormat().getTime(),
                     postImageUrl = selectedImageUris.value.map { it.toString() },
                     likes = 0,
                     comments = null
