@@ -10,12 +10,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -105,6 +109,16 @@ fun PostContentView(post: Post, profileImage: Uri?) {
         PostAuthorInfo(post = post, profileImage = profileImage)
 
         Spacer(modifier = Modifier.height(16.dp))
+
+        PostTitle(title = post.title)
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        PostContent(content = post.content)
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        PostImages(imageUrls = post.postImageUrl)
     }
 }
 
@@ -134,6 +148,42 @@ fun PostAuthorInfo(post: Post, profileImage: Uri?) {
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                 style = MaterialTheme.typography.bodySmall,
             )
+        }
+    }
+}
+
+@Composable
+fun PostTitle(title: String) {
+    Text(
+        text = title,
+        fontWeight = FontWeight.Bold,
+        style = MaterialTheme.typography.headlineMedium
+    )
+}
+
+@Composable
+fun PostContent(content: String) {
+    Text(
+        text = content,
+        style = MaterialTheme.typography.bodyLarge
+    )
+}
+
+@Composable
+fun PostImages(imageUrls: List<String>?) {
+    if (!imageUrls.isNullOrEmpty()) {
+        LazyRow {
+            items(imageUrls) { imageUrl ->
+                AsyncImage(
+                    model = imageUrl,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(200.dp)
+                        .padding(4.dp)
+                        .clip(RoundedCornerShape(8.dp)),
+                    contentScale = ContentScale.Crop
+                )
+            }
         }
     }
 }
