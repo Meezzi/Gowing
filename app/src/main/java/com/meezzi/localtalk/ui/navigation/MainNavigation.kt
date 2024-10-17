@@ -9,10 +9,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.google.firebase.auth.FirebaseAuth
 import com.meezzi.localtalk.repository.UserRepository
 import com.meezzi.localtalk.ui.addPost.AddPostScreen
@@ -120,12 +122,33 @@ fun MainNavHost(
             AddPostScreen(
                 addPostViewModel = addPostViewModel,
                 onNavigationBack = { navController.popBackStack() },
-                onSavePost = { navController.navigate(Screens.PostDetail.name) }
+                onSavePost = { city, categoryId, postId ->
+                    navController.popBackStack()
+                    navController.navigate("${Screens.PostDetail.name}/$city/$categoryId/$postId")
+                }
+
             )
         }
 
-        composable(Screens.PostDetail.name) {
-            PostDetailScreen()
+        composable(
+            route = "${Screens.PostDetail.name}/{city}/{categoryId}/{postId}",
+            arguments = listOf(
+                navArgument("postId") { type = NavType.StringType },
+                navArgument("city") { type = NavType.StringType },
+                navArgument("categoryId") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val city = backStackEntry.arguments?.getString("city") ?: ""
+            val categoryId = backStackEntry.arguments?.getString("categoryId") ?: ""
+            val postId = backStackEntry.arguments?.getString("postId") ?: ""
+
+            PostDetailScreen(
+                postId = postId,
+                city = city,
+                category = categoryId,
+                postDetailViewModel = postDetailViewModel,
+                onNavigateBack = { navController.popBackStack() }
+            )
         }
     }
 }
