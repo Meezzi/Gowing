@@ -45,5 +45,5 @@
 
     <!--   액션 공통   -->
     <string name="action_back">뒤로 가기</string>
-
+    <string name="action_loading">로딩 중</string>
 </resources>
