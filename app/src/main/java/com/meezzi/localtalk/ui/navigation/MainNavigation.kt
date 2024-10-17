@@ -25,6 +25,7 @@ import com.meezzi.localtalk.ui.home.screens.HomeScreen
 import com.meezzi.localtalk.ui.intro.IntroViewModel
 import com.meezzi.localtalk.ui.intro.screens.LoginScreen
 import com.meezzi.localtalk.ui.postdetail.PostDetailScreen
+import com.meezzi.localtalk.ui.postdetail.PostDetailViewModel
 import com.meezzi.localtalk.ui.profile.CreateProfileScreen
 import com.meezzi.localtalk.ui.profile.ProfileScreen
 import com.meezzi.localtalk.ui.profile.ProfileViewModel
@@ -36,6 +37,7 @@ fun MainNavHost(
     profileViewModel: ProfileViewModel,
     homeViewModel: HomeViewModel,
     addPostViewModel: AddPostViewModel,
+    postDetailViewModel: PostDetailViewModel,
 ) {
 
     val user by introViewModel.authState.collectAsStateWithLifecycle()
@@ -135,6 +137,7 @@ fun MainScreenView(
     profileViewModel: ProfileViewModel,
     homeViewModel: HomeViewModel,
     addPostViewModel: AddPostViewModel,
+    postDetailViewModel: PostDetailViewModel,
 ) {
     val navController = rememberNavController()
     val currentBackStack by navController.currentBackStackEntryAsState()
@@ -165,7 +168,8 @@ fun MainScreenView(
                 introViewModel = introViewModel,
                 profileViewModel = profileViewModel,
                 homeViewModel = homeViewModel,
-                addPostViewModel = addPostViewModel
+                addPostViewModel = addPostViewModel,
+                postDetailViewModel = postDetailViewModel
             )
         }
     }

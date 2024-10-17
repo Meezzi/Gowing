@@ -13,6 +13,7 @@ import com.meezzi.localtalk.ui.addPost.AddPostViewModel
 import com.meezzi.localtalk.ui.home.HomeViewModel
 import com.meezzi.localtalk.ui.intro.IntroViewModel
 import com.meezzi.localtalk.ui.navigation.MainScreenView
+import com.meezzi.localtalk.ui.postdetail.PostDetailViewModel
 import com.meezzi.localtalk.ui.profile.ProfileViewModel
 import com.meezzi.localtalk.ui.theme.LocalTalkTheme
 
@@ -43,6 +44,12 @@ class MainActivity : ComponentActivity() {
         )
     }
 
+    private val postDetailViewModel by viewModels<PostDetailViewModel> {
+        PostDetailViewModel.provideFactory(
+            PostSaveRepository(),
+        )
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -53,6 +60,7 @@ class MainActivity : ComponentActivity() {
                     profileViewModel = profileViewModel,
                     homeViewModel = homeViewModel,
                     addPostViewModel = addPostViewModel,
+                    postDetailViewModel = postDetailViewModel,
                 )
             }
         }
