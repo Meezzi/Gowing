@@ -63,7 +63,7 @@ class PostSaveRepository {
         db.collection("posts")
             .document(post.city)
             .collection(post.category.id)
-            .document(post.title)
+            .document(postId)
             .set(postToSave)
             .addOnSuccessListener { onSuccess() }
             .addOnFailureListener { e -> onFailure(e) }
