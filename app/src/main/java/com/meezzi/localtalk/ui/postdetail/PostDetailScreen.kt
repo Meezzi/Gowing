@@ -47,6 +47,18 @@ fun PostDetailScreen(
     val profileImage by postDetailViewModel.profileImage.collectAsState()
     val errorMessage by postDetailViewModel.errorMessage.collectAsState()
 
+    LaunchedEffect(post) {
+        post?.let { post ->
+            if (post.authorName != "익명") {
+                postDetailViewModel.getProfileImage(post.authorId!!)
+            }
+        }
+    }
+
+    LaunchedEffect(postId) {
+        postDetailViewModel.loadPost(postId, city, category)
+    }
+
     Scaffold(
         topBar = {
             NavigationTopAppBar(
