@@ -23,17 +23,13 @@ enum class Categories(val displayName: String) {
     SIXTIES_BOARD("60대 모여라")
 }
 
-data class Time(
-    val date: String,
-    val time: String,
-)
-
 data class Post(
     val city: String,
     var category: CategorySection,
     var authorId: String?,
     val authorName: String?,
-    val time: Time?,
+    val date: String?,
+    val time: String?,
     val postId: String,
     var title: String,
     var content: String,
