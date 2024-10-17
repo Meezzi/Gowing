@@ -3,6 +3,7 @@ package com.meezzi.localtalk.ui.postdetail
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -66,5 +67,12 @@ fun ErrorView(message: String) {
             color = MaterialTheme.colorScheme.error,
             textAlign = TextAlign.Center
         )
+    }
+}
+
+@Composable
+fun LoadingView() {
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        CircularProgressIndicator()
     }
 }
