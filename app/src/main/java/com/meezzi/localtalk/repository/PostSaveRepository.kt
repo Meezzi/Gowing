@@ -101,4 +101,14 @@ class PostSaveRepository {
                 onFailure(e)
             }
     }
+
+    fun getProfileImageUri(authorId: String, onComplete: (Uri?) -> Unit) {
+
+        val profileImageRef = storageRef.child("images/${authorId}_profile_image")
+        profileImageRef.downloadUrl.addOnSuccessListener { uri ->
+            onComplete(uri)
+        }.addOnFailureListener {
+            onComplete(null)
+        }
+    }
 }
