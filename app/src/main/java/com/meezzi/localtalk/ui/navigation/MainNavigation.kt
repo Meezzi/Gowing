@@ -144,7 +144,7 @@ fun MainNavHost(
             PostDetailScreen(
                 postId = postId,
                 city = city,
-                category = categoryId,
+                categoryId = categoryId,
                 postDetailViewModel = postDetailViewModel,
                 onNavigateBack = { navController.popBackStack() }
             )

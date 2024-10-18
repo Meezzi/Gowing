@@ -25,12 +25,12 @@ class PostDetailViewModel(private val postSaveRepository: PostSaveRepository) : 
     fun loadPost(
         postId: String,
         city: String,
-        category: String,
+        categoryId: String,
     ) {
         viewModelScope.launch {
             postSaveRepository.getPostById(
                 city = city,
-                category = category,
+                categoryId = categoryId,
                 postId = postId,
                 onSuccess = { post ->
                     _post.value = post

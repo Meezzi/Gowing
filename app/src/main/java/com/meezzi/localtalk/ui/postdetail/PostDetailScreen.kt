@@ -38,7 +38,7 @@ import com.meezzi.localtalk.ui.common.NavigationTopAppBar
 @Composable
 fun PostDetailScreen(
     city: String,
-    category: String,
+    categoryId: String,
     postId: String,
     postDetailViewModel: PostDetailViewModel,
     onNavigateBack: () -> Unit
@@ -56,7 +56,7 @@ fun PostDetailScreen(
     }
 
     LaunchedEffect(postId) {
-        postDetailViewModel.loadPost(postId, city, category)
+        postDetailViewModel.loadPost(postId, city, categoryId)
     }
 
     Scaffold(

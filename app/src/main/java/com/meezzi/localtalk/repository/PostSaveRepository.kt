@@ -77,7 +77,7 @@ class PostSaveRepository {
 
     fun getPostById(
         city: String,
-        category: String,
+        categoryId: String,
         postId: String,
         onSuccess: (Post) -> Unit,
         onFailure: (Exception) -> Unit
@@ -85,7 +85,7 @@ class PostSaveRepository {
 
         val postRef = db.collection("posts")
             .document(city)
-            .collection(category)
+            .collection(categoryId)
             .document(postId)
 
         postRef.get()
