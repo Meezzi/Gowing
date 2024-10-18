@@ -126,7 +126,6 @@ fun MainNavHost(
                     navController.popBackStack()
                     navController.navigate("${Screens.PostDetail.name}/$city/$categoryId/$postId")
                 }
-
             )
         }
 
