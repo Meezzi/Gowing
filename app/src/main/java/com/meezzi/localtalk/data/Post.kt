@@ -26,16 +26,16 @@ enum class Categories(val displayName: String) {
 data class Post(
     val city: String = "",
     var category: CategorySection = CategorySection(),
-    var authorId: String? = null,
+    var authorId: String? = "",
     val authorName: String? = "",
-    val date: String? = "",
-    val time: String? = "",
+    val date: String = "",
+    val time: String = "",
     val postId: String = "",
     var title: String = "",
     var content: String = "",
-    var postImageUrl: List<String>? = null,
+    var postImageUrl: List<String> = emptyList(),
     val likes: Int = 0,
-    val comments: List<Comment>? = null
+    val comments: List<Comment> = emptyList()
 )
 
 data class Comment(

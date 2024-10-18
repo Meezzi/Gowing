@@ -89,13 +89,13 @@ class AddPostViewModel(
                     postId = "",
                     title = title.value,
                     content = content.value,
-                    authorId = null,
+                    authorId = "",
                     authorName = authorName,
                     date = TimeFormat().getDate(),
                     time = TimeFormat().getTime(),
                     postImageUrl = selectedImageUris.value.map { it.toString() },
                     likes = 0,
-                    comments = null
+                    comments = emptyList()
                 )
 
                 postSaveRepository.savePostWithImages(
