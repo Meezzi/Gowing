@@ -12,11 +12,13 @@
     <string name="board">게시판</string>
     <string name="chat">채팅</string>
     <string name="profile">프로필</string>
+    <string name="profile_image">프로필 이미지</string>
     <string name="setting">설정</string>
     <string name="location">위치</string>
     <string name="write_post">글 쓰기</string>
     <string name="complete">완료</string>
     <string name="anonymous">익명</string>
+    <string name="post_image">게시물 이미지</string>
 
     <!--   오류 메세지   -->
     <string name="error_message_not_found">알 수 없는 오류가 발생했습니다.</string>

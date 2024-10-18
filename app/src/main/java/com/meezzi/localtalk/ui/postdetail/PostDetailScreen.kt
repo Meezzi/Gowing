@@ -141,7 +141,7 @@ fun PostAuthorInfo(post: Post, profileImage: Uri?) {
     ) {
         AsyncImage(
             model = profileImage ?: R.drawable.ic_user,
-            contentDescription = null,
+            contentDescription = stringResource(id = R.string.profile_image),
             modifier = Modifier
                 .size(50.dp)
                 .clip(CircleShape),
@@ -188,7 +188,7 @@ fun PostImages(imageUrls: List<String>?) {
             items(imageUrls) { imageUrl ->
                 AsyncImage(
                     model = imageUrl,
-                    contentDescription = null,
+                    contentDescription = stringResource(id = R.string.post_image),
                     modifier = Modifier
                         .size(200.dp)
                         .padding(4.dp)
