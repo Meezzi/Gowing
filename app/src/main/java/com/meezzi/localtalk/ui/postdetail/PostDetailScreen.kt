@@ -48,15 +48,8 @@ fun PostDetailScreen(
     val errorMessage by postDetailViewModel.errorMessage.collectAsState()
 
     LaunchedEffect(post) {
-        post?.let { post ->
-            if (post.authorName != "익명") {
-                postDetailViewModel.getProfileImage(post.authorId!!)
-            }
-        }
-    }
-
-    LaunchedEffect(postId) {
         postDetailViewModel.loadPost(postId, city, categoryId)
+        post?.authorId?.let { postDetailViewModel.getProfileImage(authorId = it) }
     }
 
     Scaffold(
@@ -118,7 +111,7 @@ fun PostContentView(post: Post, profileImage: Uri?) {
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        PostAuthorInfo(post = post, profileImage = profileImage)
+        PostAuthorInfo(post = post, isAnonymous = post.isAnonymous, profileImage = profileImage)
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -135,12 +128,16 @@ fun PostContentView(post: Post, profileImage: Uri?) {
 }
 
 @Composable
-fun PostAuthorInfo(post: Post, profileImage: Uri?) {
+fun PostAuthorInfo(
+    post: Post,
+    isAnonymous: Boolean,
+    profileImage: Uri?,
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically
     ) {
         AsyncImage(
-            model = profileImage ?: R.drawable.ic_user,
+            model = if (isAnonymous) R.drawable.ic_user else profileImage,
             contentDescription = stringResource(id = R.string.profile_image),
             modifier = Modifier
                 .size(50.dp)
