@@ -73,7 +73,7 @@ import com.meezzi.localtalk.ui.common.CustomPermissionRationaleDialog
 fun AddPostScreen(
     addPostViewModel: AddPostViewModel,
     onNavigationBack: () -> Unit,
-    onSavePost: () -> Unit
+    onSavePost: (String, String, String) -> Unit
 ) {
 
     val context = LocalContext.current
@@ -126,8 +126,8 @@ fun AddPostScreen(
                 onNavigationBack = onNavigationBack,
                 onSavePost = {
                     addPostViewModel.savePost(
-                        onSuccess = {
-                            // TODO("작성글 보는 화면으로 이동")
+                        onSuccess = { city, categoryId, postId ->
+                            onSavePost(city, categoryId, postId)
                         },
                         onFailure = { e ->
                             // TODO("실패 원인 띄우기")

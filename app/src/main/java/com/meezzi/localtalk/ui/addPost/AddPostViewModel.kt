@@ -68,7 +68,7 @@ class AddPostViewModel(
     }
 
     fun savePost(
-        onSuccess: () -> Unit,
+        onSuccess: (String, String, String) -> Unit,
         onFailure: (Exception) -> Unit
     ) {
         val category = selectedCategory.value
@@ -89,18 +89,22 @@ class AddPostViewModel(
                     postId = "",
                     title = title.value,
                     content = content.value,
-                    authorId = null,
+                    authorId = "",
                     authorName = authorName,
-                    time = TimeFormat().timeFormat(),
+                    isAnonymous = isAnonymous.value,
+                    date = TimeFormat().getDate(),
+                    time = TimeFormat().getTime(),
                     postImageUrl = selectedImageUris.value.map { it.toString() },
                     likes = 0,
-                    comments = null
+                    comments = emptyList()
                 )
 
                 postSaveRepository.savePostWithImages(
                     post = post,
                     imageUris = selectedImageUris.value,
-                    onSuccess = onSuccess,
+                    onSuccess = { city, categoryId, postId ->
+                        onSuccess(city, categoryId, postId)
+                    },
                     onFailure = onFailure
                 )
             }
