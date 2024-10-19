@@ -28,6 +28,8 @@ data class Post(
     var category: CategorySection = CategorySection(),
     var authorId: String? = "",
     val authorName: String? = "",
+    @field:JvmField
+    val isAnonymous: Boolean = false,
     val date: String = "",
     val time: String = "",
     val postId: String = "",

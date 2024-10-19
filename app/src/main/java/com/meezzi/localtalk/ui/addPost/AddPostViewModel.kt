@@ -91,6 +91,7 @@ class AddPostViewModel(
                     content = content.value,
                     authorId = "",
                     authorName = authorName,
+                    isAnonymous = isAnonymous.value,
                     date = TimeFormat().getDate(),
                     time = TimeFormat().getTime(),
                     postImageUrl = selectedImageUris.value.map { it.toString() },
