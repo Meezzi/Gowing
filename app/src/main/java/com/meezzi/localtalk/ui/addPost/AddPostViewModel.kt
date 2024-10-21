@@ -111,6 +111,14 @@ class AddPostViewModel(
         }
     }
 
+    fun clearPostData() {
+        _title.value = ""
+        _content.value = ""
+        _selectedImageUris.value = emptyList()
+        _selectedCategory.value = null
+        _isAnonymous.value = false
+    }
+
     companion object {
         fun provideFactory(
             repository: PostSaveRepository,
