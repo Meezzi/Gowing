@@ -128,6 +128,7 @@ fun AddPostScreen(
                     addPostViewModel.savePost(
                         onSuccess = { city, categoryId, postId ->
                             onSavePost(city, categoryId, postId)
+                            addPostViewModel.clearPostData()
                         },
                         onFailure = { e ->
                             // TODO("실패 원인 띄우기")
