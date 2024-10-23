@@ -14,7 +14,12 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ThumbUp
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -217,5 +222,32 @@ fun PostStats(
         Spacer(modifier = Modifier.weight(1f))
 
         FavoriteButton(isLiked = isLiked, onLikeClick = onLikeClick)
+    }
+}
+
+@Composable
+fun FavoriteButton(
+    isLiked: Boolean,
+    onLikeClick: () -> Unit,
+) {
+
+    Row {
+        Button(
+            onClick = onLikeClick,
+            modifier = Modifier.height(35.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = if (isLiked) Color.Red else Color.LightGray
+            ),
+        ) {
+            Icon(
+                Icons.Default.ThumbUp,
+                contentDescription = stringResource(id = R.string.like_button_label)
+            )
+
+            Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
+
+            Text(stringResource(id = R.string.like_button_label))
+        }
+        Spacer(modifier = Modifier.width(8.dp))
     }
 }
