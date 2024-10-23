@@ -51,6 +51,8 @@ fun PostDetailScreen(
 ) {
     val post by postDetailViewModel.post.collectAsState()
     val profileImage by postDetailViewModel.profileImage.collectAsState()
+    val isLiked by postDetailViewModel.isLiked.collectAsState()
+    val likeCount by postDetailViewModel.likeCount.collectAsState()
     val errorMessage by postDetailViewModel.errorMessage.collectAsState()
 
     LaunchedEffect(post) {
@@ -82,6 +84,11 @@ fun PostDetailScreen(
                     PostContentView(
                         post = post!!,
                         profileImage = profileImage,
+                        isLiked = isLiked,
+                        likeCount = likeCount,
+                        onLikeClick = {
+                            postDetailViewModel.togglePostLike(postId, city, categoryId)
+                        }
                     )
                 }
             }
@@ -111,7 +118,13 @@ fun LoadingView() {
 }
 
 @Composable
-fun PostContentView(post: Post, profileImage: Uri?) {
+fun PostContentView(
+    post: Post,
+    profileImage: Uri?,
+    isLiked: Boolean,
+    likeCount: Int,
+    onLikeClick: () -> Unit,
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -130,6 +143,14 @@ fun PostContentView(post: Post, profileImage: Uri?) {
         Spacer(modifier = Modifier.height(16.dp))
 
         PostImages(imageUrls = post.postImageUrl)
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        PostStats(
+            isLiked = isLiked,
+            likeCount = likeCount,
+            onLikeClick = onLikeClick,
+        )
     }
 }
 
