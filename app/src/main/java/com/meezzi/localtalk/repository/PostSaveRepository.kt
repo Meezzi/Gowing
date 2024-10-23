@@ -135,6 +135,18 @@ class PostSaveRepository {
             .update("likes", FieldValue.increment(1))
     }
 
+    fun minusLikeCount(
+        postId: String,
+        city: String,
+        categoryId: String
+    ) {
+        db.collection("posts")
+            .document(city)
+            .collection(categoryId)
+            .document(postId)
+            .update("likes", FieldValue.increment(-1))
+    }
+
     fun getProfileImageUri(authorId: String, onComplete: (Uri?) -> Unit) {
 
         val profileImageRef = storageRef.child("images/${authorId}_profile_image")
