@@ -25,6 +25,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -194,5 +195,27 @@ fun PostImages(imageUrls: List<String>?) {
                 )
             }
         }
+    }
+}
+
+@Composable
+fun PostStats(
+    isLiked: Boolean,
+    likeCount: Int,
+    onLikeClick: () -> Unit,
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.padding(top = 8.dp, bottom = 8.dp),
+    ) {
+        Text(
+            text = "${stringResource(id = R.string.likes)} $likeCount",
+            color = Color.Gray,
+            style = MaterialTheme.typography.bodyLarge,
+        )
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        FavoriteButton(isLiked = isLiked, onLikeClick = onLikeClick)
     }
 }
