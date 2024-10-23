@@ -102,6 +102,26 @@ class PostSaveRepository {
             }
     }
 
+    fun getLikeCount(
+        postId: String,
+        city: String,
+        categoryId: String,
+        onComplete: (Int) -> Unit,
+    ) {
+        val postRef = db.collection("posts")
+            .document(city)
+            .collection(categoryId)
+            .document(postId)
+
+        postRef.get()
+            .addOnSuccessListener { documentSnapshot ->
+                if (documentSnapshot.exists()) {
+                    val likes = documentSnapshot.getLong("likes")?.toInt() ?: 0
+                    onComplete(likes)
+                }
+            }
+    }
+
     fun getProfileImageUri(authorId: String, onComplete: (Uri?) -> Unit) {
 
         val profileImageRef = storageRef.child("images/${authorId}_profile_image")
