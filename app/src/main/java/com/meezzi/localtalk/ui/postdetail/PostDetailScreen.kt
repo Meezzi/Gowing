@@ -261,7 +261,7 @@ fun FavoriteButton(
             ),
         ) {
             Icon(
-                Icons.Default.ThumbUp,
+                imageVector = Icons.Default.ThumbUp,
                 contentDescription = stringResource(id = R.string.like_button_label)
             )
 
