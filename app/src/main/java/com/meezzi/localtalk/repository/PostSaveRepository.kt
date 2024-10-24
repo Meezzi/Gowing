@@ -3,6 +3,7 @@ package com.meezzi.localtalk.repository
 import android.net.Uri
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.toObject
 import com.google.firebase.storage.storage
@@ -100,6 +101,50 @@ class PostSaveRepository {
             .addOnFailureListener { e ->
                 onFailure(e)
             }
+    }
+
+    fun getLikeCount(
+        postId: String,
+        city: String,
+        categoryId: String,
+        onComplete: (Int) -> Unit,
+    ) {
+        val postRef = db.collection("posts")
+            .document(city)
+            .collection(categoryId)
+            .document(postId)
+
+        postRef.get()
+            .addOnSuccessListener { documentSnapshot ->
+                if (documentSnapshot.exists()) {
+                    val likes = documentSnapshot.getLong("likes")?.toInt() ?: 0
+                    onComplete(likes)
+                }
+            }
+    }
+
+    fun plusLikeCount(
+        postId: String,
+        city: String,
+        categoryId: String
+    ) {
+        db.collection("posts")
+            .document(city)
+            .collection(categoryId)
+            .document(postId)
+            .update("likes", FieldValue.increment(1))
+    }
+
+    fun minusLikeCount(
+        postId: String,
+        city: String,
+        categoryId: String
+    ) {
+        db.collection("posts")
+            .document(city)
+            .collection(categoryId)
+            .document(postId)
+            .update("likes", FieldValue.increment(-1))
     }
 
     fun getProfileImageUri(authorId: String, onComplete: (Uri?) -> Unit) {

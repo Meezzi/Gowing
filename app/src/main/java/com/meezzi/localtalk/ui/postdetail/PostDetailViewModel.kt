@@ -19,6 +19,12 @@ class PostDetailViewModel(private val postSaveRepository: PostSaveRepository) : 
     private val _profileImage = MutableStateFlow<Uri?>(null)
     val profileImage: StateFlow<Uri?> = _profileImage
 
+    private val _isLiked = MutableStateFlow(false)
+    val isLiked: StateFlow<Boolean> = _isLiked
+
+    private val _likeCount = MutableStateFlow(0)
+    val likeCount: StateFlow<Int> = _likeCount
+
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage
 
@@ -34,6 +40,8 @@ class PostDetailViewModel(private val postSaveRepository: PostSaveRepository) : 
                 postId = postId,
                 onSuccess = { post ->
                     _post.value = post
+                    _isLiked.value = false
+                    _likeCount.value = post.likes
                 },
                 onFailure = { exception ->
                     _post.value = null
@@ -51,6 +59,29 @@ class PostDetailViewModel(private val postSaveRepository: PostSaveRepository) : 
                     _profileImage.value = uri
                 }
             )
+        }
+    }
+
+    fun togglePostLike(
+        postId: String,
+        city: String,
+        categoryId: String
+    ) {
+        viewModelScope.launch {
+            if (_isLiked.value) {
+                postSaveRepository.minusLikeCount(postId, city, categoryId)
+            } else {
+                postSaveRepository.plusLikeCount(postId, city, categoryId)
+            }
+            postSaveRepository.getLikeCount(
+                postId = postId,
+                city = city,
+                categoryId = categoryId,
+                onComplete = { likeCount ->
+                    _likeCount.value = likeCount
+                },
+            )
+            _isLiked.value = !_isLiked.value
         }
     }
 

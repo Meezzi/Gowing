@@ -14,7 +14,12 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ThumbUp
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -25,6 +30,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -45,6 +51,8 @@ fun PostDetailScreen(
 ) {
     val post by postDetailViewModel.post.collectAsState()
     val profileImage by postDetailViewModel.profileImage.collectAsState()
+    val isLiked by postDetailViewModel.isLiked.collectAsState()
+    val likeCount by postDetailViewModel.likeCount.collectAsState()
     val errorMessage by postDetailViewModel.errorMessage.collectAsState()
 
     LaunchedEffect(post) {
@@ -76,6 +84,11 @@ fun PostDetailScreen(
                     PostContentView(
                         post = post!!,
                         profileImage = profileImage,
+                        isLiked = isLiked,
+                        likeCount = likeCount,
+                        onLikeClick = {
+                            postDetailViewModel.togglePostLike(postId, city, categoryId)
+                        }
                     )
                 }
             }
@@ -105,7 +118,13 @@ fun LoadingView() {
 }
 
 @Composable
-fun PostContentView(post: Post, profileImage: Uri?) {
+fun PostContentView(
+    post: Post,
+    profileImage: Uri?,
+    isLiked: Boolean,
+    likeCount: Int,
+    onLikeClick: () -> Unit,
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -124,6 +143,14 @@ fun PostContentView(post: Post, profileImage: Uri?) {
         Spacer(modifier = Modifier.height(16.dp))
 
         PostImages(imageUrls = post.postImageUrl)
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        PostStats(
+            isLiked = isLiked,
+            likeCount = likeCount,
+            onLikeClick = onLikeClick,
+        )
     }
 }
 
@@ -194,5 +221,54 @@ fun PostImages(imageUrls: List<String>?) {
                 )
             }
         }
+    }
+}
+
+@Composable
+fun PostStats(
+    isLiked: Boolean,
+    likeCount: Int,
+    onLikeClick: () -> Unit,
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.padding(top = 8.dp, bottom = 8.dp),
+    ) {
+        Text(
+            text = "${stringResource(id = R.string.likes)} $likeCount",
+            color = Color.Gray,
+            style = MaterialTheme.typography.bodyLarge,
+        )
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        FavoriteButton(isLiked = isLiked, onLikeClick = onLikeClick)
+    }
+}
+
+@Composable
+fun FavoriteButton(
+    isLiked: Boolean,
+    onLikeClick: () -> Unit,
+) {
+
+    Row {
+        Button(
+            onClick = onLikeClick,
+            modifier = Modifier.height(35.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = if (isLiked) Color.Red else Color.LightGray
+            ),
+        ) {
+            Icon(
+                imageVector = Icons.Default.ThumbUp,
+                contentDescription = stringResource(id = R.string.like_button_label)
+            )
+
+            Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
+
+            Text(stringResource(id = R.string.like_button_label))
+        }
+        Spacer(modifier = Modifier.width(8.dp))
     }
 }
