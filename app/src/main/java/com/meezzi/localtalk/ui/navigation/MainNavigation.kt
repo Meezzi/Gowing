@@ -157,6 +157,11 @@ fun MainNavHost(
                 },
             )
         }
+
+        composable(Screens.ImageViewer.name) {
+            ImageViewerScreen(
+                postDetailViewModel = postDetailViewModel,
+                onDismiss = { navController.popBackStack() },
             )
         }
     }

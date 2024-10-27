@@ -13,6 +13,7 @@ enum class Screens {
     Profile,
     AddPost,
     PostDetail,
+    ImageViewer,
 }
 
 sealed class Screen(
