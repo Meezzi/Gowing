@@ -26,6 +26,7 @@ import com.meezzi.localtalk.ui.home.screens.AddPostFloatingButton
 import com.meezzi.localtalk.ui.home.screens.HomeScreen
 import com.meezzi.localtalk.ui.intro.IntroViewModel
 import com.meezzi.localtalk.ui.intro.screens.LoginScreen
+import com.meezzi.localtalk.ui.postdetail.ImageViewerScreen
 import com.meezzi.localtalk.ui.postdetail.PostDetailScreen
 import com.meezzi.localtalk.ui.postdetail.PostDetailViewModel
 import com.meezzi.localtalk.ui.profile.CreateProfileScreen
@@ -146,7 +147,16 @@ fun MainNavHost(
                 city = city,
                 categoryId = categoryId,
                 postDetailViewModel = postDetailViewModel,
-                onNavigateBack = { navController.popBackStack() }
+                onNavigateBack = { navController.popBackStack() },
+                onImageClick = { selectedImageIndex ->
+                    postDetailViewModel.updateSelectedImageIndex(selectedImageIndex)
+                    postDetailViewModel.updateImageList(
+                        postDetailViewModel.post.value?.postImageUrl ?: emptyList()
+                    )
+                    navController.navigate(Screens.ImageViewer.name)
+                },
+            )
+        }
             )
         }
     }
