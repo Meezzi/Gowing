@@ -28,6 +28,13 @@ class PostDetailViewModel(private val postSaveRepository: PostSaveRepository) : 
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage
 
+    private val _imageList = MutableStateFlow<List<String>>(emptyList())
+    val imageList: StateFlow<List<String>> = _imageList
+
+    fun updateImageList(images: List<String>) {
+        _imageList.value = images
+    }
+
     fun loadPost(
         postId: String,
         city: String,
