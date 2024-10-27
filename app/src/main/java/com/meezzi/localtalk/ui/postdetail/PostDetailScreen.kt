@@ -1,6 +1,7 @@
 package com.meezzi.localtalk.ui.postdetail
 
 import android.net.Uri
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,7 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -49,7 +50,8 @@ fun PostDetailScreen(
     categoryId: String,
     postId: String,
     postDetailViewModel: PostDetailViewModel,
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    onImageClick: (Int) -> Unit,
 ) {
     val post by postDetailViewModel.post.collectAsState()
     val profileImage by postDetailViewModel.profileImage.collectAsState()
@@ -90,7 +92,8 @@ fun PostDetailScreen(
                         likeCount = likeCount,
                         onLikeClick = {
                             postDetailViewModel.togglePostLike(postId, city, categoryId)
-                        }
+                        },
+                        onImageClick = onImageClick,
                     )
                 }
             }
@@ -126,6 +129,7 @@ fun PostContentView(
     isLiked: Boolean,
     likeCount: Int,
     onLikeClick: () -> Unit,
+    onImageClick: (Int) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -145,7 +149,7 @@ fun PostContentView(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        PostImages(imageUrls = post.postImageUrl)
+        PostImages(imageUrls = post.postImageUrl, onImageClick = onImageClick)
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -209,17 +213,23 @@ fun PostContent(content: String) {
 }
 
 @Composable
-fun PostImages(imageUrls: List<String>?) {
+fun PostImages(
+    imageUrls: List<String>?,
+    onImageClick: (Int) -> Unit,
+) {
     if (!imageUrls.isNullOrEmpty()) {
         LazyRow {
-            items(imageUrls) { imageUrl ->
+            itemsIndexed(imageUrls) { index, imageUrl ->
                 AsyncImage(
                     model = imageUrl,
                     contentDescription = stringResource(id = R.string.post_image),
                     modifier = Modifier
                         .size(200.dp)
                         .padding(4.dp)
-                        .clip(RoundedCornerShape(8.dp)),
+                        .clip(RoundedCornerShape(8.dp))
+                        .clickable {
+                            onImageClick(index)
+                        },
                     contentScale = ContentScale.Crop
                 )
             }
