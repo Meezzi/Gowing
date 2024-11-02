@@ -1,12 +1,14 @@
 package com.meezzi.localtalk.ui.postdetail
 
 import android.net.Uri
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -18,14 +20,21 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.ThumbUp
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxColors
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -72,6 +81,16 @@ fun PostDetailScreen(
             NavigationTopAppBar(
                 title = post?.category?.name,
                 onNavigateBack = onNavigateBack
+            )
+        },
+        bottomBar = {
+            CommentInputBottomBar(
+                isCommentAnonymous = isCommentAnonymous,
+                commentContent = commentContent,
+                onCommentAnonymousChange = { postDetailViewModel.updateCommentAnonymous(it) },
+                onContentChange = { postDetailViewModel.updateCommentContent(it) },
+                onCommentSubmit = { comment, isAnonymous ->
+                }
             )
         }
     ) { paddingValues ->
@@ -286,5 +305,115 @@ fun FavoriteButton(
             Text(stringResource(id = R.string.like_button_label))
         }
         Spacer(modifier = Modifier.width(8.dp))
+    }
+}
+
+@Composable
+fun CommentInputBottomBar(
+    isCommentAnonymous: Boolean,
+    commentContent: String,
+    onCommentAnonymousChange: (Boolean) -> Unit,
+    onContentChange: (String) -> Unit,
+    onCommentSubmit: (String, Boolean) -> Unit,
+) {
+
+    BottomAppBar(
+        containerColor = Color.Transparent,
+        contentColor = Color.Transparent,
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+                .background(Color.LightGray.copy(alpha = 0.3f), RoundedCornerShape(16.dp))
+                .padding(horizontal = 12.dp),
+        ) {
+            AnonymousCheckBox(isCommentAnonymous, onCommentAnonymousChange)
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Text(
+                text = stringResource(id = R.string.anonymous),
+                modifier = Modifier.clickable { onCommentAnonymousChange(!isCommentAnonymous) },
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.bodyMedium,
+                color = if (isCommentAnonymous) Color.Red else Color.Gray,
+            )
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            TextField(
+                value = commentContent,
+                onValueChange = onContentChange,
+                modifier = Modifier.weight(1f),
+                placeholder = {
+                    Text(
+                        text = stringResource(id = R.string.input_comment),
+                        color = Color.Black.copy(alpha = 0.3f),
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                },
+                colors = TextFieldDefaults.colors(
+                    cursorColor = Color.Gray,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    focusedLabelColor = Color.Transparent,
+                    unfocusedLabelColor = Color.Transparent,
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                ),
+            )
+
+            CommentSubmitButton(isCommentAnonymous, commentContent, onCommentSubmit)
+        }
+    }
+}
+
+@Composable
+private fun AnonymousCheckBox(
+    isCommentAnonymous: Boolean,
+    onCommentAnonymousChange: (Boolean) -> Unit
+) {
+    Checkbox(
+        checked = isCommentAnonymous,
+        onCheckedChange = { onCommentAnonymousChange(!isCommentAnonymous) },
+        modifier = Modifier.size(20.dp),
+        colors = CheckboxColors(
+            checkedCheckmarkColor = Color.White,
+            uncheckedCheckmarkColor = Color.Transparent,
+            checkedBoxColor = Color.Red,
+            uncheckedBoxColor = Color.LightGray.copy(alpha = 0.3f),
+            checkedBorderColor = Color.Red,
+            uncheckedBorderColor = Color.LightGray,
+            disabledCheckedBoxColor = Color.Transparent,
+            disabledUncheckedBoxColor = Color.Transparent,
+            disabledIndeterminateBoxColor = Color.Transparent,
+            disabledBorderColor = Color.Transparent,
+            disabledUncheckedBorderColor = Color.Transparent,
+            disabledIndeterminateBorderColor = Color.Transparent
+        ),
+    )
+}
+
+@Composable
+private fun CommentSubmitButton(
+    isCommentAnonymous: Boolean,
+    commentContent: String,
+    onCommentSubmit: (String, Boolean) -> Unit,
+) {
+    IconButton(
+        onClick = {
+            if (commentContent.isNotEmpty()) {
+                onCommentSubmit(commentContent, isCommentAnonymous)
+            }
+        },
+        modifier = Modifier.size(24.dp)
+    ) {
+        Icon(
+            imageVector = Icons.Default.Create,
+            contentDescription = stringResource(id = R.string.input_comment),
+            tint = MaterialTheme.colorScheme.primary
+        )
     }
 }
