@@ -143,7 +143,7 @@ class PostDetailViewModel(private val postSaveRepository: PostSaveRepository) : 
                 categoryId = categoryId,
                 postId = postId,
                 comment = comment,
-                onSuccess = { },
+                onSuccess = { _commentContent.value = "" },
                 onFailure = { _errorMessage.value = it.message },
             )
         }
