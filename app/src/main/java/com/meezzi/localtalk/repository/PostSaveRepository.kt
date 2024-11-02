@@ -182,4 +182,42 @@ class PostSaveRepository {
             .addOnSuccessListener { onSuccess() }
             .addOnFailureListener { e -> onFailure(e) }
     }
+
+    fun getComments(
+        city: String,
+        categoryId: String,
+        postId: String,
+        onSuccess: (List<Comment>) -> Unit,
+        onFailure: (Exception) -> Unit,
+    ) {
+
+        val postRef = db.collection("posts")
+            .document(city)
+            .collection(categoryId)
+            .document(postId)
+
+        postRef.get()
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
+                    val commentList = document.get("comments") as List<Map<String, Any>>
+
+                    val comments = commentList.map { commentMap ->
+                        Comment(
+                            postId = commentMap["postId"] as String,
+                            authorId = commentMap["authorId"] as String,
+                            authorName = commentMap["authorName"] as String,
+                            commentId = commentMap["commentId"] as String,
+                            date = commentMap["date"] as String,
+                            time = commentMap["time"] as String,
+                            content = commentMap["content"] as String,
+                            likes = (commentMap["likes"] as Long).toInt(),
+                        )
+                    }
+                    onSuccess(comments)
+                } else {
+                    onSuccess(emptyList())
+                }
+            }
+            .addOnFailureListener { e -> onFailure(e) }
+    }
 }
