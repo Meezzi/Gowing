@@ -5,8 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.meezzi.localtalk.data.Comment
 import com.meezzi.localtalk.data.Post
 import com.meezzi.localtalk.repository.PostSaveRepository
+import com.meezzi.localtalk.util.TimeFormat
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -96,6 +98,37 @@ class PostDetailViewModel(private val postSaveRepository: PostSaveRepository) : 
                 },
             )
             _isLiked.value = !_isLiked.value
+        }
+    }
+
+    fun saveComment(
+        city: String,
+        categoryId: String,
+        postId: String,
+        authorId: String,
+        authorName: String,
+        content: String,
+        isAnonymous: Boolean,
+    ) {
+        val comment = Comment(
+            postId = postId,
+            authorId = authorId,
+            authorName = if (isAnonymous) "익명" else authorName,
+            date = TimeFormat().getDate(),
+            time = TimeFormat().getTime(),
+            content = content,
+            likes = 0,
+        )
+
+        viewModelScope.launch {
+            postSaveRepository.saveComment(
+                city = city,
+                categoryId = categoryId,
+                postId = postId,
+                comment = comment,
+                onSuccess = { },
+                onFailure = { _errorMessage.value = it.message },
+            )
         }
     }
 
