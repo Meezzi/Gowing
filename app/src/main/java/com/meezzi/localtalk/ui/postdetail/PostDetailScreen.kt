@@ -22,6 +22,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.ThumbUp
+import androidx.compose.material.icons.outlined.ThumbUp
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -415,5 +416,69 @@ private fun CommentSubmitButton(
             contentDescription = stringResource(id = R.string.input_comment),
             tint = MaterialTheme.colorScheme.primary
         )
+    }
+}
+
+@Composable
+fun CommentItem(
+    profileImage: Uri?,
+    comment: Comment,
+) {
+
+    Row {
+        AsyncImage(
+            model = if (comment.authorName == stringResource(id = R.string.anonymous)) R.drawable.ic_user else profileImage,
+            contentDescription = stringResource(id = R.string.profile_image),
+            modifier = Modifier
+                .size(40.dp)
+                .clip(CircleShape),
+            contentScale = ContentScale.Crop
+        )
+
+        Spacer(modifier = Modifier.width(8.dp))
+
+        Column {
+            Text(
+                text = comment.authorName,
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.bodyMedium
+            )
+
+            Spacer(modifier = Modifier.height(2.dp))
+
+            Text(
+                text = "${comment.date} ${comment.time}",
+                style = MaterialTheme.typography.bodySmall.copy(color = Color.Gray)
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = comment.content,
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Row(
+                modifier = Modifier.clickable { }, verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.ThumbUp,
+                    contentDescription = stringResource(id = R.string.likes),
+                    modifier = Modifier.size(16.dp),
+                    tint = MaterialTheme.colorScheme.secondary
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+
+                Text(
+                    text = "${stringResource(id = R.string.likes)} ${comment.likes}",
+                    color = Color.Gray,
+                    style = MaterialTheme.typography.labelLarge
+                )
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+        }
     }
 }
