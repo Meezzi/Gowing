@@ -166,16 +166,14 @@ class PostSaveRepository {
         onSuccess: () -> Unit,
         onFailure: (Exception) -> Unit,
     ) {
-        val commentId = db.collection("posts")
-            .document(city)
-            .collection(categoryId)
-            .document(postId).id
-        val commentData = comment.copy(commentId = commentId)
 
         val postRef = db.collection("posts")
             .document(city)
             .collection(categoryId)
             .document(postId)
+
+        val commentId = postRef.collection("comments").document().id
+        val commentData = comment.copy(commentId = commentId)
 
         postRef
             .update("comments", FieldValue.arrayUnion(commentData))
