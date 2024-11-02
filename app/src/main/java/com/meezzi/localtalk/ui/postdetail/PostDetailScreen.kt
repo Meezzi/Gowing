@@ -51,6 +51,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.meezzi.localtalk.R
+import com.meezzi.localtalk.data.Comment
 import com.meezzi.localtalk.data.Post
 import com.meezzi.localtalk.ui.common.NavigationTopAppBar
 
@@ -113,6 +114,7 @@ fun PostDetailScreen(
                         profileImage = profileImage,
                         isLiked = isLiked,
                         likeCount = likeCount,
+                        comments = comments,
                         onLikeClick = {
                             postDetailViewModel.togglePostLike(postId, city, categoryId)
                         },
@@ -151,6 +153,7 @@ fun PostContentView(
     profileImage: Uri?,
     isLiked: Boolean,
     likeCount: Int,
+    comments: List<Comment>,
     onLikeClick: () -> Unit,
     onImageClick: (Int) -> Unit,
 ) {
@@ -184,6 +187,9 @@ fun PostContentView(
             Spacer(modifier = Modifier.height(8.dp))
         }
 
+        items(comments) { comment ->
+            CommentItem(profileImage, comment)
+        }
     }
 }
 
