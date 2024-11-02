@@ -36,6 +36,9 @@ class PostDetailViewModel(private val postSaveRepository: PostSaveRepository) : 
     private val _selectedImageIndex = MutableStateFlow(0)
     val selectedImageIndex: StateFlow<Int> = _selectedImageIndex
 
+    private val _isCommentAnonymous = MutableStateFlow(false)
+    val isCommentAnonymous: StateFlow<Boolean> = _isCommentAnonymous
+
     private val _comments = MutableStateFlow<List<Comment>>(emptyList())
     val comments: StateFlow<List<Comment>> = _comments
 
@@ -45,6 +48,10 @@ class PostDetailViewModel(private val postSaveRepository: PostSaveRepository) : 
 
     fun updateSelectedImageIndex(index: Int) {
         _selectedImageIndex.value = index
+    }
+
+    fun updateCommentAnonymous(isCommentAnonymous: Boolean) {
+        _isCommentAnonymous.value = isCommentAnonymous
     }
 
     fun loadPost(
