@@ -7,6 +7,7 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.toObject
 import com.google.firebase.storage.storage
+import com.meezzi.localtalk.data.Comment
 import com.meezzi.localtalk.data.Post
 
 class PostSaveRepository {
@@ -155,5 +156,30 @@ class PostSaveRepository {
         }.addOnFailureListener {
             onComplete(null)
         }
+    }
+
+    fun saveComment(
+        city: String,
+        categoryId: String,
+        postId: String,
+        comment: Comment,
+        onSuccess: () -> Unit,
+        onFailure: (Exception) -> Unit,
+    ) {
+        val commentId = db.collection("posts")
+            .document(city)
+            .collection(categoryId)
+            .document(postId).id
+        val commentData = comment.copy(commentId = commentId)
+
+        val postRef = db.collection("posts")
+            .document(city)
+            .collection(categoryId)
+            .document(postId)
+
+        postRef
+            .update("comments", FieldValue.arrayUnion(commentData))
+            .addOnSuccessListener { onSuccess() }
+            .addOnFailureListener { e -> onFailure(e) }
     }
 }
