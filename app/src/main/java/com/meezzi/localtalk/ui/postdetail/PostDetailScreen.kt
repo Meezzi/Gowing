@@ -13,12 +13,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.ThumbUp
@@ -154,33 +154,36 @@ fun PostContentView(
     onLikeClick: () -> Unit,
     onImageClick: (Int) -> Unit,
 ) {
-    Column(
+    LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(16.dp)
+            .padding(start = 16.dp, end = 16.dp)
     ) {
-        PostAuthorInfo(post = post, isAnonymous = post.isAnonymous, profileImage = profileImage)
+        item {
+            PostAuthorInfo(post, post.isAnonymous, profileImage)
+            Spacer(modifier = Modifier.height(16.dp))
+        }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        item {
+            PostTitle(post.title)
+            Spacer(modifier = Modifier.height(8.dp))
+        }
 
-        PostTitle(title = post.title)
+        item {
+            PostContent(post.content)
+            Spacer(modifier = Modifier.height(16.dp))
+        }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        item {
+            PostImages(post.postImageUrl, onImageClick)
+            Spacer(modifier = Modifier.height(8.dp))
+        }
 
-        PostContent(content = post.content)
+        item {
+            PostStats(isLiked, likeCount, onLikeClick)
+            Spacer(modifier = Modifier.height(8.dp))
+        }
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        PostImages(imageUrls = post.postImageUrl, onImageClick = onImageClick)
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        PostStats(
-            isLiked = isLiked,
-            likeCount = likeCount,
-            onLikeClick = onLikeClick,
-        )
     }
 }
 
