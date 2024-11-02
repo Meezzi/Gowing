@@ -135,6 +135,23 @@ class PostDetailViewModel(private val postSaveRepository: PostSaveRepository) : 
         }
     }
 
+    fun getComments(
+        city: String,
+        categoryId: String,
+        postId: String,
+    ) {
+
+        viewModelScope.launch {
+            postSaveRepository.getComments(
+                postId = postId,
+                city = city,
+                categoryId = categoryId,
+                onSuccess = { commentList -> _comments.value = commentList },
+                onFailure = { e -> _errorMessage.value = e.message }
+            )
+        }
+    }
+
     companion object {
         fun provideFactory(repository: PostSaveRepository) = viewModelFactory {
             initializer {
