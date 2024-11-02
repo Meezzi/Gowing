@@ -57,6 +57,9 @@ fun PostDetailScreen(
     val profileImage by postDetailViewModel.profileImage.collectAsState()
     val isLiked by postDetailViewModel.isLiked.collectAsState()
     val likeCount by postDetailViewModel.likeCount.collectAsState()
+    val isCommentAnonymous by postDetailViewModel.isCommentAnonymous.collectAsState()
+    val commentContent by postDetailViewModel.commentContent.collectAsState()
+    val comments by postDetailViewModel.comments.collectAsState()
     val errorMessage by postDetailViewModel.errorMessage.collectAsState()
 
     LaunchedEffect(post) {
