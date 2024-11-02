@@ -36,6 +36,9 @@ class PostDetailViewModel(private val postSaveRepository: PostSaveRepository) : 
     private val _selectedImageIndex = MutableStateFlow(0)
     val selectedImageIndex: StateFlow<Int> = _selectedImageIndex
 
+    private val _comments = MutableStateFlow<List<Comment>>(emptyList())
+    val comments: StateFlow<List<Comment>> = _comments
+
     fun updateImageList(images: List<String>) {
         _imageList.value = images
     }
