@@ -39,6 +39,9 @@ class PostDetailViewModel(private val postSaveRepository: PostSaveRepository) : 
     private val _isCommentAnonymous = MutableStateFlow(false)
     val isCommentAnonymous: StateFlow<Boolean> = _isCommentAnonymous
 
+    private val _commentContent = MutableStateFlow("")
+    val commentContent: StateFlow<String> = _commentContent
+
     private val _comments = MutableStateFlow<List<Comment>>(emptyList())
     val comments: StateFlow<List<Comment>> = _comments
 
@@ -52,6 +55,10 @@ class PostDetailViewModel(private val postSaveRepository: PostSaveRepository) : 
 
     fun updateCommentAnonymous(isCommentAnonymous: Boolean) {
         _isCommentAnonymous.value = isCommentAnonymous
+    }
+
+    fun updateCommentContent(newContent: String) {
+        _commentContent.value = newContent
     }
 
     fun loadPost(
