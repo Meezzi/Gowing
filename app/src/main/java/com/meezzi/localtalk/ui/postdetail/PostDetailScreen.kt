@@ -76,6 +76,7 @@ fun PostDetailScreen(
     LaunchedEffect(post) {
         postDetailViewModel.loadPost(postId, city, categoryId)
         post?.authorId?.let { postDetailViewModel.getProfileImage(authorId = it) }
+        postDetailViewModel.getComments(city, categoryId, postId)
     }
 
     Scaffold(
