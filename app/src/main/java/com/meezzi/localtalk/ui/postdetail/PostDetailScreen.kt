@@ -92,6 +92,16 @@ fun PostDetailScreen(
                 onCommentAnonymousChange = { postDetailViewModel.updateCommentAnonymous(it) },
                 onContentChange = { postDetailViewModel.updateCommentContent(it) },
                 onCommentSubmit = { comment, isAnonymous ->
+                    postDetailViewModel.saveComment(
+                        city,
+                        categoryId,
+                        postId,
+                        post?.authorId!!,
+                        post?.authorName!!,
+                        comment,
+                        isAnonymous
+                    )
+                    postDetailViewModel.getComments(city, categoryId, postId)
                 }
             )
         }
