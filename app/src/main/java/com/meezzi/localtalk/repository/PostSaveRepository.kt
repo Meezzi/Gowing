@@ -4,6 +4,7 @@ import android.net.Uri
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.toObject
 import com.google.firebase.storage.storage
@@ -194,6 +195,8 @@ class PostSaveRepository {
             .collection(categoryId)
             .document(postId)
             .collection("comments")
+            .orderBy("date", Query.Direction.ASCENDING)
+            .orderBy("time", Query.Direction.ASCENDING)
 
         commentRef.get()
             .addOnSuccessListener { document ->
