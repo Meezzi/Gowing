@@ -445,6 +445,9 @@ private fun CommentSubmitButton(
 fun CommentItem(
     profileImage: Uri?,
     comment: Comment,
+    isLiked: Boolean,
+    commentLikeCount: Int,
+    onLikeClick: () -> Unit,
 ) {
 
     Row {
@@ -487,11 +490,11 @@ fun CommentItem(
                 modifier = Modifier.clickable { }, verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
-                    imageVector = Icons.Outlined.ThumbUp,
                     contentDescription = stringResource(id = R.string.likes),
                     modifier = Modifier.size(16.dp),
                     tint = MaterialTheme.colorScheme.secondary
                 )
+                        imageVector = if (isLiked) Icons.Default.ThumbUp else Icons.Outlined.ThumbUp,
                 Spacer(modifier = Modifier.width(4.dp))
 
                 Text(
