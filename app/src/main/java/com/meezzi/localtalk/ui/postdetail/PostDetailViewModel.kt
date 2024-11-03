@@ -172,6 +172,25 @@ class PostDetailViewModel(private val postSaveRepository: PostSaveRepository) : 
         }
     }
 
+    fun toggleCommentLike(
+        postId: String,
+        city: String,
+        categoryId: String,
+        commentId: String,
+    ) {
+        viewModelScope.launch {
+            val isLiked = _commentLikeStates.value[commentId] ?: false
+            if (isLiked) {
+                postSaveRepository.minusCommentLikeCount(postId, city, categoryId, commentId)
+            } else {
+                postSaveRepository.plusCommentLikeCount(postId, city, categoryId, commentId)
+            }
+            _commentLikeStates.value = _commentLikeStates.value.toMutableMap().apply {
+                this[commentId] = !isLiked
+            }
+        }
+    }
+
     companion object {
         fun provideFactory(repository: PostSaveRepository) = viewModelFactory {
             initializer {
