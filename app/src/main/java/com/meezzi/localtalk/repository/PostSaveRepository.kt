@@ -189,32 +189,18 @@ class PostSaveRepository {
         onFailure: (Exception) -> Unit,
     ) {
 
-        val postRef = db.collection("posts")
+        val commentRef = db.collection("posts")
             .document(city)
             .collection(categoryId)
             .document(postId)
+            .collection("comments")
 
-        postRef.get()
+        commentRef.get()
             .addOnSuccessListener { document ->
-                if (document.exists()) {
-                    val commentList = document.get("comments") as List<Map<String, Any>>
-
-                    val comments = commentList.map { commentMap ->
-                        Comment(
-                            postId = commentMap["postId"] as String,
-                            authorId = commentMap["authorId"] as String,
-                            authorName = commentMap["authorName"] as String,
-                            commentId = commentMap["commentId"] as String,
-                            date = commentMap["date"] as String,
-                            time = commentMap["time"] as String,
-                            content = commentMap["content"] as String,
-                            likes = (commentMap["likes"] as Long).toInt(),
-                        )
-                    }
-                    onSuccess(comments)
-                } else {
-                    onSuccess(emptyList())
+                val commentList = document.documents.mapNotNull { document ->
+                    document.toObject<Comment>()?.copy(commentId = document.id)
                 }
+                onSuccess(commentList)
             }
             .addOnFailureListener { e -> onFailure(e) }
     }
