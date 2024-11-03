@@ -37,7 +37,6 @@ data class Post(
     var content: String = "",
     var postImageUrl: List<String> = emptyList(),
     val likes: Int = 0,
-    val comments: List<Comment> = emptyList()
 )
 
 data class Comment(
