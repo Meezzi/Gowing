@@ -207,4 +207,27 @@ class PostSaveRepository {
             }
             .addOnFailureListener { e -> onFailure(e) }
     }
+
+    fun getCommentLikeCount(
+        postId: String,
+        city: String,
+        categoryId: String,
+        commentId: String,
+        onComplete: (Int) -> Unit,
+    ) {
+        val commentsRef = db.collection("posts")
+            .document(city)
+            .collection(categoryId)
+            .document(postId)
+            .collection("comments")
+            .document(commentId)
+
+        commentsRef.get()
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
+                    val likes = document.getLong("likes")?.toInt() ?: 0
+                    onComplete(likes)
+                }
+            }
+    }
 }
