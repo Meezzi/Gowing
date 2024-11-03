@@ -70,6 +70,8 @@ fun PostDetailScreen(
     val likeCount by postDetailViewModel.likeCount.collectAsState()
     val isCommentAnonymous by postDetailViewModel.isCommentAnonymous.collectAsState()
     val commentContent by postDetailViewModel.commentContent.collectAsState()
+    val commentLikeStates by postDetailViewModel.commentLikeStates.collectAsState()
+    val commentLikeCounts by postDetailViewModel.commentLikeCounts.collectAsState()
     val comments by postDetailViewModel.comments.collectAsState()
     val errorMessage by postDetailViewModel.errorMessage.collectAsState()
 

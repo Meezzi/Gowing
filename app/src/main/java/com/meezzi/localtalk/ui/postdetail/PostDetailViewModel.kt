@@ -42,6 +42,12 @@ class PostDetailViewModel(private val postSaveRepository: PostSaveRepository) : 
     private val _commentContent = MutableStateFlow("")
     val commentContent: StateFlow<String> = _commentContent
 
+    private val _commentLikeStates = MutableStateFlow<Map<String, Boolean>>(emptyMap())
+    val commentLikeStates: StateFlow<Map<String, Boolean>> = _commentLikeStates
+
+    private val _commentLikeCounts = MutableStateFlow<Map<String, Int>>(emptyMap())
+    val commentLikeCounts: StateFlow<Map<String, Int>> = _commentLikeCounts
+
     private val _comments = MutableStateFlow<List<Comment>>(emptyList())
     val comments: StateFlow<List<Comment>> = _comments
 
