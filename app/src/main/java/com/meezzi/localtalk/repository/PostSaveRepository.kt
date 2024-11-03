@@ -172,11 +172,11 @@ class PostSaveRepository {
             .collection(categoryId)
             .document(postId)
 
-        val commentId = postRef.collection("comments").document().id
-        val commentData = comment.copy(commentId = commentId)
+        val commentRef = postRef.collection("comments").document()
+        val commentData = comment.copy(commentId = commentRef.id)
 
-        postRef
-            .update("comments", FieldValue.arrayUnion(commentData))
+        commentRef
+            .set(commentData)
             .addOnSuccessListener { onSuccess() }
             .addOnFailureListener { e -> onFailure(e) }
     }
