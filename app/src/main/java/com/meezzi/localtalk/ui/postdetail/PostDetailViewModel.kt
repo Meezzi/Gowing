@@ -185,6 +185,17 @@ class PostDetailViewModel(private val postSaveRepository: PostSaveRepository) : 
             } else {
                 postSaveRepository.plusCommentLikeCount(postId, city, categoryId, commentId)
             }
+            postSaveRepository.getCommentLikeCount(
+                postId = postId,
+                city = city,
+                categoryId = categoryId,
+                commentId = commentId,
+                onComplete = { likeCount ->
+                    _commentLikeCounts.value = _commentLikeCounts.value.toMutableMap().apply {
+                        this[commentId] = likeCount
+                    }
+                },
+            )
             _commentLikeStates.value = _commentLikeStates.value.toMutableMap().apply {
                 this[commentId] = !isLiked
             }
