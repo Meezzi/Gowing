@@ -230,4 +230,38 @@ class PostSaveRepository {
                 }
             }
     }
+
+    fun plusCommentLikeCount(
+        postId: String,
+        city: String,
+        categoryId: String,
+        commentId: String,
+    ) {
+        val commentsRef = db.collection("posts")
+            .document(city)
+            .collection(categoryId)
+            .document(postId)
+            .collection("comments")
+            .document(commentId)
+
+        commentsRef
+            .update("likes", FieldValue.increment(1))
+    }
+
+    fun minusCommentLikeCount(
+        postId: String,
+        city: String,
+        categoryId: String,
+        commentId: String,
+    ) {
+        val commentsRef = db.collection("posts")
+            .document(city)
+            .collection(categoryId)
+            .document(postId)
+            .collection("comments")
+            .document(commentId)
+
+        commentsRef
+            .update("likes", FieldValue.increment(-1))
+    }
 }
