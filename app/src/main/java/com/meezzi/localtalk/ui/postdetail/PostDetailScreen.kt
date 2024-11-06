@@ -167,8 +167,11 @@ fun PostContentView(
     isLiked: Boolean,
     likeCount: Int,
     comments: List<Comment>,
+    commentLikeStates: Map<String, Boolean>,
+    commentLikeCounts: Map<String, Int>,
     onLikeClick: () -> Unit,
     onImageClick: (Int) -> Unit,
+    onCommentLikeClick: (String) -> Unit,
 ) {
     LazyColumn(
         modifier = Modifier
@@ -201,7 +204,18 @@ fun PostContentView(
         }
 
         items(comments) { comment ->
-            CommentItem(profileImage, comment)
+            val isCommentLiked = commentLikeStates[comment.commentId] ?: false
+            val commentLikeCount = commentLikeCounts[comment.commentId] ?: comment.likes
+
+            CommentItem(
+                profileImage = profileImage,
+                comment = comment,
+                isLiked = isCommentLiked,
+                commentLikeCount = commentLikeCount,
+                onLikeClick = {
+                    onCommentLikeClick(comment.commentId)
+                }
+            )
         }
     }
 }
