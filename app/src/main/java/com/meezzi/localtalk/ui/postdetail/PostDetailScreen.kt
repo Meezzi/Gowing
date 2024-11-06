@@ -487,18 +487,20 @@ fun CommentItem(
             Spacer(modifier = Modifier.height(12.dp))
 
             Row(
-                modifier = Modifier.clickable { }, verticalAlignment = Alignment.CenterVertically
-            ) {
+                modifier = Modifier.clickable { onLikeClick() },
+                verticalAlignment = Alignment.CenterVertically,
+                ) {
+
                 Icon(
+                    imageVector = if (isLiked) Icons.Default.ThumbUp else Icons.Outlined.ThumbUp,
                     contentDescription = stringResource(id = R.string.likes),
-                    modifier = Modifier.size(16.dp),
                     tint = MaterialTheme.colorScheme.secondary
                 )
-                        imageVector = if (isLiked) Icons.Default.ThumbUp else Icons.Outlined.ThumbUp,
+
                 Spacer(modifier = Modifier.width(4.dp))
 
                 Text(
-                    text = "${stringResource(id = R.string.likes)} ${comment.likes}",
+                    text = "${stringResource(id = R.string.likes)} $commentLikeCount",
                     color = Color.Gray,
                     style = MaterialTheme.typography.labelLarge
                 )
