@@ -3,6 +3,7 @@ package com.meezzi.localtalk.ui.postdetail
 import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -186,31 +187,27 @@ fun PostContentView(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(start = 16.dp, end = 16.dp)
+            .padding(start = 16.dp, end = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         item {
             PostAuthorInfo(post, post.isAnonymous, profileImage)
-            Spacer(modifier = Modifier.height(16.dp))
         }
 
         item {
             PostTitle(post.title)
-            Spacer(modifier = Modifier.height(8.dp))
         }
 
         item {
             PostContent(post.content)
-            Spacer(modifier = Modifier.height(16.dp))
         }
 
         item {
             PostImages(post.postImageUrl, onImageClick)
-            Spacer(modifier = Modifier.height(8.dp))
         }
 
         item {
             PostStats(isLiked, likeCount, onLikeClick)
-            Spacer(modifier = Modifier.height(8.dp))
         }
 
         items(comments) { comment ->
