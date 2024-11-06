@@ -128,10 +128,20 @@ fun PostDetailScreen(
                         isLiked = isLiked,
                         likeCount = likeCount,
                         comments = comments,
+                        commentLikeStates = commentLikeStates,
+                        commentLikeCounts = commentLikeCounts,
                         onLikeClick = {
                             postDetailViewModel.togglePostLike(postId, city, categoryId)
                         },
                         onImageClick = onImageClick,
+                        onCommentLikeClick = { commentId ->
+                            postDetailViewModel.toggleCommentLike(
+                                postId,
+                                city,
+                                categoryId,
+                                commentId
+                            )
+                        }
                     )
                 }
             }
