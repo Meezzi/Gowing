@@ -4,9 +4,11 @@ import android.net.Uri
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.toObject
 import com.google.firebase.storage.storage
+import com.meezzi.localtalk.data.Comment
 import com.meezzi.localtalk.data.Post
 
 class PostSaveRepository {
@@ -155,5 +157,111 @@ class PostSaveRepository {
         }.addOnFailureListener {
             onComplete(null)
         }
+    }
+
+    fun saveComment(
+        city: String,
+        categoryId: String,
+        postId: String,
+        comment: Comment,
+        onSuccess: () -> Unit,
+        onFailure: (Exception) -> Unit,
+    ) {
+
+        val postRef = db.collection("posts")
+            .document(city)
+            .collection(categoryId)
+            .document(postId)
+
+        val commentRef = postRef.collection("comments").document()
+        val commentData = comment.copy(commentId = commentRef.id)
+
+        commentRef
+            .set(commentData)
+            .addOnSuccessListener { onSuccess() }
+            .addOnFailureListener { e -> onFailure(e) }
+    }
+
+    fun getComments(
+        city: String,
+        categoryId: String,
+        postId: String,
+        onSuccess: (List<Comment>) -> Unit,
+        onFailure: (Exception) -> Unit,
+    ) {
+
+        val commentRef = db.collection("posts")
+            .document(city)
+            .collection(categoryId)
+            .document(postId)
+            .collection("comments")
+            .orderBy("date", Query.Direction.ASCENDING)
+            .orderBy("time", Query.Direction.ASCENDING)
+
+        commentRef.get()
+            .addOnSuccessListener { document ->
+                val commentList = document.documents.mapNotNull { document ->
+                    document.toObject<Comment>()?.copy(commentId = document.id)
+                }
+                onSuccess(commentList)
+            }
+            .addOnFailureListener { e -> onFailure(e) }
+    }
+
+    fun getCommentLikeCount(
+        postId: String,
+        city: String,
+        categoryId: String,
+        commentId: String,
+        onComplete: (Int) -> Unit,
+    ) {
+        val commentsRef = db.collection("posts")
+            .document(city)
+            .collection(categoryId)
+            .document(postId)
+            .collection("comments")
+            .document(commentId)
+
+        commentsRef.get()
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
+                    val likes = document.getLong("likes")?.toInt() ?: 0
+                    onComplete(likes)
+                }
+            }
+    }
+
+    fun plusCommentLikeCount(
+        postId: String,
+        city: String,
+        categoryId: String,
+        commentId: String,
+    ) {
+        val commentsRef = db.collection("posts")
+            .document(city)
+            .collection(categoryId)
+            .document(postId)
+            .collection("comments")
+            .document(commentId)
+
+        commentsRef
+            .update("likes", FieldValue.increment(1))
+    }
+
+    fun minusCommentLikeCount(
+        postId: String,
+        city: String,
+        categoryId: String,
+        commentId: String,
+    ) {
+        val commentsRef = db.collection("posts")
+            .document(city)
+            .collection(categoryId)
+            .document(postId)
+            .collection("comments")
+            .document(commentId)
+
+        commentsRef
+            .update("likes", FieldValue.increment(-1))
     }
 }

@@ -5,8 +5,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.meezzi.localtalk.data.Comment
 import com.meezzi.localtalk.data.Post
 import com.meezzi.localtalk.repository.PostSaveRepository
+import com.meezzi.localtalk.util.TimeFormat
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -34,12 +36,35 @@ class PostDetailViewModel(private val postSaveRepository: PostSaveRepository) : 
     private val _selectedImageIndex = MutableStateFlow(0)
     val selectedImageIndex: StateFlow<Int> = _selectedImageIndex
 
+    private val _isCommentAnonymous = MutableStateFlow(false)
+    val isCommentAnonymous: StateFlow<Boolean> = _isCommentAnonymous
+
+    private val _commentContent = MutableStateFlow("")
+    val commentContent: StateFlow<String> = _commentContent
+
+    private val _commentLikeStates = MutableStateFlow<Map<String, Boolean>>(emptyMap())
+    val commentLikeStates: StateFlow<Map<String, Boolean>> = _commentLikeStates
+
+    private val _commentLikeCounts = MutableStateFlow<Map<String, Int>>(emptyMap())
+    val commentLikeCounts: StateFlow<Map<String, Int>> = _commentLikeCounts
+
+    private val _comments = MutableStateFlow<List<Comment>>(emptyList())
+    val comments: StateFlow<List<Comment>> = _comments
+
     fun updateImageList(images: List<String>) {
         _imageList.value = images
     }
 
     fun updateSelectedImageIndex(index: Int) {
         _selectedImageIndex.value = index
+    }
+
+    fun updateCommentAnonymous(isCommentAnonymous: Boolean) {
+        _isCommentAnonymous.value = isCommentAnonymous
+    }
+
+    fun updateCommentContent(newContent: String) {
+        _commentContent.value = newContent
     }
 
     fun loadPost(
@@ -96,6 +121,84 @@ class PostDetailViewModel(private val postSaveRepository: PostSaveRepository) : 
                 },
             )
             _isLiked.value = !_isLiked.value
+        }
+    }
+
+    fun saveComment(
+        city: String,
+        categoryId: String,
+        postId: String,
+        authorId: String,
+        authorName: String,
+        content: String,
+        isAnonymous: Boolean,
+    ) {
+        val comment = Comment(
+            postId = postId,
+            authorId = authorId,
+            authorName = if (isAnonymous) "익명" else authorName,
+            date = TimeFormat().getDate(),
+            time = TimeFormat().getTime(),
+            content = content,
+            likes = 0,
+        )
+
+        viewModelScope.launch {
+            postSaveRepository.saveComment(
+                city = city,
+                categoryId = categoryId,
+                postId = postId,
+                comment = comment,
+                onSuccess = { _commentContent.value = "" },
+                onFailure = { _errorMessage.value = it.message },
+            )
+        }
+    }
+
+    fun getComments(
+        city: String,
+        categoryId: String,
+        postId: String,
+    ) {
+
+        viewModelScope.launch {
+            postSaveRepository.getComments(
+                postId = postId,
+                city = city,
+                categoryId = categoryId,
+                onSuccess = { commentList -> _comments.value = commentList },
+                onFailure = { e -> _errorMessage.value = e.message }
+            )
+        }
+    }
+
+    fun toggleCommentLike(
+        postId: String,
+        city: String,
+        categoryId: String,
+        commentId: String,
+    ) {
+        viewModelScope.launch {
+            val isLiked = _commentLikeStates.value[commentId] ?: false
+            if (isLiked) {
+                postSaveRepository.minusCommentLikeCount(postId, city, categoryId, commentId)
+            } else {
+                postSaveRepository.plusCommentLikeCount(postId, city, categoryId, commentId)
+            }
+            postSaveRepository.getCommentLikeCount(
+                postId = postId,
+                city = city,
+                categoryId = categoryId,
+                commentId = commentId,
+                onComplete = { likeCount ->
+                    _commentLikeCounts.value = _commentLikeCounts.value.toMutableMap().apply {
+                        this[commentId] = likeCount
+                    }
+                },
+            )
+            _commentLikeStates.value = _commentLikeStates.value.toMutableMap().apply {
+                this[commentId] = !isLiked
+            }
         }
     }
 

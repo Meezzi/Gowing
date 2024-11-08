@@ -52,6 +52,7 @@
 
     <!--   게시물 상세 화면   -->
     <string name="like_button_label">공감해요</string>
+    <string name="input_comment">댓글을 입력하세요.</string>
 
     <!--   액션 공통   -->
     <string name="action_back">뒤로 가기</string>

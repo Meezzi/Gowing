@@ -96,7 +96,6 @@ class AddPostViewModel(
                     time = TimeFormat().getTime(),
                     postImageUrl = selectedImageUris.value.map { it.toString() },
                     likes = 0,
-                    comments = emptyList()
                 )
 
                 postSaveRepository.savePostWithImages(

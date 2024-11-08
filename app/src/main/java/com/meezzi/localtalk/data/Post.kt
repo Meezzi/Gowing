@@ -37,14 +37,15 @@ data class Post(
     var content: String = "",
     var postImageUrl: List<String> = emptyList(),
     val likes: Int = 0,
-    val comments: List<Comment> = emptyList()
 )
 
 data class Comment(
-    val authorId: String,
-    val timestamp: String,
-    val postId: String,
-    val commentId: String,
-    val content: String,
-    val likes: Int,
+    val postId: String = "",
+    val authorId: String = "",
+    val authorName: String = "",
+    val commentId: String = "",
+    val date: String = "",
+    val time: String = "",
+    val content: String = "",
+    val likes: Int = 0,
 )
