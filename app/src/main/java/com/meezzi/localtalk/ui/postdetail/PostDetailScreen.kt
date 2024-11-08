@@ -15,9 +15,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -41,6 +43,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -55,6 +58,7 @@ import com.meezzi.localtalk.R
 import com.meezzi.localtalk.data.Comment
 import com.meezzi.localtalk.data.Post
 import com.meezzi.localtalk.ui.common.NavigationTopAppBar
+import kotlinx.coroutines.launch
 
 @Composable
 fun PostDetailScreen(
@@ -75,6 +79,9 @@ fun PostDetailScreen(
     val commentLikeCounts by postDetailViewModel.commentLikeCounts.collectAsState()
     val comments by postDetailViewModel.comments.collectAsState()
     val errorMessage by postDetailViewModel.errorMessage.collectAsState()
+
+    val listState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(post) {
         postDetailViewModel.loadPost(postId, city, categoryId)
@@ -106,6 +113,10 @@ fun PostDetailScreen(
                         isAnonymous
                     )
                     postDetailViewModel.getComments(city, categoryId, postId)
+
+                    coroutineScope.launch {
+                        listState.animateScrollToItem(comments.size)
+                    }
                 }
             )
         }
@@ -129,6 +140,7 @@ fun PostDetailScreen(
                         isLiked = isLiked,
                         likeCount = likeCount,
                         comments = comments,
+                        listState = listState,
                         commentLikeStates = commentLikeStates,
                         commentLikeCounts = commentLikeCounts,
                         onLikeClick = {
@@ -177,6 +189,7 @@ fun PostContentView(
     profileImage: Uri?,
     isLiked: Boolean,
     likeCount: Int,
+    listState: LazyListState,
     comments: List<Comment>,
     commentLikeStates: Map<String, Boolean>,
     commentLikeCounts: Map<String, Int>,
@@ -188,6 +201,7 @@ fun PostContentView(
         modifier = Modifier
             .fillMaxSize()
             .padding(start = 16.dp, end = 16.dp),
+        state = listState,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         item {
@@ -510,7 +524,7 @@ fun CommentItem(
             Row(
                 modifier = Modifier.clickable { onLikeClick() },
                 verticalAlignment = Alignment.CenterVertically,
-                ) {
+            ) {
 
                 Icon(
                     imageVector = if (isLiked) Icons.Default.ThumbUp else Icons.Outlined.ThumbUp,
