@@ -32,6 +32,18 @@ class HomeViewModel(
         }
     }
 
+    fun getHotPostList() {
+        viewModelScope.launch {
+            postSaveRepository.getHotPosts(
+                city = address.value.substringBefore(" "),
+                onSuccess = { postList ->
+                    _hotPostList.value = postList
+                    _isLoading.value = false
+                },
+            )
+        }
+    }
+
     companion object {
         fun provideFactory(
             homeRepository: HomeRepository,
