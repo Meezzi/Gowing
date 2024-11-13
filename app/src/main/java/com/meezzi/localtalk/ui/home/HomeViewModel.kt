@@ -44,6 +44,18 @@ class HomeViewModel(
         }
     }
 
+    fun getLatestPostList() {
+        viewModelScope.launch {
+            postSaveRepository.getLatestPosts(
+                city = address.value.substringBefore(" "),
+                onSuccess = { postList ->
+                    _latestPostList.value = postList
+                    _isLoading.value = false
+                },
+            )
+        }
+    }
+
     companion object {
         fun provideFactory(
             homeRepository: HomeRepository,
