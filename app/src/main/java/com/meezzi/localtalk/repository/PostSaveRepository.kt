@@ -29,7 +29,7 @@ class PostSaveRepository {
 
         if (!imageUris.isNullOrEmpty()) {
             imageUris.forEach { uri ->
-                uploadImage(uri, postId)
+                uploadImage(uri, post.city, post.category.id, postId)
             }
         }
         savePost(
@@ -42,12 +42,14 @@ class PostSaveRepository {
 
     private fun uploadImage(
         uri: Uri,
+        city: String,
+        categoryId: String,
         postId: String
     ) {
 
         val timeStamp = System.currentTimeMillis().toString()
 
-        val imagesRef = storageRef.child("posts/${currentUser?.uid}/${postId}/$timeStamp.png")
+        val imagesRef = storageRef.child("posts/${city}/${categoryId}/${postId}/$timeStamp.png")
         val uploadTask = imagesRef.putFile(uri)
 
         uploadTask.addOnFailureListener {
