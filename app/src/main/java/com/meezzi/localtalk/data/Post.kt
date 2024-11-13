@@ -1,5 +1,7 @@
 package com.meezzi.localtalk.data
 
+import com.google.firebase.Timestamp
+
 data class CategorySection(
     val id: String = "",
     val name: String = ""
@@ -30,8 +32,7 @@ data class Post(
     val authorName: String? = "",
     @field:JvmField
     val isAnonymous: Boolean = false,
-    val date: String = "",
-    val time: String = "",
+    val timestamp: Timestamp = Timestamp.now(),
     val postId: String = "",
     var title: String = "",
     var content: String = "",
