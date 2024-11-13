@@ -17,13 +17,17 @@ import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -36,6 +40,7 @@ import coil.request.ImageRequest
 import com.meezzi.localtalk.R
 import com.meezzi.localtalk.data.Post
 import com.meezzi.localtalk.ui.common.CustomTopAppBar
+import com.meezzi.localtalk.ui.common.EmptyPostMessage
 import com.meezzi.localtalk.ui.home.HomeViewModel
 import com.meezzi.localtalk.util.TimeFormat
 
@@ -62,6 +67,39 @@ fun HomeScreenContent(homeViewModel: HomeViewModel) {
     ) { innerPadding ->
     }
 }
+
+@Composable
+fun PostListSection(title: String, icon: Painter, postList: List<Post>) {
+    Column {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(start = 16.dp, top = 8.dp, end = 16.dp, bottom = 8.dp),
+        ) {
+            Icon(
+                painter = icon,
+                contentDescription = stringResource(id = R.string.icon),
+                modifier = Modifier.size(24.dp),
+                tint = Color.Unspecified
+            )
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+            )
+        }
+
+        if (postList.isNotEmpty()) {
+            postList.forEach { post ->
+                PostItem(post)
+            }
+        } else {
+            EmptyPostMessage()
+        }
+    }
+}
+
 
 @Composable
 fun PostItem(post: Post) {

@@ -46,6 +46,7 @@
     <!--   홈 화면   -->
     <string name="home_hot_posts">실시간 인기글</string>
     <string name="home_latest_posts">최신글</string>
+    <string name="home_empty_post">게시물이 없습니다.</string>
 
     <!--   글 쓰기 화면   -->
     <string name="add_post_select_board_title">게시글의 주제를 선택해주세요.</string>
