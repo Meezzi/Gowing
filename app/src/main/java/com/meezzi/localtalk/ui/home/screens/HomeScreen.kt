@@ -15,19 +15,25 @@ import com.meezzi.localtalk.ui.home.HomeViewModel
 fun HomeScreen(homeViewModel: HomeViewModel) {
 
     CheckPermissions {
-        TopAppBar(homeViewModel)
+        HomeScreenContent(homeViewModel)
     }
 
 }
 
 @Composable
-fun TopAppBar(homeViewModel: HomeViewModel) {
+fun HomeScreenContent(homeViewModel: HomeViewModel) {
 
     val address by homeViewModel.address.collectAsState()
 
     homeViewModel.getAddress()
 
-    CustomTopAppBar(address)
+    Scaffold(
+        topBar = {
+            CustomTopAppBar(address)
+        },
+    ) { innerPadding ->
+    }
+}
 
 }
 
