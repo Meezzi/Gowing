@@ -2,6 +2,7 @@ package com.meezzi.localtalk.ui.home.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -30,6 +32,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -41,6 +44,7 @@ import com.meezzi.localtalk.R
 import com.meezzi.localtalk.data.Post
 import com.meezzi.localtalk.ui.common.CustomTopAppBar
 import com.meezzi.localtalk.ui.common.EmptyPostMessage
+import com.meezzi.localtalk.ui.common.LoadingView
 import com.meezzi.localtalk.ui.home.HomeViewModel
 import com.meezzi.localtalk.util.TimeFormat
 
@@ -57,6 +61,9 @@ fun HomeScreen(homeViewModel: HomeViewModel) {
 fun HomeScreenContent(homeViewModel: HomeViewModel) {
 
     val address by homeViewModel.address.collectAsState()
+    val hotPostList by homeViewModel.hotPostList.collectAsState()
+    val latestPostList by homeViewModel.latestPostList.collectAsState()
+    val isLoading by homeViewModel.isLoading.collectAsState()
 
     homeViewModel.getAddress()
 
@@ -65,6 +72,40 @@ fun HomeScreenContent(homeViewModel: HomeViewModel) {
             CustomTopAppBar(address)
         },
     ) { innerPadding ->
+        PostLists(innerPadding, hotPostList, latestPostList, isLoading)
+    }
+}
+
+@Composable
+fun PostLists(
+    innerPadding: PaddingValues,
+    hotPostList: List<Post>,
+    latestPostList: List<Post>,
+    isLoading: Boolean,
+) {
+    if (isLoading) {
+        LoadingView()
+    } else {
+        LazyColumn(
+            modifier = Modifier.padding(innerPadding),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            item {
+                PostListSection(
+                    title = stringResource(id = R.string.home_hot_posts),
+                    icon = painterResource(id = R.drawable.ic_fire),
+                    postList = hotPostList
+                )
+            }
+
+            item {
+                PostListSection(
+                    title = stringResource(id = R.string.home_latest_posts),
+                    icon = painterResource(id = R.drawable.ic_light),
+                    postList = latestPostList
+                )
+            }
+        }
     }
 }
 
