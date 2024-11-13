@@ -103,6 +103,13 @@ fun AddPostScreen(
     val multiplePhotoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickMultipleVisualMedia(maxItems = 10)
     ) { uris ->
+        val contentResolver = context.contentResolver
+        uris.forEach { uri ->
+            contentResolver.takePersistableUriPermission(
+                uri,
+                Intent.FLAG_GRANT_READ_URI_PERMISSION
+            )
+        }
         addPostViewModel.updateSelectedImageUris(uris)
     }
 
