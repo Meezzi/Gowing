@@ -21,6 +21,7 @@
     <string name="anonymous">익명</string>
     <string name="post_image">게시물 이미지</string>
     <string name="likes">공감</string>
+    <string name="icon">아이콘</string>
 
     <!--   오류 메세지   -->
     <string name="error_message_not_found">알 수 없는 오류가 발생했습니다.</string>
@@ -41,6 +42,10 @@
     <string name="permission_dialog_title">서비스 이용 알림</string>
     <string name="permission_dialog_content">고잉을 이용하시려면 위치 권한을 허용해주세요.</string>
     <string name="permission_error_location">위치 정보를 가져올 수 없습니다</string>
+
+    <!--   홈 화면   -->
+    <string name="home_hot_posts">실시간 인기글</string>
+    <string name="home_latest_posts">최신글</string>
 
     <!--   글 쓰기 화면   -->
     <string name="add_post_select_board_title">게시글의 주제를 선택해주세요.</string>
