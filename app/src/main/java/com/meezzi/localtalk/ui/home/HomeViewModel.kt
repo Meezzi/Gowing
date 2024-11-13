@@ -26,6 +26,9 @@ class HomeViewModel(
     private val _latestPostList = MutableStateFlow<List<Post>>(emptyList())
     val latestPostList: StateFlow<List<Post>> = _latestPostList.asStateFlow()
 
+    private val _isLoading = MutableStateFlow(true)
+    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+
     fun getAddress() {
         viewModelScope.launch {
             _address.value = homeRepository.getCurrentLocation()
