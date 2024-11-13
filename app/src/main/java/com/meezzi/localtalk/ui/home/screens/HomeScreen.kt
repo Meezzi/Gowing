@@ -65,7 +65,11 @@ fun HomeScreenContent(homeViewModel: HomeViewModel) {
     val latestPostList by homeViewModel.latestPostList.collectAsState()
     val isLoading by homeViewModel.isLoading.collectAsState()
 
-    homeViewModel.getAddress()
+    LaunchedEffect(hotPostList, latestPostList) {
+        homeViewModel.getAddress()
+        homeViewModel.getHotPostList()
+        homeViewModel.getLatestPostList()
+    }
 
     Scaffold(
         topBar = {
