@@ -292,4 +292,19 @@ class PostSaveRepository {
             }
     }
 
+    fun getLatestPosts(
+        city: String,
+        onSuccess: (List<Post>) -> Unit,
+    ) {
+        if (city.isBlank()) return
+
+        db.collection("posts/$city/free_board")
+            .orderBy("timestamp", Query.Direction.DESCENDING)
+            .limit(5)
+            .get()
+            .addOnSuccessListener { documents ->
+                val topPosts = documents.toObjects<Post>()
+                onSuccess(topPosts)
+            }
+    }
 }
