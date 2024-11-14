@@ -46,24 +46,6 @@ fun CustomTopAppBar(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CustomSearchTopAppBar(
-    title: String,
-    onNavigateToSearch: () -> Unit,
-) {
-    TopAppBar(
-        title = {
-            Text(title)
-        },
-        actions = {
-            IconButton(onClick = { onNavigateToSearch() }) {
-                Icon(imageVector = Icons.Default.Search, contentDescription = "검색")
-            }
-        }
-    )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
 fun NavigationTopAppBar(
     title: String?,
     onNavigateBack: () -> Unit
