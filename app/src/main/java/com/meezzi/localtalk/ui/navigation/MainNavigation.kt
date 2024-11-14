@@ -98,7 +98,10 @@ fun MainNavHost(
 
         composable(Screen.Home.route) {
             HomeScreen(
-                homeViewModel = homeViewModel
+                homeViewModel = homeViewModel,
+                onNavigateToPostDetail = { city, categoryId, postId ->
+                    navController.navigate("${Screens.PostDetail.name}/$city/$categoryId/$postId")
+                }
             )
         }
 

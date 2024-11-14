@@ -1,5 +1,6 @@
 package com.meezzi.localtalk.ui.home.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -49,16 +50,22 @@ import com.meezzi.localtalk.ui.home.HomeViewModel
 import com.meezzi.localtalk.util.TimeFormat
 
 @Composable
-fun HomeScreen(homeViewModel: HomeViewModel) {
+fun HomeScreen(
+    homeViewModel: HomeViewModel,
+    onNavigateToPostDetail: (String, String, String) -> Unit,
+) {
 
     CheckPermissions {
-        HomeScreenContent(homeViewModel)
+        HomeScreenContent(homeViewModel, onNavigateToPostDetail)
     }
 
 }
 
 @Composable
-fun HomeScreenContent(homeViewModel: HomeViewModel) {
+fun HomeScreenContent(
+    homeViewModel: HomeViewModel,
+    onNavigateToPostDetail: (String, String, String) -> Unit
+) {
 
     val address by homeViewModel.address.collectAsState()
     val hotPostList by homeViewModel.hotPostList.collectAsState()
@@ -76,7 +83,7 @@ fun HomeScreenContent(homeViewModel: HomeViewModel) {
             CustomTopAppBar(address)
         },
     ) { innerPadding ->
-        PostLists(innerPadding, hotPostList, latestPostList, isLoading)
+        PostLists(innerPadding, hotPostList, latestPostList, isLoading, onNavigateToPostDetail)
     }
 }
 
@@ -86,6 +93,7 @@ fun PostLists(
     hotPostList: List<Post>,
     latestPostList: List<Post>,
     isLoading: Boolean,
+    onNavigateToPostDetail: (String, String, String) -> Unit,
 ) {
     if (isLoading) {
         LoadingView()
@@ -98,7 +106,8 @@ fun PostLists(
                 PostListSection(
                     title = stringResource(id = R.string.home_hot_posts),
                     icon = painterResource(id = R.drawable.ic_fire),
-                    postList = hotPostList
+                    postList = hotPostList,
+                    onNavigateToPostDetail = onNavigateToPostDetail
                 )
             }
 
@@ -106,7 +115,8 @@ fun PostLists(
                 PostListSection(
                     title = stringResource(id = R.string.home_latest_posts),
                     icon = painterResource(id = R.drawable.ic_light),
-                    postList = latestPostList
+                    postList = latestPostList,
+                    onNavigateToPostDetail = onNavigateToPostDetail
                 )
             }
         }
@@ -114,7 +124,12 @@ fun PostLists(
 }
 
 @Composable
-fun PostListSection(title: String, icon: Painter, postList: List<Post>) {
+fun PostListSection(
+    title: String,
+    icon: Painter,
+    postList: List<Post>,
+    onNavigateToPostDetail: (String, String, String) -> Unit
+) {
     Column {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -137,7 +152,7 @@ fun PostListSection(title: String, icon: Painter, postList: List<Post>) {
 
         if (postList.isNotEmpty()) {
             postList.forEach { post ->
-                PostItem(post)
+                PostItem(post, onNavigateToPostDetail)
             }
         } else {
             EmptyPostMessage()
@@ -147,11 +162,12 @@ fun PostListSection(title: String, icon: Painter, postList: List<Post>) {
 
 
 @Composable
-fun PostItem(post: Post) {
+fun PostItem(post: Post, onNavigateToPostDetail: (String, String, String) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 16.dp, end = 16.dp)
+            .clickable { onNavigateToPostDetail(post.city, post.category.id, post.postId) }
     ) {
         HorizontalDivider(color = Color.LightGray)
 
