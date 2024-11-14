@@ -5,13 +5,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.meezzi.localtalk.data.Categories
 import com.meezzi.localtalk.data.CategorySection
 import com.meezzi.localtalk.data.Post
 import com.meezzi.localtalk.repository.PostSaveRepository
 import com.meezzi.localtalk.ui.home.HomeViewModel
-import com.meezzi.localtalk.util.TimeFormat
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -92,8 +92,7 @@ class AddPostViewModel(
                     authorId = "",
                     authorName = authorName,
                     isAnonymous = isAnonymous.value,
-                    date = TimeFormat().getDate(),
-                    time = TimeFormat().getTime(),
+                    timestamp = Timestamp.now(),
                     postImageUrl = selectedImageUris.value.map { it.toString() },
                     likes = 0,
                 )

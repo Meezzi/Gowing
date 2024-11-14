@@ -267,7 +267,7 @@ fun PostAuthorInfo(
                 style = MaterialTheme.typography.bodyLarge
             )
             Text(
-                text = "${post.date} ${post.time}",
+                text = "${post.timestamp}",
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                 style = MaterialTheme.typography.bodySmall,
             )

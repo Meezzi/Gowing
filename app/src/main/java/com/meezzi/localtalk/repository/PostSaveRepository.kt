@@ -2,14 +2,17 @@ package com.meezzi.localtalk.repository
 
 import android.net.Uri
 import com.google.firebase.Firebase
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.toObject
+import com.google.firebase.firestore.toObjects
 import com.google.firebase.storage.storage
 import com.meezzi.localtalk.data.Comment
 import com.meezzi.localtalk.data.Post
+import java.util.Calendar
 
 class PostSaveRepository {
 
@@ -29,7 +32,7 @@ class PostSaveRepository {
 
         if (!imageUris.isNullOrEmpty()) {
             imageUris.forEach { uri ->
-                uploadImage(uri, postId)
+                uploadImage(uri, post.city, post.category.id, postId)
             }
         }
         savePost(
@@ -42,12 +45,14 @@ class PostSaveRepository {
 
     private fun uploadImage(
         uri: Uri,
+        city: String,
+        categoryId: String,
         postId: String
     ) {
 
         val timeStamp = System.currentTimeMillis().toString()
 
-        val imagesRef = storageRef.child("posts/${currentUser?.uid}/${postId}/$timeStamp.png")
+        val imagesRef = storageRef.child("posts/${city}/${categoryId}/${postId}/$timeStamp.png")
         val uploadTask = imagesRef.putFile(uri)
 
         uploadTask.addOnFailureListener {
@@ -263,5 +268,43 @@ class PostSaveRepository {
 
         commentsRef
             .update("likes", FieldValue.increment(-1))
+    }
+
+    fun getHotPosts(
+        city: String,
+        onSuccess: (List<Post>) -> Unit,
+    ) {
+        if (city.isBlank()) return
+
+        val calendar = Calendar.getInstance()
+        calendar.add(Calendar.DAY_OF_YEAR, -7)
+        val oneWeekAgo = Timestamp(calendar.time)
+
+        db.collection("posts/$city/free_board")
+            .whereGreaterThanOrEqualTo("timestamp", oneWeekAgo)
+            .orderBy("likes", Query.Direction.DESCENDING)
+            .orderBy("timestamp", Query.Direction.DESCENDING)
+            .limit(5)
+            .get()
+            .addOnSuccessListener { documents ->
+                val topPosts = documents.toObjects<Post>()
+                onSuccess(topPosts)
+            }
+    }
+
+    fun getLatestPosts(
+        city: String,
+        onSuccess: (List<Post>) -> Unit,
+    ) {
+        if (city.isBlank()) return
+
+        db.collection("posts/$city/free_board")
+            .orderBy("timestamp", Query.Direction.DESCENDING)
+            .limit(5)
+            .get()
+            .addOnSuccessListener { documents ->
+                val topPosts = documents.toObjects<Post>()
+                onSuccess(topPosts)
+            }
     }
 }
