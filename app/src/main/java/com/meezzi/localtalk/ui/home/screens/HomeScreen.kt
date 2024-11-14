@@ -160,7 +160,6 @@ fun PostListSection(
     }
 }
 
-
 @Composable
 fun PostItem(post: Post, onNavigateToPostDetail: (String, String, String) -> Unit) {
     Column(

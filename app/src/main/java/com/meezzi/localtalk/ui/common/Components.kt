@@ -95,7 +95,6 @@ fun LoadingView() {
     }
 }
 
-
 @Composable
 fun EmptyPostMessage() {
     Text(
