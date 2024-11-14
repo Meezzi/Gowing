@@ -32,6 +32,7 @@ import com.meezzi.localtalk.ui.postdetail.PostDetailViewModel
 import com.meezzi.localtalk.ui.profile.CreateProfileScreen
 import com.meezzi.localtalk.ui.profile.ProfileScreen
 import com.meezzi.localtalk.ui.profile.ProfileViewModel
+import com.meezzi.localtalk.ui.search.SearchScreen
 
 @Composable
 fun MainNavHost(
@@ -106,7 +107,11 @@ fun MainNavHost(
         }
 
         composable(Screen.Board.route) {
-            BoardScreen()
+            BoardScreen(
+                onNavigateToSearch = {
+                    navController.navigate(Screens.Search.name)
+                }
+            )
         }
 
         composable(Screen.Chat.route) {
@@ -166,6 +171,10 @@ fun MainNavHost(
                 postDetailViewModel = postDetailViewModel,
                 onDismiss = { navController.popBackStack() },
             )
+        }
+
+        composable(Screens.Search.name) {
+            SearchScreen()
         }
     }
 }
