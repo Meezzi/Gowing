@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -40,6 +41,24 @@ fun CustomTopAppBar(
         title = {
             Text(title)
         },
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CustomSearchTopAppBar(
+    title: String,
+    onNavigateToSearch: () -> Unit,
+) {
+    TopAppBar(
+        title = {
+            Text(title)
+        },
+        actions = {
+            IconButton(onClick = { onNavigateToSearch() }) {
+                Icon(imageVector = Icons.Default.Search, contentDescription = "검색")
+            }
+        }
     )
 }
 
