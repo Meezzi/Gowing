@@ -17,6 +17,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.google.firebase.auth.FirebaseAuth
 import com.meezzi.localtalk.repository.UserRepository
+import com.meezzi.localtalk.ui.BoardDetailScreen.BoardDetailScreen
 import com.meezzi.localtalk.ui.addPost.AddPostScreen
 import com.meezzi.localtalk.ui.addPost.AddPostViewModel
 import com.meezzi.localtalk.ui.board.BoardScreen
@@ -175,6 +176,11 @@ fun MainNavHost(
 
         composable(Screens.Search.name) {
             SearchScreen()
+        }
+
+        composable("${Screens.BoardDetail.name}/{categoryId}") { backStackEntry ->
+            val categoryId = backStackEntry.arguments?.getString("categoryId")
+            BoardDetailScreen(categoryId = categoryId)
         }
     }
 }
