@@ -33,9 +33,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.meezzi.localtalk.R
+import com.meezzi.localtalk.data.Categories
 
 @Composable
-fun BoardScreen(onNavigateToSearch: () -> Unit) {
+fun BoardScreen(
+    onNavigateToSearch: () -> Unit,
+    onNavigateToPostItem: (String) -> Unit
+) {
     Scaffold(
         topBar = {
             BoardTopAppBar(
@@ -44,7 +48,10 @@ fun BoardScreen(onNavigateToSearch: () -> Unit) {
             )
         },
     ) { innerPadding ->
-        BoardContentScreen(innerPadding)
+        BoardContentScreen(
+            innerPadding,
+            onNavigateToPostItem
+        )
     }
 }
 
@@ -118,6 +125,7 @@ fun BoardContentScreen(
             BoardItem(
                 text = category.displayName,
                 onClick = {
+                    onNavigateToPostItem(category.name)
                 }
             )
         }
