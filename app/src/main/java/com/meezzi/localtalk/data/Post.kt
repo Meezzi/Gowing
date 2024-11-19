@@ -22,7 +22,13 @@ enum class Categories(val displayName: String) {
     THIRTIES_BOARD("30대 모여라"),
     FORTIES_BOARD("40대 모여라"),
     FIFTIES_BOARD("50대 모여라"),
-    SIXTIES_BOARD("60대 모여라")
+    SIXTIES_BOARD("60대 모여라");
+
+    companion object {
+        fun getDisplayNameById(categoryId: String): String? {
+            return entries.find { it.name == categoryId }?.displayName
+        }
+    }
 }
 
 data class Post(
