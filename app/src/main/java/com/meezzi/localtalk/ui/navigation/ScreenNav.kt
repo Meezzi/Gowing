@@ -14,6 +14,8 @@ enum class Screens {
     AddPost,
     PostDetail,
     ImageViewer,
+    Search,
+    BoardDetail,
 }
 
 sealed class Screen(

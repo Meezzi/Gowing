@@ -17,6 +17,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.google.firebase.auth.FirebaseAuth
 import com.meezzi.localtalk.repository.UserRepository
+import com.meezzi.localtalk.ui.BoardDetailScreen.BoardDetailScreen
 import com.meezzi.localtalk.ui.addPost.AddPostScreen
 import com.meezzi.localtalk.ui.addPost.AddPostViewModel
 import com.meezzi.localtalk.ui.board.BoardScreen
@@ -32,6 +33,7 @@ import com.meezzi.localtalk.ui.postdetail.PostDetailViewModel
 import com.meezzi.localtalk.ui.profile.CreateProfileScreen
 import com.meezzi.localtalk.ui.profile.ProfileScreen
 import com.meezzi.localtalk.ui.profile.ProfileViewModel
+import com.meezzi.localtalk.ui.search.SearchScreen
 
 @Composable
 fun MainNavHost(
@@ -106,7 +108,14 @@ fun MainNavHost(
         }
 
         composable(Screen.Board.route) {
-            BoardScreen()
+            BoardScreen(
+                onNavigateToSearch = {
+                    navController.navigate(Screens.Search.name)
+                },
+                onNavigateToPostItem = { categoryId->
+                    navController.navigate("${Screens.BoardDetail.name}/$categoryId")
+                }
+            )
         }
 
         composable(Screen.Chat.route) {
@@ -166,6 +175,15 @@ fun MainNavHost(
                 postDetailViewModel = postDetailViewModel,
                 onDismiss = { navController.popBackStack() },
             )
+        }
+
+        composable(Screens.Search.name) {
+            SearchScreen()
+        }
+
+        composable("${Screens.BoardDetail.name}/{categoryId}") { backStackEntry ->
+            val categoryId = backStackEntry.arguments?.getString("categoryId")
+            BoardDetailScreen(categoryId = categoryId)
         }
     }
 }
