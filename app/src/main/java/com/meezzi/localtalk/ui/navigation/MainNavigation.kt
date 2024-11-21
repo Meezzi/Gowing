@@ -114,8 +114,9 @@ fun MainNavHost(
                 onNavigateToSearch = {
                     navController.navigate(Screens.Search.name)
                 },
-                onNavigateToPostItem = { categoryId->
-                    navController.navigate("${Screens.BoardDetail.name}/$categoryId")
+                onNavigateToPostItem = { categoryId ->
+                    val category = categoryId.lowercase()
+                    navController.navigate("${Screens.BoardDetail.name}/$category")
                 }
             )
         }
