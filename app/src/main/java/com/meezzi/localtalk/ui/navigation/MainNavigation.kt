@@ -17,10 +17,11 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.google.firebase.auth.FirebaseAuth
 import com.meezzi.localtalk.repository.UserRepository
-import com.meezzi.localtalk.ui.BoardDetailScreen.BoardDetailScreen
+import com.meezzi.localtalk.ui.boardDetail.BoardDetailScreen
 import com.meezzi.localtalk.ui.addPost.AddPostScreen
 import com.meezzi.localtalk.ui.addPost.AddPostViewModel
 import com.meezzi.localtalk.ui.board.BoardScreen
+import com.meezzi.localtalk.ui.boardDetail.BoardDetailViewModel
 import com.meezzi.localtalk.ui.chat.ChatScreen
 import com.meezzi.localtalk.ui.home.HomeViewModel
 import com.meezzi.localtalk.ui.home.screens.AddPostFloatingButton
@@ -43,6 +44,7 @@ fun MainNavHost(
     homeViewModel: HomeViewModel,
     addPostViewModel: AddPostViewModel,
     postDetailViewModel: PostDetailViewModel,
+    boardDetailViewModel: BoardDetailViewModel,
 ) {
 
     val user by introViewModel.authState.collectAsStateWithLifecycle()
@@ -183,7 +185,15 @@ fun MainNavHost(
 
         composable("${Screens.BoardDetail.name}/{categoryId}") { backStackEntry ->
             val categoryId = backStackEntry.arguments?.getString("categoryId")
-            BoardDetailScreen(categoryId = categoryId)
+            BoardDetailScreen(
+                categoryId = categoryId,
+                homeViewModel = homeViewModel,
+                boardDetailViewModel = boardDetailViewModel,
+                onNavigateBack = {  },
+                onNavigateToPostDetail = {
+
+                }
+            )
         }
     }
 }
@@ -196,6 +206,7 @@ fun MainScreenView(
     homeViewModel: HomeViewModel,
     addPostViewModel: AddPostViewModel,
     postDetailViewModel: PostDetailViewModel,
+    boardDetailViewModel: BoardDetailViewModel,
 ) {
     val navController = rememberNavController()
     val currentBackStack by navController.currentBackStackEntryAsState()
@@ -227,7 +238,8 @@ fun MainScreenView(
                 profileViewModel = profileViewModel,
                 homeViewModel = homeViewModel,
                 addPostViewModel = addPostViewModel,
-                postDetailViewModel = postDetailViewModel
+                postDetailViewModel = postDetailViewModel,
+                boardDetailViewModel = boardDetailViewModel,
             )
         }
     }
