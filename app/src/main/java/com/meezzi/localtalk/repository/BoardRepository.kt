@@ -6,6 +6,7 @@ import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.toObjects
 import com.meezzi.localtalk.data.Categories
 import com.meezzi.localtalk.data.Post
+import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.tasks.await
 
@@ -53,6 +54,45 @@ class BoardRepository {
             onSuccess(allPosts)
         } catch (exception: Exception) {
             onFailure(exception)
+        }
+    }
+
+    suspend fun fetchPostsWithMyComments(
+        onSuccess: (List<Post>) -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        try {
+            val postIds = db.collectionGroup("comments")
+                .whereEqualTo("authorId", currentUser?.uid)
+                .get()
+                .await()
+                .documents
+                .mapNotNull { it.getString("postId") }
+                .distinct()
+
+            if (postIds.isEmpty()) {
+                onSuccess(emptyList())
+                return
+            }
+
+            val categoryCollections = Categories.entries.map { it.name.lowercase() }
+
+            val posts = coroutineScope {
+                postIds.map { postId ->
+                    async {
+                        categoryCollections.flatMap { category ->
+                            db.collectionGroup(category)
+                                .whereEqualTo("postId", postId)
+                                .get()
+                                .await()
+                                .toObjects<Post>()
+                        }
+                    }
+                }.flatMap { it.await() }
+            }
+            onSuccess(posts)
+        } catch (e: Exception) {
+            onFailure(e)
         }
     }
 }
