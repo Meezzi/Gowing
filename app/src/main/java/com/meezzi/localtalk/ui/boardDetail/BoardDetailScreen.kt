@@ -36,6 +36,12 @@ fun BoardDetailScreen(
     val isLoading by boardDetailViewModel.isLoading.collectAsState()
     val errorMessage by boardDetailViewModel.errorMessage.collectAsState()
 
+    LaunchedEffect(city, categoryId) {
+        if (categoryId != null) {
+            boardDetailViewModel.fetchPostsByCategory(city.split(" ")[0], categoryId)
+        }
+    }
+
     Scaffold(
         topBar = {
             NavigationTopAppBar(
