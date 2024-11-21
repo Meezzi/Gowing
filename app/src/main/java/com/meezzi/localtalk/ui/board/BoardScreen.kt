@@ -38,6 +38,7 @@ import com.meezzi.localtalk.data.Categories
 @Composable
 fun BoardScreen(
     onNavigateToSearch: () -> Unit,
+    onNavigateToMyPosts: () -> Unit,
     onNavigateToPostItem: (String) -> Unit
 ) {
     Scaffold(
@@ -50,6 +51,7 @@ fun BoardScreen(
     ) { innerPadding ->
         BoardContentScreen(
             innerPadding,
+            onNavigateToMyPosts,
             onNavigateToPostItem
         )
     }
@@ -76,6 +78,7 @@ fun BoardTopAppBar(
 @Composable
 fun BoardContentScreen(
     innerPadding: PaddingValues,
+    onNavigateToMyPosts: () -> Unit,
     onNavigateToPostItem: (String) -> Unit,
 ) {
     Column(
@@ -88,7 +91,7 @@ fun BoardContentScreen(
         BoardItem(
             icon = painterResource(R.drawable.ic_pencil),
             text = stringResource(R.string.myPosts),
-            onClick = {}
+            onClick = { onNavigateToMyPosts() }
         )
 
         BoardItem(
