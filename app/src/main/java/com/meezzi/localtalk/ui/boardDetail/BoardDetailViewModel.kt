@@ -52,6 +52,21 @@ class BoardDetailViewModel(private val boardRepository: BoardRepository) : ViewM
         }
     }
 
+    fun fetchPostsWithMyComments() {
+        viewModelScope.launch {
+            boardRepository.fetchPostsWithMyComments(
+                onSuccess = { posts ->
+                    _postList.value = posts
+                    _isLoading.value = false
+                },
+                onFailure = { exception ->
+                    _errorMessage.value = exception.message ?: "알 수 없는 오류가 발생하였습니다."
+                    _isLoading.value = false
+                }
+            )
+        }
+    }
+
     companion object {
         fun provideFactory(
             boardRepository: BoardRepository,
