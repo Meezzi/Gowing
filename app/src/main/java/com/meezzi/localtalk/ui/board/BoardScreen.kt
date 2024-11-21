@@ -39,6 +39,7 @@ import com.meezzi.localtalk.data.Categories
 fun BoardScreen(
     onNavigateToSearch: () -> Unit,
     onNavigateToMyPosts: () -> Unit,
+    onNavigateToMyComments: () -> Unit,
     onNavigateToPostItem: (String) -> Unit
 ) {
     Scaffold(
@@ -52,6 +53,7 @@ fun BoardScreen(
         BoardContentScreen(
             innerPadding,
             onNavigateToMyPosts,
+            onNavigateToMyComments,
             onNavigateToPostItem
         )
     }
@@ -79,6 +81,7 @@ fun BoardTopAppBar(
 fun BoardContentScreen(
     innerPadding: PaddingValues,
     onNavigateToMyPosts: () -> Unit,
+    onNavigateToMyComments: () -> Unit,
     onNavigateToPostItem: (String) -> Unit,
 ) {
     Column(
@@ -97,7 +100,7 @@ fun BoardContentScreen(
         BoardItem(
             icon = painterResource(R.drawable.ic_speech_bubble),
             text = stringResource(R.string.myComments),
-            onClick = {}
+            onClick = { onNavigateToMyComments() }
         )
 
         BoardItem(

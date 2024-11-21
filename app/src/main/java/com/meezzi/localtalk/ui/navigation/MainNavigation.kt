@@ -117,6 +117,9 @@ fun MainNavHost(
                 onNavigateToMyPosts = {
                     navController.navigate("${Screens.BoardDetail.name}/my_posts")
                 },
+                onNavigateToMyComments = {
+                    navController.navigate("${Screens.BoardDetail.name}/my_comments")
+                },
                 onNavigateToPostItem = { categoryId ->
                     val category = categoryId.lowercase()
                     navController.navigate("${Screens.BoardDetail.name}/$category")
