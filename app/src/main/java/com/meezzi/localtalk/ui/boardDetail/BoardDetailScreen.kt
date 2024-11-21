@@ -29,7 +29,10 @@ fun BoardDetailScreen(
     onNavigateToPostDetail: (String, String, String) -> Unit,
 ) {
 
-    val categoryName = Categories.getDisplayNameById(categoryId?.uppercase() ?: "") ?: "로딩 중"
+    val categoryName = when (categoryId) {
+        "my_posts" -> "내가 쓴 글"
+        else -> Categories.getDisplayNameById(categoryId?.uppercase() ?: "") ?: "로딩 중"
+    }
 
     val city by homeViewModel.address.collectAsState()
     val postList by boardDetailViewModel.postList.collectAsState()
@@ -37,8 +40,16 @@ fun BoardDetailScreen(
     val errorMessage by boardDetailViewModel.errorMessage.collectAsState()
 
     LaunchedEffect(city, categoryId) {
-        if (categoryId != null) {
-            boardDetailViewModel.fetchPostsByCategory(city.split(" ")[0], categoryId)
+        when (categoryId) {
+            "my_posts" -> {
+                boardDetailViewModel.fetchMyPosts()
+            }
+
+            else -> {
+                if (categoryId != null) {
+                    boardDetailViewModel.fetchPostsByCategory(city.split(" ")[0], categoryId)
+                }
+            }
         }
     }
 
