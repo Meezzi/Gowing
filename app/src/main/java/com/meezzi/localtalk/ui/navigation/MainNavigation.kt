@@ -189,9 +189,9 @@ fun MainNavHost(
                 categoryId = categoryId,
                 homeViewModel = homeViewModel,
                 boardDetailViewModel = boardDetailViewModel,
-                onNavigateBack = {  },
-                onNavigateToPostDetail = {
-
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToPostDetail = { city, categoryId, postId ->
+                    navController.navigate("${Screens.PostDetail.name}/$city/$categoryId/$postId")
                 }
             )
         }
