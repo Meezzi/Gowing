@@ -31,6 +31,7 @@ fun BoardDetailScreen(
 
     val categoryName = when (categoryId) {
         "my_posts" -> "내가 쓴 글"
+        "my_comments" -> "내가 댓글 단 글"
         else -> Categories.getDisplayNameById(categoryId?.uppercase() ?: "") ?: "로딩 중"
     }
 
@@ -43,6 +44,10 @@ fun BoardDetailScreen(
         when (categoryId) {
             "my_posts" -> {
                 boardDetailViewModel.fetchMyPosts()
+            }
+
+            "my_comments" -> {
+                boardDetailViewModel.fetchPostsWithMyComments()
             }
 
             else -> {
