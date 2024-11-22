@@ -11,7 +11,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.meezzi.localtalk.R
 import com.meezzi.localtalk.data.Categories
 import com.meezzi.localtalk.data.Post
 import com.meezzi.localtalk.ui.common.LoadingView
@@ -30,8 +32,8 @@ fun BoardDetailScreen(
 ) {
 
     val categoryName = when (categoryId) {
-        "my_posts" -> "내가 쓴 글"
-        "my_comments" -> "내가 댓글 단 글"
+        "my_posts" -> stringResource(id = R.string.board_my_posts)
+        "my_comments" -> stringResource(id = R.string.board_my_comments)
         else -> Categories.getDisplayNameById(categoryId?.uppercase() ?: "") ?: "로딩 중"
     }
 
