@@ -125,8 +125,8 @@ fun PostLists(
 
 @Composable
 fun PostListSection(
-    title: String,
-    icon: Painter,
+    title: String? = null,
+    icon: Painter? = null,
     postList: List<Post>,
     onNavigateToPostDetail: (String, String, String) -> Unit
 ) {
@@ -135,19 +135,21 @@ fun PostListSection(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(start = 16.dp, top = 8.dp, end = 16.dp, bottom = 8.dp),
         ) {
-            Icon(
-                painter = icon,
-                contentDescription = stringResource(id = R.string.icon),
-                modifier = Modifier.size(24.dp),
-                tint = Color.Unspecified
-            )
+            if(icon!=null && title != null) {
+                Icon(
+                    painter = icon,
+                    contentDescription = stringResource(id = R.string.icon),
+                    modifier = Modifier.size(24.dp),
+                    tint = Color.Unspecified
+                )
 
-            Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(8.dp))
 
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
-            )
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                )
+            }
         }
 
         if (postList.isNotEmpty()) {
