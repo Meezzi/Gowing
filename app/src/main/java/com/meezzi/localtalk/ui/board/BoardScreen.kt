@@ -93,13 +93,13 @@ fun BoardContentScreen(
     ) {
         BoardItem(
             icon = painterResource(R.drawable.ic_pencil),
-            text = stringResource(R.string.myPosts),
+            text = stringResource(R.string.board_my_posts),
             onClick = { onNavigateToMyPosts() }
         )
 
         BoardItem(
             icon = painterResource(R.drawable.ic_speech_bubble),
-            text = stringResource(R.string.myComments),
+            text = stringResource(R.string.board_my_comments),
             onClick = { onNavigateToMyComments() }
         )
 

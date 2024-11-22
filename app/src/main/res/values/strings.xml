@@ -49,8 +49,8 @@
     <string name="home_empty_post">게시물이 없습니다.</string>
 
     <!--   게시판 화면   -->
-    <string name="myPosts">내가 쓴 글</string>
-    <string name="myComments">댓글 단 글</string>
+    <string name="board_my_posts">내가 쓴 글</string>
+    <string name="board_my_comments">댓글 단 글</string>
 
     <!--   글 쓰기 화면   -->
     <string name="add_post_select_board_title">게시글의 주제를 선택해주세요.</string>
