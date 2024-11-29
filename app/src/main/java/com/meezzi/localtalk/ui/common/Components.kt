@@ -71,6 +71,38 @@ fun NavigationTopAppBar(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun NavigationMenuTopAppBar(
+    title: String?,
+    menuItems: List<String>,
+    onMenuItemClick: (String) -> Unit,
+    onNavigateBack: () -> Unit
+) {
+    var isMenuExpanded by remember { mutableStateOf(false) }
+
+    TopAppBar(
+        title = { Text(text = title ?: stringResource(id = R.string.action_loading)) },
+        navigationIcon = {
+            IconButton(onClick = onNavigateBack) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = stringResource(id = R.string.action_back)
+                )
+            }
+        },
+        actions = {
+            MenuDropdownButton(
+                menuItems = menuItems,
+                onMenuItemClick = {
+                    isMenuExpanded = false
+                    onMenuItemClick(it)
+                }
+            )
+        }
+    )
+}
+
 @Composable
 private fun MenuDropdownButton(
     menuItems: List<String>,
