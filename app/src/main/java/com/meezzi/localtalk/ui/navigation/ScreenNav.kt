@@ -16,6 +16,7 @@ enum class Screens {
     ImageViewer,
     Search,
     BoardDetail,
+    ChatRoom,
 }
 
 sealed class Screen(

@@ -57,7 +57,7 @@ import coil.compose.AsyncImage
 import com.meezzi.localtalk.R
 import com.meezzi.localtalk.data.Comment
 import com.meezzi.localtalk.data.Post
-import com.meezzi.localtalk.ui.common.NavigationTopAppBar
+import com.meezzi.localtalk.ui.common.NavigationMenuTopAppBar
 import kotlinx.coroutines.launch
 
 @Composable
@@ -68,6 +68,7 @@ fun PostDetailScreen(
     postDetailViewModel: PostDetailViewModel,
     onNavigateBack: () -> Unit,
     onImageClick: (Int) -> Unit,
+    onNavigateChat: () -> Unit,
 ) {
     val post by postDetailViewModel.post.collectAsState()
     val profileImage by postDetailViewModel.profileImage.collectAsState()
@@ -91,8 +92,14 @@ fun PostDetailScreen(
 
     Scaffold(
         topBar = {
-            NavigationTopAppBar(
+            NavigationMenuTopAppBar(
                 title = post?.category?.name,
+                menuItems = listOf(stringResource(id = R.string.action_chat)),
+                onMenuItemClick = { menuItem ->
+                    when (menuItem) {
+                        "채팅하기" -> onNavigateChat()
+                    }
+                },
                 onNavigateBack = onNavigateBack
             )
         },
