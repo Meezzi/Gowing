@@ -177,6 +177,9 @@ fun MainNavHost(
                     )
                     navController.navigate(Screens.ImageViewer.name)
                 },
+                onNavigateChat = {
+                    navController.navigate(Screens.ChatRoom.name)
+                }
             )
         }
 
