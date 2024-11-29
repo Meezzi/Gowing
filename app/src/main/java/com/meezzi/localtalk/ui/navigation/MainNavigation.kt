@@ -22,6 +22,7 @@ import com.meezzi.localtalk.ui.addPost.AddPostScreen
 import com.meezzi.localtalk.ui.addPost.AddPostViewModel
 import com.meezzi.localtalk.ui.board.BoardScreen
 import com.meezzi.localtalk.ui.boardDetail.BoardDetailViewModel
+import com.meezzi.localtalk.ui.chat.ChatRoomScreen
 import com.meezzi.localtalk.ui.chat.ChatScreen
 import com.meezzi.localtalk.ui.home.HomeViewModel
 import com.meezzi.localtalk.ui.home.screens.AddPostFloatingButton
@@ -201,6 +202,10 @@ fun MainNavHost(
                     navController.navigate("${Screens.PostDetail.name}/$city/$categoryId/$postId")
                 }
             )
+        }
+
+        composable(Screens.ChatRoom.name) {
+            ChatRoomScreen()
         }
     }
 }
