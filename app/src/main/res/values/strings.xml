@@ -68,4 +68,5 @@
     <!--   액션 공통   -->
     <string name="action_back">뒤로 가기</string>
     <string name="action_loading">로딩 중</string>
+    <string name="action_chat">채팅하기</string>
 </resources>

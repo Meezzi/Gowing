@@ -68,6 +68,7 @@ fun PostDetailScreen(
     postDetailViewModel: PostDetailViewModel,
     onNavigateBack: () -> Unit,
     onImageClick: (Int) -> Unit,
+    onNavigateChat: () -> Unit,
 ) {
     val post by postDetailViewModel.post.collectAsState()
     val profileImage by postDetailViewModel.profileImage.collectAsState()
@@ -93,6 +94,12 @@ fun PostDetailScreen(
         topBar = {
             NavigationMenuTopAppBar(
                 title = post?.category?.name,
+                menuItems = listOf(stringResource(id = R.string.action_chat)),
+                onMenuItemClick = { menuItem ->
+                    when (menuItem) {
+                        "채팅하기" -> onNavigateChat()
+                    }
+                },
                 onNavigateBack = onNavigateBack
             )
         },
