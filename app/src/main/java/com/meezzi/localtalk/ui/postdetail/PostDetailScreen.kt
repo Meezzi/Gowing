@@ -57,7 +57,7 @@ import coil.compose.AsyncImage
 import com.meezzi.localtalk.R
 import com.meezzi.localtalk.data.Comment
 import com.meezzi.localtalk.data.Post
-import com.meezzi.localtalk.ui.common.NavigationTopAppBar
+import com.meezzi.localtalk.ui.common.NavigationMenuTopAppBar
 import kotlinx.coroutines.launch
 
 @Composable
@@ -91,7 +91,7 @@ fun PostDetailScreen(
 
     Scaffold(
         topBar = {
-            NavigationTopAppBar(
+            NavigationMenuTopAppBar(
                 title = post?.category?.name,
                 onNavigateBack = onNavigateBack
             )
