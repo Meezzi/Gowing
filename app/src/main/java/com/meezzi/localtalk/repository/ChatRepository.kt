@@ -3,6 +3,7 @@ package com.meezzi.localtalk.repository
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.toObject
 import com.google.firebase.ktx.Firebase
 import com.meezzi.localtalk.data.ChatRoom
 import com.meezzi.localtalk.data.Message
@@ -59,6 +60,25 @@ class ChatRepository {
                         "lastMessageTime" to messageData.timestamp
                     )
                 )
+            }
+    }
+
+    fun fetchMessages(
+        chatRoomId: String,
+        onResult: (List<Message>) -> Unit,
+    ) {
+        db.collection("chat_rooms")
+            .document(chatRoomId)
+            .collection("messages")
+            .orderBy("timestamp")
+            .addSnapshotListener { snapshot, e ->
+                if (e != null) {
+                    return@addSnapshotListener
+                }
+                val messages = snapshot?.documents?.mapNotNull { document ->
+                    document.toObject<Message>()
+                } ?: emptyList()
+                onResult(messages)
             }
     }
 }
