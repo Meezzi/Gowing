@@ -8,3 +8,10 @@ data class Message(
     val timestamp: Timestamp = Timestamp.now(),
     val type: String = "",
 )
+
+data class ChatRoom(
+    val chatRoomId: String = "",
+    val participants: List<String> = emptyList(),
+    val lastMessage: String = "",
+    val lastMessageTime: Timestamp? = null
+)
