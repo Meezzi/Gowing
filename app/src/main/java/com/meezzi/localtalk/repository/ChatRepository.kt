@@ -1,9 +1,11 @@
 package com.meezzi.localtalk.repository
 
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import com.meezzi.localtalk.data.ChatRoom
+import com.meezzi.localtalk.data.Message
 
 class ChatRepository {
 
@@ -33,6 +35,30 @@ class ChatRepository {
                     val chatRoomId = documents.first().id
                     onResult(chatRoomId)
                 }
+            }
+    }
+
+    fun sendMessage(
+        chatRoomId: String,
+        messageContent: String,
+    ) {
+        val messageData = Message(
+            senderId = currentUserId!!,
+            content = messageContent,
+            timestamp = Timestamp.now()
+        )
+
+        val chatRoomRef = db.collection("chat_rooms").document(chatRoomId)
+
+        chatRoomRef.collection("messages")
+            .add(messageData)
+            .addOnSuccessListener {
+                chatRoomRef.update(
+                    mapOf(
+                        "lastMessage" to messageContent,
+                        "lastMessageTime" to messageData.timestamp
+                    )
+                )
             }
     }
 }
