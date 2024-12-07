@@ -1,5 +1,6 @@
 package com.meezzi.localtalk.ui.chat
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
@@ -10,6 +11,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 class ChatViewModel(private val chatRepository: ChatRepository) : ViewModel() {
+
+    private val _profileImageUri = MutableStateFlow<Uri?>(null)
+    val profileImageUri = _profileImageUri
 
     private val _chatContent = MutableStateFlow("")
     val chatContent = _chatContent
@@ -43,6 +47,14 @@ class ChatViewModel(private val chatRepository: ChatRepository) : ViewModel() {
         viewModelScope.launch {
             chatRepository.fetchMessages(chatRoomId) { messages ->
                 _messages.value = messages
+            }
+        }
+    }
+
+    fun fetchProfileImageUri(chatRoomId: String) {
+        viewModelScope.launch {
+            chatRepository.fetchProfileImageByUserId(chatRoomId) { uri ->
+                _profileImageUri.value = uri
             }
         }
     }
