@@ -13,6 +13,8 @@ class ChatRepository {
     private val db = FirebaseFirestore.getInstance()
     private val currentUserId = Firebase.auth.currentUser?.uid
 
+    fun getCurrentUserId(): String = currentUserId.toString()
+
     fun getOrCreateChatRoom(
         authorId: String,
         onResult: (String) -> Unit,
