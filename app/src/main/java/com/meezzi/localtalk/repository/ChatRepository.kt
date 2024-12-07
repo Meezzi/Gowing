@@ -98,4 +98,17 @@ class ChatRepository {
             "오류가 발생하였습니다."
         }
     }
+
+    private suspend fun fetchNickname(userId: String): String {
+        return try {
+            val document = db.collection("profiles").document(userId).get().await()
+            if (document.exists()) {
+                document.getString("nickname") ?: "닉네임 없음"
+            } else {
+                "사용자 정보를 찾을 수 없습니다."
+            }
+        } catch (e: Exception) {
+            "오류가 발생하였습니다."
+        }
+    }
 }
