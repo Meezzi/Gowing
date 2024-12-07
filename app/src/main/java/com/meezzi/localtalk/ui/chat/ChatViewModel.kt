@@ -39,6 +39,14 @@ class ChatViewModel(private val chatRepository: ChatRepository) : ViewModel() {
         _chatContent.value = newContent
     }
 
+    fun getOrCreateChatRoom(authorId: String, onResult: (String) -> Unit) {
+        viewModelScope.launch {
+            chatRepository.getOrCreateChatRoom(authorId) { chatRoomId ->
+                onResult(chatRoomId)
+            }
+        }
+    }
+
     fun sendMessage(chatRoomId: String, messageContent: String) {
         viewModelScope.launch {
             chatRepository.sendMessage(chatRoomId, messageContent)
@@ -64,7 +72,7 @@ class ChatViewModel(private val chatRepository: ChatRepository) : ViewModel() {
 
     fun fetchProfileImageUri(chatRoomId: String) {
         viewModelScope.launch {
-            chatRepository.fetchProfileImageByUserId(chatRoomId) { uri ->
+            chatRepository.fetchProfileImageByUserId(chatRoomId) { uri->
                 _profileImageUri.value = uri
             }
         }
