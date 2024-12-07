@@ -1,10 +1,12 @@
 package com.meezzi.localtalk.repository
 
+import android.net.Uri
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.toObject
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import com.meezzi.localtalk.data.ChatRoom
 import com.meezzi.localtalk.data.Message
 import kotlinx.coroutines.tasks.await
@@ -115,6 +117,17 @@ class ChatRepository {
             }
         } catch (e: Exception) {
             "오류가 발생하였습니다."
+        }
+    }
+
+    suspend fun fetchProfileImageByUserId(chatRoomId: String, onResult: (Uri?) -> Unit,) {
+        val otherUserId = fetchOtherUserId(chatRoomId)
+        val profileImageRef = Firebase.storage.reference.child("images/${otherUserId}_profile_image")
+
+        profileImageRef.downloadUrl.addOnSuccessListener { uri ->
+            onResult(uri)
+        }.addOnFailureListener { e->
+            onResult(null)
         }
     }
 }
