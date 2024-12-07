@@ -12,6 +12,9 @@ import kotlinx.coroutines.launch
 
 class ChatViewModel(private val chatRepository: ChatRepository) : ViewModel() {
 
+    private val _userNickname = MutableStateFlow("")
+    val userNickname = _userNickname
+
     private val _profileImageUri = MutableStateFlow<Uri?>(null)
     val profileImageUri = _profileImageUri
 
@@ -47,6 +50,14 @@ class ChatViewModel(private val chatRepository: ChatRepository) : ViewModel() {
         viewModelScope.launch {
             chatRepository.fetchMessages(chatRoomId) { messages ->
                 _messages.value = messages
+            }
+        }
+    }
+
+    fun fetchOtherUserNickname(chatRoomId: String) {
+        viewModelScope.launch {
+            chatRepository.getUserNickname(chatRoomId) { nickname ->
+                _userNickname.value = nickname
             }
         }
     }
