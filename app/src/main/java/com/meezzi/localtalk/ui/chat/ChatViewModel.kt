@@ -8,6 +8,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 
 class ChatViewModel(private val chatRepository: ChatRepository) : ViewModel() {
 
+    private val _chatContent = MutableStateFlow("")
+    val chatContent = _chatContent
+
     private val _currentUserId = MutableStateFlow("")
     val currentUserId = _currentUserId
 
@@ -17,6 +20,10 @@ class ChatViewModel(private val chatRepository: ChatRepository) : ViewModel() {
 
     private fun setCurrentUserId() {
         _currentUserId.value = chatRepository.getCurrentUserId()
+    }
+
+    fun updateChatContent(newContent: String) {
+        _chatContent.value = newContent
     }
 
     companion object {
