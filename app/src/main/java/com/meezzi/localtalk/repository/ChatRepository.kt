@@ -7,6 +7,7 @@ import com.google.firebase.firestore.toObject
 import com.google.firebase.ktx.Firebase
 import com.meezzi.localtalk.data.ChatRoom
 import com.meezzi.localtalk.data.Message
+import kotlinx.coroutines.tasks.await
 
 class ChatRepository {
 
@@ -82,5 +83,19 @@ class ChatRepository {
                 } ?: emptyList()
                 onResult(messages)
             }
+    }
+
+    private suspend fun fetchOtherUserId(chatRoomId: String): String {
+        return try {
+            val document = db.collection("chat_rooms").document(chatRoomId).get().await()
+            if (document.exists()) {
+                val participants = document.get("participants") as? List<String> ?: emptyList()
+                participants.firstOrNull { it != currentUserId } ?: "상대방을 찾을 수 없습니다."
+            } else {
+                "채팅방 정보를 찾을 수 없습니다."
+            }
+        } catch (e: Exception) {
+            "오류가 발생하였습니다."
+        }
     }
 }
