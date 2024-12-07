@@ -85,6 +85,12 @@ class ChatRepository {
             }
     }
 
+    suspend fun getUserNickname(chatRoomId: String, onResult: (String) -> Unit) {
+        val otherUserId = fetchOtherUserId(chatRoomId)
+        val otherUserNickname = fetchNickname(otherUserId)
+        onResult(otherUserNickname)
+    }
+
     private suspend fun fetchOtherUserId(chatRoomId: String): String {
         return try {
             val document = db.collection("chat_rooms").document(chatRoomId).get().await()
