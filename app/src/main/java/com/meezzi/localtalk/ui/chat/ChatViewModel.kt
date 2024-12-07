@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.meezzi.localtalk.data.Message
 import com.meezzi.localtalk.repository.ChatRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -12,6 +13,9 @@ class ChatViewModel(private val chatRepository: ChatRepository) : ViewModel() {
 
     private val _chatContent = MutableStateFlow("")
     val chatContent = _chatContent
+
+    private val _messages = MutableStateFlow<List<Message>>(emptyList())
+    val messages = _messages
 
     private val _currentUserId = MutableStateFlow("")
     val currentUserId = _currentUserId
@@ -32,6 +36,14 @@ class ChatViewModel(private val chatRepository: ChatRepository) : ViewModel() {
         viewModelScope.launch {
             chatRepository.sendMessage(chatRoomId, messageContent)
             updateChatContent("")
+        }
+    }
+
+    fun fetchMessages(chatRoomId: String) {
+        viewModelScope.launch {
+            chatRepository.fetchMessages(chatRoomId) { messages ->
+                _messages.value = messages
+            }
         }
     }
 
