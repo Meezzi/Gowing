@@ -45,6 +45,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -92,7 +93,6 @@ fun ChatRoomScreen(
                     Intent.FLAG_GRANT_READ_URI_PERMISSION
                 )
             }
-            chatViewModel.updateSelectedImageUris(uris)
             chatViewModel.sendImages(chatRoomId, uris)
         }
     }
@@ -318,20 +318,36 @@ fun MessageContent(
             )
         }
 
-        Box(
-            modifier = Modifier
-                .background(
-                    color = if (isCurrentUser) Color.Magenta.copy(alpha = 0.3f) else Color.LightGray,
-                    shape = if (isCurrentUser)
-                        RoundedCornerShape(16.dp, 16.dp, 16.dp, 16.dp)
-                    else
-                        RoundedCornerShape(0.dp, 16.dp, 16.dp, 16.dp)
+        if (message.type == "image" && message.imageUrl.isNotEmpty()) {
+            message.imageUrl.forEach { url ->
+                AsyncImage(
+                    model = url,
+                    contentDescription = "Image message",
+                    modifier = Modifier
+                        .size(200.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .padding(top = 4.dp, bottom = 4.dp),
+                    placeholder = painterResource(id = R.drawable.ic_default_image),
+                    error = painterResource(id = R.drawable.ic_error_image),
+                    contentScale = ContentScale.Crop
                 )
-                .padding(top = 8.dp, bottom = 8.dp, start = 16.dp, end = 16.dp)
-        ) {
-            Text(
-                text = message.content,
-            )
+            }
+        } else {
+            Box(
+                modifier = Modifier
+                    .background(
+                        color = if (isCurrentUser) Color.Magenta.copy(alpha = 0.3f) else Color.LightGray,
+                        shape = if (isCurrentUser)
+                            RoundedCornerShape(16.dp, 16.dp, 16.dp, 16.dp)
+                        else
+                            RoundedCornerShape(0.dp, 16.dp, 16.dp, 16.dp)
+                    )
+                    .padding(top = 8.dp, bottom = 8.dp, start = 16.dp, end = 16.dp)
+            ) {
+                Text(
+                    text = message.content,
+                )
+            }
         }
     }
 }
