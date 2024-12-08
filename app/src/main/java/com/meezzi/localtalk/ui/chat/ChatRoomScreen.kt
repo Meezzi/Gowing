@@ -59,6 +59,9 @@ fun ChatRoomScreen(
     val currentUserId by chatViewModel.currentUserId.collectAsState()
     val messages by chatViewModel.messages.collectAsState()
 
+    LaunchedEffect(messages) {
+        chatViewModel.fetchMessages(chatRoomId)
+    }
 
     Scaffold(
         topBar = {
