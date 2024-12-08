@@ -57,6 +57,7 @@ import coil.compose.AsyncImage
 import com.meezzi.localtalk.R
 import com.meezzi.localtalk.data.Comment
 import com.meezzi.localtalk.data.Post
+import com.meezzi.localtalk.ui.chat.ChatViewModel
 import com.meezzi.localtalk.ui.common.NavigationMenuTopAppBar
 import kotlinx.coroutines.launch
 
@@ -66,9 +67,10 @@ fun PostDetailScreen(
     categoryId: String,
     postId: String,
     postDetailViewModel: PostDetailViewModel,
+    chatViewModel: ChatViewModel,
     onNavigateBack: () -> Unit,
     onImageClick: (Int) -> Unit,
-    onNavigateChat: () -> Unit,
+    onNavigateChat: (String) -> Unit,
 ) {
     val post by postDetailViewModel.post.collectAsState()
     val profileImage by postDetailViewModel.profileImage.collectAsState()
@@ -97,7 +99,14 @@ fun PostDetailScreen(
                 menuItems = listOf(stringResource(id = R.string.action_chat)),
                 onMenuItemClick = { menuItem ->
                     when (menuItem) {
-                        "채팅하기" -> onNavigateChat()
+                        "채팅하기" -> {
+                            chatViewModel.getOrCreateChatRoom(
+                                authorId = post?.authorId!!,
+                                onResult = { chatRoomId ->
+                                    onNavigateChat(chatRoomId)
+                                }
+                            )
+                        }
                     }
                 },
                 onNavigateBack = onNavigateBack

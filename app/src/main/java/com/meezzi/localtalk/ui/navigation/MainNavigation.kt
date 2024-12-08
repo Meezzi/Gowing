@@ -24,6 +24,7 @@ import com.meezzi.localtalk.ui.board.BoardScreen
 import com.meezzi.localtalk.ui.boardDetail.BoardDetailViewModel
 import com.meezzi.localtalk.ui.chat.ChatRoomScreen
 import com.meezzi.localtalk.ui.chat.ChatScreen
+import com.meezzi.localtalk.ui.chat.ChatViewModel
 import com.meezzi.localtalk.ui.home.HomeViewModel
 import com.meezzi.localtalk.ui.home.screens.AddPostFloatingButton
 import com.meezzi.localtalk.ui.home.screens.HomeScreen
@@ -46,6 +47,7 @@ fun MainNavHost(
     addPostViewModel: AddPostViewModel,
     postDetailViewModel: PostDetailViewModel,
     boardDetailViewModel: BoardDetailViewModel,
+    chatViewModel: ChatViewModel,
 ) {
 
     val user by introViewModel.authState.collectAsStateWithLifecycle()
@@ -169,6 +171,7 @@ fun MainNavHost(
                 city = city,
                 categoryId = categoryId,
                 postDetailViewModel = postDetailViewModel,
+                chatViewModel = chatViewModel,
                 onNavigateBack = { navController.popBackStack() },
                 onImageClick = { selectedImageIndex ->
                     postDetailViewModel.updateSelectedImageIndex(selectedImageIndex)
@@ -177,8 +180,8 @@ fun MainNavHost(
                     )
                     navController.navigate(Screens.ImageViewer.name)
                 },
-                onNavigateChat = {
-                    navController.navigate(Screens.ChatRoom.name)
+                onNavigateChat = { chatRoomId ->
+                    navController.navigate("${Screens.ChatRoom.name}/$chatRoomId")
                 }
             )
         }
