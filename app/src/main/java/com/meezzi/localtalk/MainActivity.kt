@@ -7,11 +7,13 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import com.meezzi.localtalk.repository.AuthRepository
 import com.meezzi.localtalk.repository.BoardRepository
+import com.meezzi.localtalk.repository.ChatRepository
 import com.meezzi.localtalk.repository.HomeRepository
 import com.meezzi.localtalk.repository.PostSaveRepository
 import com.meezzi.localtalk.repository.UserRepository
 import com.meezzi.localtalk.ui.addPost.AddPostViewModel
 import com.meezzi.localtalk.ui.boardDetail.BoardDetailViewModel
+import com.meezzi.localtalk.ui.chat.ChatViewModel
 import com.meezzi.localtalk.ui.home.HomeViewModel
 import com.meezzi.localtalk.ui.intro.IntroViewModel
 import com.meezzi.localtalk.ui.navigation.MainScreenView
@@ -59,6 +61,12 @@ class MainActivity : ComponentActivity() {
         )
     }
 
+    private val chatViewModel by viewModels<ChatViewModel> {
+        ChatViewModel.provideFactory(
+            ChatRepository(),
+        )
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -71,6 +79,7 @@ class MainActivity : ComponentActivity() {
                     addPostViewModel = addPostViewModel,
                     postDetailViewModel = postDetailViewModel,
                     boardDetailViewModel = boardDetailViewModel,
+                    chatViewModel = chatViewModel,
                 )
             }
         }

@@ -210,8 +210,12 @@ fun MainNavHost(
             )
         }
 
-        composable(Screens.ChatRoom.name) {
-            ChatRoomScreen()
+        composable("${Screens.ChatRoom.name}/{chatRoomId}") { backStackEntry ->
+            val chatRoomId = backStackEntry.arguments?.getString("chatRoomId")
+            ChatRoomScreen(
+                chatRoomId = chatRoomId!!,
+                chatViewModel = chatViewModel,
+                onNavigateBack = { navController.popBackStack() })
         }
     }
 }
@@ -225,6 +229,7 @@ fun MainScreenView(
     addPostViewModel: AddPostViewModel,
     postDetailViewModel: PostDetailViewModel,
     boardDetailViewModel: BoardDetailViewModel,
+    chatViewModel: ChatViewModel,
 ) {
     val navController = rememberNavController()
     val currentBackStack by navController.currentBackStackEntryAsState()
@@ -258,6 +263,7 @@ fun MainScreenView(
                 addPostViewModel = addPostViewModel,
                 postDetailViewModel = postDetailViewModel,
                 boardDetailViewModel = boardDetailViewModel,
+                chatViewModel = chatViewModel,
             )
         }
     }
