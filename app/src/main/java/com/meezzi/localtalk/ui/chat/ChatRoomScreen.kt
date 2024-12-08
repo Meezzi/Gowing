@@ -85,8 +85,8 @@ fun ChatRoomScreen(
             userProfileImage = profileImageUri,
             messages = messages,
             messageInput = chatContent,
-            onContentChange = { },
             onSendMessage = { }
+            onContentChange = { chatViewModel.updateChatContent(it) },
         )
     }
 }
