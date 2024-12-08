@@ -48,6 +48,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun ChatRoomScreen(
+    chatRoomId: String,
     chatViewModel: ChatViewModel,
     onNavigateBack: () -> Unit,
 ) {
