@@ -63,6 +63,11 @@ fun ChatRoomScreen(
         chatViewModel.fetchMessages(chatRoomId)
     }
 
+    LaunchedEffect(userNickname, profileImageUri) {
+        chatViewModel.fetchOtherUserNickname(chatRoomId)
+        chatViewModel.fetchProfileImageUri(chatRoomId)
+    }
+
     Scaffold(
         topBar = {
             NavigationMenuTopAppBar(
