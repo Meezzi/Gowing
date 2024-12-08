@@ -47,11 +47,14 @@ class ChatRepository {
     fun sendMessage(
         chatRoomId: String,
         messageContent: String,
+        imageUrls: List<String> = emptyList(),
     ) {
         val messageData = Message(
-            senderId = currentUserId!!,
+            senderId = currentUserId ?: "",
             content = messageContent,
-            timestamp = Timestamp.now()
+            timestamp = Timestamp.now(),
+            type = if (imageUrls.isEmpty()) "text" else "image",
+            imageUrl = imageUrls
         )
 
         val chatRoomRef = db.collection("chat_rooms").document(chatRoomId)
@@ -61,7 +64,7 @@ class ChatRepository {
             .addOnSuccessListener {
                 chatRoomRef.update(
                     mapOf(
-                        "lastMessage" to messageContent,
+                        "lastMessage" to if (messageData.type == "image") "[사진]" else messageData.content,
                         "lastMessageTime" to messageData.timestamp
                     )
                 )
