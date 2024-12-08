@@ -5,6 +5,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.ui.Modifier
 import com.meezzi.localtalk.repository.AuthRepository
 import com.meezzi.localtalk.repository.BoardRepository
 import com.meezzi.localtalk.repository.ChatRepository
@@ -72,15 +76,21 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             LocalTalkTheme {
-                MainScreenView(
-                    introViewModel = introViewModel,
-                    profileViewModel = profileViewModel,
-                    homeViewModel = homeViewModel,
-                    addPostViewModel = addPostViewModel,
-                    postDetailViewModel = postDetailViewModel,
-                    boardDetailViewModel = boardDetailViewModel,
-                    chatViewModel = chatViewModel,
-                )
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .imePadding()
+                ) {
+                    MainScreenView(
+                        introViewModel = introViewModel,
+                        profileViewModel = profileViewModel,
+                        homeViewModel = homeViewModel,
+                        addPostViewModel = addPostViewModel,
+                        postDetailViewModel = postDetailViewModel,
+                        boardDetailViewModel = boardDetailViewModel,
+                        chatViewModel = chatViewModel,
+                    )
+                }
             }
         }
     }
