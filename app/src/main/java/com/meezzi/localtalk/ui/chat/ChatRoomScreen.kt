@@ -49,6 +49,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun ChatRoomScreen(
     chatViewModel: ChatViewModel,
+    onNavigateBack: () -> Unit,
 ) {
 
     val userNickname by chatViewModel.userNickname.collectAsState()
@@ -59,7 +60,7 @@ fun ChatRoomScreen(
                 title = userNickname,
                 menuItems = listOf(stringResource(id = R.string.chat_room_exit)),
                 onMenuItemClick = { },
-                onNavigateBack = { },
+                onNavigateBack = { onNavigateBack() },
             )
         },
     ) { innerPadding ->
