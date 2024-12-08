@@ -87,6 +87,16 @@ fun ChatRoomContentScreen(
     onContentChange: (String) -> Unit,
     onSendMessage: (String) -> Unit,
 ) {
+    val listState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(messages.size) {
+        if (messages.isNotEmpty()) {
+            coroutineScope.launch {
+                listState.scrollToItem(messages.lastIndex)
+            }
+        }
+    }
 
     Column(
         modifier = Modifier
