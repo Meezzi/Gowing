@@ -53,6 +53,11 @@ fun ChatRoomScreen(
 ) {
 
     val userNickname by chatViewModel.userNickname.collectAsState()
+    val profileImageUri by chatViewModel.profileImageUri.collectAsState()
+    val chatContent by chatViewModel.chatContent.collectAsState()
+    val currentUserId by chatViewModel.currentUserId.collectAsState()
+    val messages by chatViewModel.messages.collectAsState()
+
 
     Scaffold(
         topBar = {
