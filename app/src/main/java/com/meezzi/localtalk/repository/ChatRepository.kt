@@ -130,4 +130,12 @@ class ChatRepository {
             onResult(null)
         }
     }
+
+    suspend fun uploadImageToFirebase(chatRoomId: String, uri: Uri): String {
+        val uid = fetchOtherUserId(chatRoomId)
+        val imageRef = Firebase.storage.reference.child("chat_images/$chatRoomId/${uid}/${System.currentTimeMillis()}.jpg")
+        imageRef.putFile(uri).await()
+
+        return imageRef.downloadUrl.await().toString()
+    }
 }
