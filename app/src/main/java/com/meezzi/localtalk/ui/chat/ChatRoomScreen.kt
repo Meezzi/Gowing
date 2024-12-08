@@ -10,6 +10,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
@@ -20,6 +27,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -57,6 +65,13 @@ fun ChatRoomScreen(
     ) { innerPadding ->
         ChatRoomContentScreen(
             innerPadding,
+            currentUserId = currentUserId,
+            userNickname = userNickname,
+            userProfileImage = profileImageUri,
+            messages = messages,
+            messageInput = chatContent,
+            onContentChange = { },
+            onSendMessage = { }
         )
     }
 }
@@ -64,8 +79,33 @@ fun ChatRoomScreen(
 @Composable
 fun ChatRoomContentScreen(
     innerPadding: PaddingValues,
+    currentUserId: String,
+    userNickname: String,
+    userProfileImage: Uri?,
+    messages: List<Message>,
+    messageInput: String,
+    onContentChange: (String) -> Unit,
+    onSendMessage: (String) -> Unit,
 ) {
 
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(innerPadding)
+    ) {
+        LazyColumn(
+            state = listState,
+            modifier = Modifier
+                .weight(1f)
+                .padding(start = 8.dp, end = 8.dp)
+        ) {
+            items(messages) { message ->
+                MessageItem(userNickname, userProfileImage, message, currentUserId)
+            }
+        }
+
+        MessageInputBar(messageInput, onContentChange, onSendMessage)
+    }
 }
 
 @Composable
