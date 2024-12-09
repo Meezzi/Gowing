@@ -36,6 +36,13 @@ import com.meezzi.localtalk.util.TimeFormat
 fun ChatScreen(
     chatViewModel: ChatViewModel,
 ) {
+    Scaffold(
+        topBar = {
+            CustomTopAppBar(title = stringResource(id = R.string.chat))
+        },
+    ) { innerPadding ->
+    }
+}
 
 @Composable
 fun ChatRoomList(
