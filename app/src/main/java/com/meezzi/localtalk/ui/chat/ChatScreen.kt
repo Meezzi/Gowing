@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -34,6 +36,24 @@ import com.meezzi.localtalk.util.TimeFormat
 fun ChatScreen(
     chatViewModel: ChatViewModel,
 ) {
+
+@Composable
+fun ChatRoomList(
+    innerPadding: PaddingValues,
+    chatRoomInfo: List<Pair<ChatRoom, Pair<String, Uri?>>>,
+) {
+    LazyColumn(modifier = Modifier.padding(innerPadding)) {
+        items(chatRoomInfo) { (chatRoom, userInfo) ->
+            val (nickname, profileImageUri) = userInfo
+            ChatRoomItem(
+                chatRoom = chatRoom,
+                nickname = nickname,
+                profileImageUri = profileImageUri
+            )
+        }
+    }
+}
+
 @Composable
 fun ChatRoomItem(chatRoom: ChatRoom, nickname: String, profileImageUri: Uri?) {
     Row(
