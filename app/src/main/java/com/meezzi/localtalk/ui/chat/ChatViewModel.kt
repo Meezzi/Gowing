@@ -31,8 +31,8 @@ class ChatViewModel(private val chatRepository: ChatRepository) : ViewModel() {
     private val _currentUserId = MutableStateFlow("")
     val currentUserId = _currentUserId
 
-    private val _chatRoomList = MutableStateFlow<List<ChatRoom>>(emptyList())
-    val chatRoomList = _chatRoomList
+    private val _chatRoomInfo = MutableStateFlow<List<Pair<ChatRoom, Pair<String, Uri?>>>>(emptyList())
+    val chatRoomInfo = _chatRoomInfo
 
     init {
         setCurrentUserId()
@@ -94,11 +94,15 @@ class ChatViewModel(private val chatRepository: ChatRepository) : ViewModel() {
         }
     }
 
-    fun fetchChatRoomList() {
+    fun fetchChatRoomListWithDetails() {
         viewModelScope.launch {
-            _isLoading.value = true
             try {
-                _chatRoomList.value = chatRepository.fetchChatRoomList()
+                val chatRooms = chatRepository.fetchChatRoomList()
+                val details = chatRooms.map { chatRoom ->
+                    val participantDetails = chatRepository.fetchParticipantInfo(chatRoom)
+                    chatRoom to participantDetails
+                }
+                _chatRoomInfo.value = details
             } finally {
                 _isLoading.value = false
             }
