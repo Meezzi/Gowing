@@ -7,6 +7,7 @@ data class Message(
     val content: String = "",
     val timestamp: Timestamp = Timestamp.now(),
     val type: String = "",
+    val imageUrl: List<String> = emptyList(),
 )
 
 data class ChatRoom(

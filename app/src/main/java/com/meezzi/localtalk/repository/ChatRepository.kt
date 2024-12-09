@@ -47,11 +47,14 @@ class ChatRepository {
     fun sendMessage(
         chatRoomId: String,
         messageContent: String,
+        imageUrls: List<String> = emptyList(),
     ) {
         val messageData = Message(
-            senderId = currentUserId!!,
+            senderId = currentUserId ?: "",
             content = messageContent,
-            timestamp = Timestamp.now()
+            timestamp = Timestamp.now(),
+            type = if (imageUrls.isEmpty()) "text" else "image",
+            imageUrl = imageUrls
         )
 
         val chatRoomRef = db.collection("chat_rooms").document(chatRoomId)
@@ -61,7 +64,7 @@ class ChatRepository {
             .addOnSuccessListener {
                 chatRoomRef.update(
                     mapOf(
-                        "lastMessage" to messageContent,
+                        "lastMessage" to if (messageData.type == "image") "[사진]" else messageData.content,
                         "lastMessageTime" to messageData.timestamp
                     )
                 )
@@ -129,5 +132,13 @@ class ChatRepository {
         }.addOnFailureListener { e->
             onResult(null)
         }
+    }
+
+    suspend fun uploadImageToFirebase(chatRoomId: String, uri: Uri): String {
+        val uid = fetchOtherUserId(chatRoomId)
+        val imageRef = Firebase.storage.reference.child("chat_images/$chatRoomId/${uid}/${System.currentTimeMillis()}.jpg")
+        imageRef.putFile(uri).await()
+
+        return imageRef.downloadUrl.await().toString()
     }
 }

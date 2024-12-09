@@ -47,9 +47,9 @@ class ChatViewModel(private val chatRepository: ChatRepository) : ViewModel() {
         }
     }
 
-    fun sendMessage(chatRoomId: String, messageContent: String) {
+    fun sendMessage(chatRoomId: String, messageContent: String, imageUrls: List<String> = emptyList()) {
         viewModelScope.launch {
-            chatRepository.sendMessage(chatRoomId, messageContent)
+            chatRepository.sendMessage(chatRoomId, messageContent, imageUrls)
             updateChatContent("")
         }
     }
@@ -75,6 +75,15 @@ class ChatViewModel(private val chatRepository: ChatRepository) : ViewModel() {
             chatRepository.fetchProfileImageByUserId(chatRoomId) { uri->
                 _profileImageUri.value = uri
             }
+        }
+    }
+
+    fun sendImages(chatRoomId: String, urls: List<Uri>) {
+        viewModelScope.launch {
+            val imageUrls = urls.map { url ->
+                chatRepository.uploadImageToFirebase(chatRoomId, url)
+            }
+            sendMessage(chatRoomId, "[사진]", imageUrls)
         }
     }
 
