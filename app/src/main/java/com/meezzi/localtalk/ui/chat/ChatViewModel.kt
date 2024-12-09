@@ -12,6 +12,9 @@ import kotlinx.coroutines.launch
 
 class ChatViewModel(private val chatRepository: ChatRepository) : ViewModel() {
 
+    private val _isLoading = MutableStateFlow(true)
+    val isLoading = _isLoading
+
     private val _userNickname = MutableStateFlow("")
     val userNickname = _userNickname
 
