@@ -30,6 +30,8 @@ import coil.compose.AsyncImage
 import com.meezzi.localtalk.R
 import com.meezzi.localtalk.data.ChatRoom
 import com.meezzi.localtalk.ui.common.CustomTopAppBar
+import com.meezzi.localtalk.ui.common.EmptyView
+import com.meezzi.localtalk.ui.common.LoadingView
 import com.meezzi.localtalk.util.TimeFormat
 
 @Composable
@@ -44,6 +46,20 @@ fun ChatScreen(
             CustomTopAppBar(title = stringResource(id = R.string.chat))
         },
     ) { innerPadding ->
+        ChatContentScreen(innerPadding, isLoading, chatRoomInfo)
+    }
+}
+
+@Composable
+fun ChatContentScreen(
+    innerPadding: PaddingValues,
+    isLoading: Boolean,
+    chatRoomInfo: List<Pair<ChatRoom, Pair<String, Uri?>>>
+) {
+    when {
+        isLoading -> LoadingView()
+        chatRoomInfo.isEmpty() -> EmptyView(stringResource(id = R.string.no_chat_rooms))
+        else -> ChatRoomList(innerPadding, chatRoomInfo = chatRoomInfo)
     }
 }
 
