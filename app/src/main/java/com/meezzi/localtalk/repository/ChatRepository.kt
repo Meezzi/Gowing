@@ -156,4 +156,15 @@ class ChatRepository {
             document.toObject<ChatRoom>()
         }
     }
+
+    suspend fun fetchParticipantInfo(chatRoom: ChatRoom): Pair<String, Uri?> {
+        val otherUserId = chatRoom.participants.find { it != currentUserId } ?: return "알 수 없는 사용자" to null
+        val nickname = fetchNickname(otherUserId)
+        val profileImageUri = try {
+            Firebase.storage.reference.child("images/${otherUserId}_profile_image").downloadUrl.await()
+        } catch (e: Exception) {
+            null
+        }
+        return nickname to profileImageUri
+    }
 }
