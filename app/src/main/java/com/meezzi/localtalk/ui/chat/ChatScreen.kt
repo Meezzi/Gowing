@@ -41,6 +41,10 @@ fun ChatScreen(
     val isLoading by chatViewModel.isLoading.collectAsState()
     val chatRoomInfo by chatViewModel.chatRoomInfo.collectAsState()
 
+    LaunchedEffect(chatRoomInfo) {
+        chatViewModel.fetchChatRoomListWithDetails()
+    }
+
     Scaffold(
         topBar = {
             CustomTopAppBar(title = stringResource(id = R.string.chat))
