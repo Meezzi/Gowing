@@ -131,7 +131,7 @@ fun MainNavHost(
         }
 
         composable(Screen.Chat.route) {
-            ChatScreen()
+            ChatScreen(chatViewModel)
         }
 
         composable(Screen.Profile.route) {
