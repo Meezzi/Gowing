@@ -96,7 +96,12 @@ class ChatViewModel(private val chatRepository: ChatRepository) : ViewModel() {
 
     fun fetchChatRoomList() {
         viewModelScope.launch {
+            _isLoading.value = true
+            try {
                 _chatRoomList.value = chatRepository.fetchChatRoomList()
+            } finally {
+                _isLoading.value = false
+            }
         }
     }
 
