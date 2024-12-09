@@ -322,7 +322,7 @@ fun MessageContent(
             message.imageUrl.forEach { url ->
                 AsyncImage(
                     model = url,
-                    contentDescription = "Image message",
+                    contentDescription = stringResource(id = R.string.image),
                     modifier = Modifier
                         .size(200.dp)
                         .clip(RoundedCornerShape(8.dp))
