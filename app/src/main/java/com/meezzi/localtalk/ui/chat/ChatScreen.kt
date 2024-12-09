@@ -36,6 +36,9 @@ import com.meezzi.localtalk.util.TimeFormat
 fun ChatScreen(
     chatViewModel: ChatViewModel,
 ) {
+    val isLoading by chatViewModel.isLoading.collectAsState()
+    val chatRoomInfo by chatViewModel.chatRoomInfo.collectAsState()
+
     Scaffold(
         topBar = {
             CustomTopAppBar(title = stringResource(id = R.string.chat))
