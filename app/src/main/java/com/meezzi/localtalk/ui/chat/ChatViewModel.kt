@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.meezzi.localtalk.data.ChatRoom
 import com.meezzi.localtalk.data.Message
 import com.meezzi.localtalk.repository.ChatRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,6 +30,9 @@ class ChatViewModel(private val chatRepository: ChatRepository) : ViewModel() {
 
     private val _currentUserId = MutableStateFlow("")
     val currentUserId = _currentUserId
+
+    private val _chatRoomList = MutableStateFlow<List<ChatRoom>>(emptyList())
+    val chatRoomList = _chatRoomList
 
     init {
         setCurrentUserId()
@@ -87,6 +91,12 @@ class ChatViewModel(private val chatRepository: ChatRepository) : ViewModel() {
                 chatRepository.uploadImageToFirebase(chatRoomId, url)
             }
             sendMessage(chatRoomId, "[사진]", imageUrls)
+        }
+    }
+
+    fun fetchChatRoomList() {
+        viewModelScope.launch {
+                _chatRoomList.value = chatRepository.fetchChatRoomList()
         }
     }
 
