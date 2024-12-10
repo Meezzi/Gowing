@@ -173,3 +173,19 @@ fun EmptyPostMessage() {
         modifier = Modifier.padding(16.dp)
     )
 }
+
+@Composable
+fun EmptyView(text: String) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(bottom = 50.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(
+            text = text,
+            color = Color.Gray
+        )
+    }
+}

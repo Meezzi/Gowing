@@ -131,7 +131,12 @@ fun MainNavHost(
         }
 
         composable(Screen.Chat.route) {
-            ChatScreen()
+            ChatScreen(
+                chatViewModel = chatViewModel,
+                onChatRoomClick = { chatRoomId ->
+                    navController.navigate("${Screens.ChatRoom.name}/$chatRoomId")
+                }
+            )
         }
 
         composable(Screen.Profile.route) {

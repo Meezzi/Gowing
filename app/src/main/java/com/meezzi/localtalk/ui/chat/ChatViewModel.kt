@@ -5,12 +5,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.meezzi.localtalk.data.ChatRoom
 import com.meezzi.localtalk.data.Message
 import com.meezzi.localtalk.repository.ChatRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 class ChatViewModel(private val chatRepository: ChatRepository) : ViewModel() {
+
+    private val _isLoading = MutableStateFlow(true)
+    val isLoading = _isLoading
 
     private val _userNickname = MutableStateFlow("")
     val userNickname = _userNickname
@@ -26,6 +30,9 @@ class ChatViewModel(private val chatRepository: ChatRepository) : ViewModel() {
 
     private val _currentUserId = MutableStateFlow("")
     val currentUserId = _currentUserId
+
+    private val _chatRoomInfo = MutableStateFlow<List<Pair<ChatRoom, Pair<String, Uri?>>>>(emptyList())
+    val chatRoomInfo = _chatRoomInfo
 
     init {
         setCurrentUserId()
@@ -84,6 +91,21 @@ class ChatViewModel(private val chatRepository: ChatRepository) : ViewModel() {
                 chatRepository.uploadImageToFirebase(chatRoomId, url)
             }
             sendMessage(chatRoomId, "[사진]", imageUrls)
+        }
+    }
+
+    fun fetchChatRoomListWithDetails() {
+        viewModelScope.launch {
+            try {
+                val chatRooms = chatRepository.fetchChatRoomList()
+                val details = chatRooms.map { chatRoom ->
+                    val participantDetails = chatRepository.fetchParticipantInfo(chatRoom)
+                    chatRoom to participantDetails
+                }
+                _chatRoomInfo.value = details
+            } finally {
+                _isLoading.value = false
+            }
         }
     }
 

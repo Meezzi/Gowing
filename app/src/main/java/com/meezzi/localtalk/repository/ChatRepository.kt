@@ -4,6 +4,7 @@ import android.net.Uri
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.toObject
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
@@ -140,5 +141,30 @@ class ChatRepository {
         imageRef.putFile(uri).await()
 
         return imageRef.downloadUrl.await().toString()
+    }
+
+    suspend fun fetchChatRoomList(): List<ChatRoom> {
+        val userId = getCurrentUserId()
+
+        val querySnapshot = db.collection("chat_rooms")
+            .whereArrayContains("participants", userId)
+            .orderBy("lastMessageTime", Query.Direction.DESCENDING)
+            .get()
+            .await()
+
+        return querySnapshot.documents.mapNotNull { document ->
+            document.toObject<ChatRoom>()
+        }
+    }
+
+    suspend fun fetchParticipantInfo(chatRoom: ChatRoom): Pair<String, Uri?> {
+        val otherUserId = chatRoom.participants.find { it != currentUserId } ?: return "알 수 없는 사용자" to null
+        val nickname = fetchNickname(otherUserId)
+        val profileImageUri = try {
+            Firebase.storage.reference.child("images/${otherUserId}_profile_image").downloadUrl.await()
+        } catch (e: Exception) {
+            null
+        }
+        return nickname to profileImageUri
     }
 }
