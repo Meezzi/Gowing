@@ -1,6 +1,7 @@
 package com.meezzi.localtalk.ui.chat
 
 import android.net.Uri
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -37,6 +38,7 @@ import com.meezzi.localtalk.util.TimeFormat
 @Composable
 fun ChatScreen(
     chatViewModel: ChatViewModel,
+    onChatRoomClick: (String) -> Unit,
 ) {
     val isLoading by chatViewModel.isLoading.collectAsState()
     val chatRoomInfo by chatViewModel.chatRoomInfo.collectAsState()
@@ -50,7 +52,7 @@ fun ChatScreen(
             CustomTopAppBar(title = stringResource(id = R.string.chat))
         },
     ) { innerPadding ->
-        ChatContentScreen(innerPadding, isLoading, chatRoomInfo)
+        ChatContentScreen(innerPadding, isLoading, chatRoomInfo, onChatRoomClick)
     }
 }
 
@@ -58,12 +60,13 @@ fun ChatScreen(
 fun ChatContentScreen(
     innerPadding: PaddingValues,
     isLoading: Boolean,
-    chatRoomInfo: List<Pair<ChatRoom, Pair<String, Uri?>>>
+    chatRoomInfo: List<Pair<ChatRoom, Pair<String, Uri?>>>,
+    onChatRoomClick: (String) -> Unit,
 ) {
     when {
         isLoading -> LoadingView()
         chatRoomInfo.isEmpty() -> EmptyView(stringResource(id = R.string.no_chat_rooms))
-        else -> ChatRoomList(innerPadding, chatRoomInfo = chatRoomInfo)
+        else -> ChatRoomList(innerPadding, chatRoomInfo = chatRoomInfo, onChatRoomClick)
     }
 }
 
@@ -71,6 +74,7 @@ fun ChatContentScreen(
 fun ChatRoomList(
     innerPadding: PaddingValues,
     chatRoomInfo: List<Pair<ChatRoom, Pair<String, Uri?>>>,
+    onChatRoomClick: (String) -> Unit,
 ) {
     LazyColumn(modifier = Modifier.padding(innerPadding)) {
         items(chatRoomInfo) { (chatRoom, userInfo) ->
@@ -78,18 +82,25 @@ fun ChatRoomList(
             ChatRoomItem(
                 chatRoom = chatRoom,
                 nickname = nickname,
-                profileImageUri = profileImageUri
+                profileImageUri = profileImageUri,
+                onChatRoomClick = { onChatRoomClick(chatRoom.chatRoomId) }
             )
         }
     }
 }
 
 @Composable
-fun ChatRoomItem(chatRoom: ChatRoom, nickname: String, profileImageUri: Uri?) {
+fun ChatRoomItem(
+    chatRoom: ChatRoom,
+    nickname: String,
+    profileImageUri: Uri?,
+    onChatRoomClick: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(12.dp),
+            .padding(12.dp)
+            .clickable { onChatRoomClick() },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
