@@ -1,6 +1,7 @@
 package com.meezzi.localtalk.ui.chat
 
 import android.net.Uri
+import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
@@ -15,6 +16,9 @@ class ChatViewModel(private val chatRepository: ChatRepository) : ViewModel() {
 
     private val _isLoading = MutableStateFlow(true)
     val isLoading = _isLoading
+
+    private val _isChatRoomActive = MutableStateFlow(true)
+    val isChatRoomActive = _isChatRoomActive
 
     private val _userNickname = MutableStateFlow("")
     val userNickname = _userNickname
@@ -31,11 +35,22 @@ class ChatViewModel(private val chatRepository: ChatRepository) : ViewModel() {
     private val _currentUserId = MutableStateFlow("")
     val currentUserId = _currentUserId
 
-    private val _chatRoomInfo = MutableStateFlow<List<Pair<ChatRoom, Pair<String, Uri?>>>>(emptyList())
+    private val _chatRoomInfo =
+        MutableStateFlow<List<Pair<ChatRoom, Pair<String, Uri?>>>>(emptyList())
     val chatRoomInfo = _chatRoomInfo
+
+    private val _errorMessage = MutableStateFlow("")
+    val errorMessage = _errorMessage
+
+    private val _snackbarHostState = SnackbarHostState()
+    val snackbarHostState = _snackbarHostState
 
     init {
         setCurrentUserId()
+    }
+
+    fun clearErrorMessage() {
+        _errorMessage.value = ""
     }
 
     private fun setCurrentUserId() {
@@ -54,7 +69,11 @@ class ChatViewModel(private val chatRepository: ChatRepository) : ViewModel() {
         }
     }
 
-    fun sendMessage(chatRoomId: String, messageContent: String, imageUrls: List<String> = emptyList()) {
+    fun sendMessage(
+        chatRoomId: String,
+        messageContent: String,
+        imageUrls: List<String> = emptyList()
+    ) {
         viewModelScope.launch {
             chatRepository.sendMessage(chatRoomId, messageContent, imageUrls)
             updateChatContent("")
@@ -69,17 +88,19 @@ class ChatViewModel(private val chatRepository: ChatRepository) : ViewModel() {
         }
     }
 
-    fun fetchOtherUserNickname(chatRoomId: String) {
+    fun observeOtherUserNickname(chatRoomId: String) {
         viewModelScope.launch {
-            chatRepository.getUserNickname(chatRoomId) { nickname ->
+            val otherUserId = chatRepository.fetchOtherUserId(chatRoomId)
+            chatRepository.observeNickname(otherUserId) { nickname ->
                 _userNickname.value = nickname
             }
         }
     }
 
-    fun fetchProfileImageUri(chatRoomId: String) {
+    fun observeProfileImage(chatRoomId: String) {
         viewModelScope.launch {
-            chatRepository.fetchProfileImageByUserId(chatRoomId) { uri->
+            val otherUserId = chatRepository.fetchOtherUserId(chatRoomId)
+            chatRepository.observeProfileImage(otherUserId) { uri ->
                 _profileImageUri.value = uri
             }
         }
@@ -105,6 +126,29 @@ class ChatViewModel(private val chatRepository: ChatRepository) : ViewModel() {
                 _chatRoomInfo.value = details
             } finally {
                 _isLoading.value = false
+            }
+        }
+    }
+
+    fun exitChatRoom(
+        chatRoomId: String,
+        onSuccess: () -> Unit,
+    ) {
+        viewModelScope.launch {
+            try {
+                chatRepository.deleteChatRoomParticipant(chatRoomId, currentUserId.value)
+                _isChatRoomActive.value = false
+                onSuccess()
+            } catch (e: Exception) {
+                _errorMessage.value = e.message ?: "알 수 없는 오류가 발생하였습니다."
+            }
+        }
+    }
+
+    fun updateChatRoomStatus(chatRoomId: String) {
+        viewModelScope.launch {
+            chatRepository.observeIsActive(chatRoomId) { isActive ->
+                _isChatRoomActive.value = isActive
             }
         }
     }

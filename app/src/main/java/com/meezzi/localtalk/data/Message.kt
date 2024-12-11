@@ -14,5 +14,7 @@ data class ChatRoom(
     val chatRoomId: String = "",
     val participants: List<String> = emptyList(),
     val lastMessage: String = "",
-    val lastMessageTime: Timestamp? = null
+    val lastMessageTime: Timestamp? = null,
+    @field:JvmField
+    val isActive: Boolean = true,
 )

@@ -30,6 +30,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -54,6 +55,7 @@ import com.meezzi.localtalk.R
 import com.meezzi.localtalk.data.Message
 import com.meezzi.localtalk.ui.common.CustomPermissionRationaleDialog
 import com.meezzi.localtalk.ui.common.NavigationMenuTopAppBar
+import com.meezzi.localtalk.ui.common.ShowChatRoomExitDialog
 import com.meezzi.localtalk.util.PermissionHandler
 import com.meezzi.localtalk.util.TimeFormat
 import kotlinx.coroutines.launch
@@ -65,21 +67,32 @@ fun ChatRoomScreen(
     onNavigateBack: () -> Unit,
 ) {
     var showPermissionRationaleDialog by remember { mutableStateOf(false) }
-    val context = LocalContext.current
+    var showDialog by remember { mutableStateOf(false) }
 
+    val context = LocalContext.current
+    val errorMessage by chatViewModel.errorMessage.collectAsState()
+    val isChatRoomActive by chatViewModel.isChatRoomActive.collectAsState()
     val userNickname by chatViewModel.userNickname.collectAsState()
     val profileImageUri by chatViewModel.profileImageUri.collectAsState()
     val chatContent by chatViewModel.chatContent.collectAsState()
     val currentUserId by chatViewModel.currentUserId.collectAsState()
     val messages by chatViewModel.messages.collectAsState()
 
-    LaunchedEffect(messages) {
+    LaunchedEffect(chatRoomId) {
+        chatViewModel.updateChatRoomStatus(chatRoomId)
         chatViewModel.fetchMessages(chatRoomId)
+        chatViewModel.observeOtherUserNickname(chatRoomId)
+        chatViewModel.observeProfileImage(chatRoomId)
     }
 
-    LaunchedEffect(userNickname, profileImageUri) {
-        chatViewModel.fetchOtherUserNickname(chatRoomId)
-        chatViewModel.fetchProfileImageUri(chatRoomId)
+    LaunchedEffect(errorMessage) {
+        if (errorMessage.isNotEmpty()) {
+            chatViewModel.snackbarHostState.showSnackbar(
+                message = errorMessage,
+                actionLabel = "닫기"
+            )
+            chatViewModel.clearErrorMessage()
+        }
     }
 
     val multiplePhotoPickerLauncher = rememberLauncherForActivityResult(
@@ -99,8 +112,8 @@ fun ChatRoomScreen(
 
     val mediaPermission =
         rememberLauncherForActivityResult(
-                contract = ActivityResultContracts.RequestPermission()
-                ) { isGranted ->
+            contract = ActivityResultContracts.RequestPermission()
+        ) { isGranted ->
             if (isGranted) {
                 multiplePhotoPickerLauncher.launch(
                     PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
@@ -110,18 +123,35 @@ fun ChatRoomScreen(
             }
         }
 
+    if (showDialog) {
+        ShowChatRoomExitDialog(
+            onConfirm = {
+                showDialog = false
+                chatViewModel.exitChatRoom(
+                    chatRoomId = chatRoomId,
+                    onSuccess = { onNavigateBack() },
+                )
+            },
+            onDismiss = { showDialog = false }
+        )
+    }
+
     Scaffold(
         topBar = {
             NavigationMenuTopAppBar(
                 title = userNickname,
                 menuItems = listOf(stringResource(id = R.string.chat_room_exit)),
-                onMenuItemClick = { },
+                onMenuItemClick = {
+                    showDialog = true
+                },
                 onNavigateBack = { onNavigateBack() },
             )
         },
+        snackbarHost = { SnackbarHost(hostState = chatViewModel.snackbarHostState) }
     ) { innerPadding ->
         ChatRoomContentScreen(
             innerPadding,
+            isChatRoomActive = isChatRoomActive,
             currentUserId = currentUserId,
             userNickname = userNickname,
             userProfileImage = profileImageUri,
@@ -158,6 +188,7 @@ fun ChatRoomScreen(
 @Composable
 fun ChatRoomContentScreen(
     innerPadding: PaddingValues,
+    isChatRoomActive: Boolean,
     currentUserId: String,
     userNickname: String,
     userProfileImage: Uri?,
@@ -194,7 +225,23 @@ fun ChatRoomContentScreen(
             }
         }
 
-        MessageInputBar(messageInput, onContentChange, onSendMessage, onAddImageClick)
+        if (!isChatRoomActive) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.White)
+            ) {
+                Text(
+                    text = stringResource(R.string.chat_room_not_found),
+                    modifier = Modifier.padding(12.dp),
+                    style = MaterialTheme.typography.titleMedium
+                )
+            }
+        } else {
+            MessageInputBar(messageInput, onContentChange, onSendMessage, onAddImageClick)
+        }
     }
 }
 

@@ -3,6 +3,7 @@ package com.meezzi.localtalk.repository
 import android.net.Uri
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.toObject
@@ -91,13 +92,19 @@ class ChatRepository {
             }
     }
 
-    suspend fun getUserNickname(chatRoomId: String, onResult: (String) -> Unit) {
-        val otherUserId = fetchOtherUserId(chatRoomId)
-        val otherUserNickname = fetchNickname(otherUserId)
-        onResult(otherUserNickname)
+    fun observeNickname(userId: String, onResult: (String) -> Unit) {
+        db.collection("profiles")
+            .document(userId)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    return@addSnapshotListener
+                }
+                val nickname = snapshot?.getString("nickname") ?: "닉네임 없음"
+                onResult(nickname)
+            }
     }
 
-    private suspend fun fetchOtherUserId(chatRoomId: String): String {
+    suspend fun fetchOtherUserId(chatRoomId: String): String {
         return try {
             val document = db.collection("chat_rooms").document(chatRoomId).get().await()
             if (document.exists()) {
@@ -124,20 +131,29 @@ class ChatRepository {
         }
     }
 
-    suspend fun fetchProfileImageByUserId(chatRoomId: String, onResult: (Uri?) -> Unit,) {
-        val otherUserId = fetchOtherUserId(chatRoomId)
-        val profileImageRef = Firebase.storage.reference.child("images/${otherUserId}_profile_image")
+    fun observeProfileImage(userId: String, onResult: (Uri?) -> Unit) {
+        val profileImageRef = Firebase.storage.reference.child("images/${userId}_profile_image")
 
-        profileImageRef.downloadUrl.addOnSuccessListener { uri ->
-            onResult(uri)
-        }.addOnFailureListener { e->
-            onResult(null)
-        }
+        db.collection("profiles")
+            .document(userId)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    onResult(null)
+                    return@addSnapshotListener
+                }
+
+                profileImageRef.downloadUrl.addOnSuccessListener { uri ->
+                    onResult(uri)
+                }.addOnFailureListener {
+                    onResult(null)
+                }
+            }
     }
 
     suspend fun uploadImageToFirebase(chatRoomId: String, uri: Uri): String {
         val uid = fetchOtherUserId(chatRoomId)
-        val imageRef = Firebase.storage.reference.child("chat_images/$chatRoomId/${uid}/${System.currentTimeMillis()}.jpg")
+        val imageRef =
+            Firebase.storage.reference.child("chat_images/$chatRoomId/${uid}/${System.currentTimeMillis()}.jpg")
         imageRef.putFile(uri).await()
 
         return imageRef.downloadUrl.await().toString()
@@ -158,7 +174,8 @@ class ChatRepository {
     }
 
     suspend fun fetchParticipantInfo(chatRoom: ChatRoom): Pair<String, Uri?> {
-        val otherUserId = chatRoom.participants.find { it != currentUserId } ?: return "알 수 없는 사용자" to null
+        val otherUserId =
+            chatRoom.participants.find { it != currentUserId } ?: return "알 수 없는 사용자" to null
         val nickname = fetchNickname(otherUserId)
         val profileImageUri = try {
             Firebase.storage.reference.child("images/${otherUserId}_profile_image").downloadUrl.await()
@@ -166,5 +183,62 @@ class ChatRepository {
             null
         }
         return nickname to profileImageUri
+    }
+
+    suspend fun deleteChatRoomParticipant(
+        chatRoomId: String,
+        participantId: String
+    ) {
+        val docRef = db.collection("chat_rooms").document(chatRoomId)
+
+        try {
+            docRef.update("participants", FieldValue.arrayRemove(participantId)).await()
+
+            val participantCount = getParticipantCount(chatRoomId)
+            when (participantCount) {
+                1 -> docRef.update("isActive", false).await()
+                0 -> deleteChatRoom(chatRoomId)
+            }
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
+    private suspend fun getParticipantCount(chatRoomId: String): Int {
+        return try {
+            val document = db.collection("chat_rooms").document(chatRoomId).get().await()
+            val chatRoom = document.toObject<ChatRoom>()
+            chatRoom?.participants?.size ?: 0
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
+    private suspend fun deleteChatRoom(chatRoomId: String) {
+        val docRef = db.collection("chat_rooms").document(chatRoomId)
+        docRef.delete().await()
+        val updates = hashMapOf<String, Any>(
+            "messages" to FieldValue.delete()
+        )
+        docRef.update(updates)
+    }
+
+    fun observeIsActive(
+        chatRoomId: String,
+        onResult: (Boolean) -> Unit,
+    ) {
+        val chatRoomRef = db.collection("chat_rooms").document(chatRoomId)
+        chatRoomRef.addSnapshotListener { snapshot, error ->
+            if (error != null) {
+                return@addSnapshotListener
+            }
+
+            if (snapshot != null && snapshot.exists()) {
+                val isActive = snapshot.getBoolean("isActive") ?: true
+                onResult(isActive)
+            } else {
+                onResult(false)
+            }
+        }
     }
 }
