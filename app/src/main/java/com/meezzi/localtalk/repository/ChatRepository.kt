@@ -177,4 +177,14 @@ class ChatRepository {
 
         docRef.update("participants", FieldValue.arrayRemove(participantId)).await()
     }
+
+    suspend fun getParticipantCount(chatRoomId: String): Int {
+        return try {
+            val document = db.collection("chat_rooms").document(chatRoomId).get().await()
+            val chatRoom = document.toObject<ChatRoom>()
+            chatRoom?.participants?.size ?: 0
+        } catch (e: Exception) {
+            -1
+        }
+    }
 }
