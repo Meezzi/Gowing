@@ -82,6 +82,7 @@ fun ChatRoomScreen(
         chatViewModel.updateChatRoomStatus(chatRoomId)
         chatViewModel.fetchMessages(chatRoomId)
         chatViewModel.observeOtherUserNickname(chatRoomId)
+        chatViewModel.observeProfileImage(chatRoomId)
     }
 
     LaunchedEffect(errorMessage) {
@@ -92,10 +93,6 @@ fun ChatRoomScreen(
             )
             chatViewModel.clearErrorMessage()
         }
-    }
-
-    LaunchedEffect(userNickname, profileImageUri) {
-        chatViewModel.fetchProfileImageUri(chatRoomId)
     }
 
     val multiplePhotoPickerLauncher = rememberLauncherForActivityResult(

@@ -131,16 +131,23 @@ class ChatRepository {
         }
     }
 
-    suspend fun fetchProfileImageByUserId(chatRoomId: String, onResult: (Uri?) -> Unit) {
-        val otherUserId = fetchOtherUserId(chatRoomId)
-        val profileImageRef =
-            Firebase.storage.reference.child("images/${otherUserId}_profile_image")
+    fun observeProfileImage(userId: String, onResult: (Uri?) -> Unit) {
+        val profileImageRef = Firebase.storage.reference.child("images/${userId}_profile_image")
 
-        profileImageRef.downloadUrl.addOnSuccessListener { uri ->
-            onResult(uri)
-        }.addOnFailureListener { e ->
-            onResult(null)
-        }
+        db.collection("profiles")
+            .document(userId)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    onResult(null)
+                    return@addSnapshotListener
+                }
+
+                profileImageRef.downloadUrl.addOnSuccessListener { uri ->
+                    onResult(uri)
+                }.addOnFailureListener {
+                    onResult(null)
+                }
+            }
     }
 
     suspend fun uploadImageToFirebase(chatRoomId: String, uri: Uri): String {

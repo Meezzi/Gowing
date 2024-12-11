@@ -97,9 +97,10 @@ class ChatViewModel(private val chatRepository: ChatRepository) : ViewModel() {
         }
     }
 
-    fun fetchProfileImageUri(chatRoomId: String) {
+    fun observeProfileImage(chatRoomId: String) {
         viewModelScope.launch {
-            chatRepository.fetchProfileImageByUserId(chatRoomId) { uri ->
+            val otherUserId = chatRepository.fetchOtherUserId(chatRoomId)
+            chatRepository.observeProfileImage(otherUserId) { uri ->
                 _profileImageUri.value = uri
             }
         }
