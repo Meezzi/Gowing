@@ -16,6 +16,9 @@ class ChatViewModel(private val chatRepository: ChatRepository) : ViewModel() {
     private val _isLoading = MutableStateFlow(true)
     val isLoading = _isLoading
 
+    private val _isChatRoomActive = MutableStateFlow(true)
+    val isChatRoomActive = _isChatRoomActive
+
     private val _userNickname = MutableStateFlow("")
     val userNickname = _userNickname
 
@@ -115,7 +118,16 @@ class ChatViewModel(private val chatRepository: ChatRepository) : ViewModel() {
     ) {
         viewModelScope.launch {
             chatRepository.deleteChatRoomParticipant(chatRoomId, currentUserId.value)
+            _isChatRoomActive.value = false
             onSuccess()
+        }
+    }
+
+    fun updateChatRoomStatus(chatRoomId: String) {
+        viewModelScope.launch {
+            chatRepository.observeIsActive(chatRoomId) { isActive ->
+                _isChatRoomActive.value = isActive
+            }
         }
     }
 
