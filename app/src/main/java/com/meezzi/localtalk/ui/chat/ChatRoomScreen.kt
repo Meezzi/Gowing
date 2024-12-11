@@ -52,6 +52,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.meezzi.localtalk.R
 import com.meezzi.localtalk.data.Message
+import com.meezzi.localtalk.ui.common.CustomAlertDialog
 import com.meezzi.localtalk.ui.common.CustomPermissionRationaleDialog
 import com.meezzi.localtalk.ui.common.NavigationMenuTopAppBar
 import com.meezzi.localtalk.util.PermissionHandler
@@ -65,8 +66,8 @@ fun ChatRoomScreen(
     onNavigateBack: () -> Unit,
 ) {
     var showPermissionRationaleDialog by remember { mutableStateOf(false) }
+    var showDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
-
     val userNickname by chatViewModel.userNickname.collectAsState()
     val profileImageUri by chatViewModel.profileImageUri.collectAsState()
     val chatContent by chatViewModel.chatContent.collectAsState()
@@ -110,12 +111,32 @@ fun ChatRoomScreen(
             }
         }
 
+    if (showDialog) {
+        CustomAlertDialog(
+            message = stringResource(id = R.string.chat_room_exit_message),
+            confirmButtonText = stringResource(id = R.string.chat_room_exit_yes_message),
+            dismissButtonText = stringResource(id = R.string.cancel),
+            onConfirm = {
+                showDialog = false
+                chatViewModel.exitChatRoom(
+                    chatRoomId = chatRoomId,
+                    onSuccess = { onNavigateBack() },
+                )
+            },
+            onDismiss = {
+                showDialog = false
+            }
+        )
+    }
+
     Scaffold(
         topBar = {
             NavigationMenuTopAppBar(
                 title = userNickname,
                 menuItems = listOf(stringResource(id = R.string.chat_room_exit)),
-                onMenuItemClick = { },
+                onMenuItemClick = {
+                    showDialog = true
+                },
                 onNavigateBack = { onNavigateBack() },
             )
         },
