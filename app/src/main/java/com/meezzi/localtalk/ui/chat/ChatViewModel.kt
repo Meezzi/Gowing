@@ -35,7 +35,8 @@ class ChatViewModel(private val chatRepository: ChatRepository) : ViewModel() {
     private val _currentUserId = MutableStateFlow("")
     val currentUserId = _currentUserId
 
-    private val _chatRoomInfo = MutableStateFlow<List<Pair<ChatRoom, Pair<String, Uri?>>>>(emptyList())
+    private val _chatRoomInfo =
+        MutableStateFlow<List<Pair<ChatRoom, Pair<String, Uri?>>>>(emptyList())
     val chatRoomInfo = _chatRoomInfo
 
     private val _errorMessage = MutableStateFlow("")
@@ -68,7 +69,11 @@ class ChatViewModel(private val chatRepository: ChatRepository) : ViewModel() {
         }
     }
 
-    fun sendMessage(chatRoomId: String, messageContent: String, imageUrls: List<String> = emptyList()) {
+    fun sendMessage(
+        chatRoomId: String,
+        messageContent: String,
+        imageUrls: List<String> = emptyList()
+    ) {
         viewModelScope.launch {
             chatRepository.sendMessage(chatRoomId, messageContent, imageUrls)
             updateChatContent("")
@@ -93,7 +98,7 @@ class ChatViewModel(private val chatRepository: ChatRepository) : ViewModel() {
 
     fun fetchProfileImageUri(chatRoomId: String) {
         viewModelScope.launch {
-            chatRepository.fetchProfileImageByUserId(chatRoomId) { uri->
+            chatRepository.fetchProfileImageByUserId(chatRoomId) { uri ->
                 _profileImageUri.value = uri
             }
         }

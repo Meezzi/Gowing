@@ -125,20 +125,22 @@ class ChatRepository {
         }
     }
 
-    suspend fun fetchProfileImageByUserId(chatRoomId: String, onResult: (Uri?) -> Unit,) {
+    suspend fun fetchProfileImageByUserId(chatRoomId: String, onResult: (Uri?) -> Unit) {
         val otherUserId = fetchOtherUserId(chatRoomId)
-        val profileImageRef = Firebase.storage.reference.child("images/${otherUserId}_profile_image")
+        val profileImageRef =
+            Firebase.storage.reference.child("images/${otherUserId}_profile_image")
 
         profileImageRef.downloadUrl.addOnSuccessListener { uri ->
             onResult(uri)
-        }.addOnFailureListener { e->
+        }.addOnFailureListener { e ->
             onResult(null)
         }
     }
 
     suspend fun uploadImageToFirebase(chatRoomId: String, uri: Uri): String {
         val uid = fetchOtherUserId(chatRoomId)
-        val imageRef = Firebase.storage.reference.child("chat_images/$chatRoomId/${uid}/${System.currentTimeMillis()}.jpg")
+        val imageRef =
+            Firebase.storage.reference.child("chat_images/$chatRoomId/${uid}/${System.currentTimeMillis()}.jpg")
         imageRef.putFile(uri).await()
 
         return imageRef.downloadUrl.await().toString()
@@ -159,7 +161,8 @@ class ChatRepository {
     }
 
     suspend fun fetchParticipantInfo(chatRoom: ChatRoom): Pair<String, Uri?> {
-        val otherUserId = chatRoom.participants.find { it != currentUserId } ?: return "알 수 없는 사용자" to null
+        val otherUserId =
+            chatRoom.participants.find { it != currentUserId } ?: return "알 수 없는 사용자" to null
         val nickname = fetchNickname(otherUserId)
         val profileImageUri = try {
             Firebase.storage.reference.child("images/${otherUserId}_profile_image").downloadUrl.await()

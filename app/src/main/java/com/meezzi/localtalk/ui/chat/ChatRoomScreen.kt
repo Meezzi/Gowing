@@ -118,8 +118,8 @@ fun ChatRoomScreen(
 
     val mediaPermission =
         rememberLauncherForActivityResult(
-                contract = ActivityResultContracts.RequestPermission()
-                ) { isGranted ->
+            contract = ActivityResultContracts.RequestPermission()
+        ) { isGranted ->
             if (isGranted) {
                 multiplePhotoPickerLauncher.launch(
                     PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
@@ -241,12 +241,11 @@ fun ChatRoomContentScreen(
             ) {
                 Text(
                     text = stringResource(R.string.chat_room_not_found),
-                    modifier =Modifier.padding(12.dp),
+                    modifier = Modifier.padding(12.dp),
                     style = MaterialTheme.typography.titleMedium
                 )
             }
-        }
-        else {
+        } else {
             MessageInputBar(messageInput, onContentChange, onSendMessage, onAddImageClick)
         }
     }
