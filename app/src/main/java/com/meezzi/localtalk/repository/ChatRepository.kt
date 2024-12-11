@@ -187,4 +187,13 @@ class ChatRepository {
             -1
         }
     }
+
+    private suspend fun deleteChatRoom(chatRoomId: String) {
+        val docRef = db.collection("chat_rooms").document(chatRoomId)
+        docRef.delete().await()
+        val updates = hashMapOf<String, Any>(
+            "messages" to FieldValue.delete()
+        )
+        docRef.update(updates)
+    }
 }
