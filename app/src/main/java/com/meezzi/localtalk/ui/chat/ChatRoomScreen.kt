@@ -30,6 +30,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -67,7 +68,9 @@ fun ChatRoomScreen(
 ) {
     var showPermissionRationaleDialog by remember { mutableStateOf(false) }
     var showDialog by remember { mutableStateOf(false) }
+
     val context = LocalContext.current
+    val errorMessage by chatViewModel.errorMessage.collectAsState()
     val isChatRoomActive by chatViewModel.isChatRoomActive.collectAsState()
     val userNickname by chatViewModel.userNickname.collectAsState()
     val profileImageUri by chatViewModel.profileImageUri.collectAsState()
@@ -81,6 +84,16 @@ fun ChatRoomScreen(
 
     LaunchedEffect(messages) {
         chatViewModel.fetchMessages(chatRoomId)
+    }
+
+    LaunchedEffect(errorMessage) {
+        if (errorMessage.isNotEmpty()) {
+            chatViewModel.snackbarHostState.showSnackbar(
+                message = errorMessage,
+                actionLabel = "닫기"
+            )
+            chatViewModel.clearErrorMessage()
+        }
     }
 
     LaunchedEffect(userNickname, profileImageUri) {
@@ -140,6 +153,7 @@ fun ChatRoomScreen(
                 onNavigateBack = { onNavigateBack() },
             )
         },
+        snackbarHost = { SnackbarHost(hostState = chatViewModel.snackbarHostState) }
     ) { innerPadding ->
         ChatRoomContentScreen(
             innerPadding,
