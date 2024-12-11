@@ -244,3 +244,17 @@ fun EmptyView(text: String) {
         )
     }
 }
+
+@Composable
+fun ShowChatRoomExitDialog(
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    CustomAlertDialog(
+        message = stringResource(id = R.string.chat_room_exit_message),
+        confirmButtonText = stringResource(id = R.string.chat_room_exit_yes_message),
+        dismissButtonText = stringResource(id = R.string.cancel),
+        onConfirm = { onConfirm() },
+        onDismiss = { onDismiss() }
+    )
+}
