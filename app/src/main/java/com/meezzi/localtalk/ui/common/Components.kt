@@ -1,9 +1,12 @@
 package com.meezzi.localtalk.ui.common
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
@@ -171,6 +174,58 @@ fun EmptyPostMessage() {
         style = MaterialTheme.typography.bodyLarge,
         color = Color.Gray,
         modifier = Modifier.padding(16.dp)
+    )
+}
+
+@Composable
+fun CustomAlertDialog(
+    message: String,
+    confirmButtonText: String,
+    dismissButtonText: String,
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = { onDismiss() },
+        text = {
+            Text(
+                text = message,
+                modifier = Modifier.fillMaxWidth(),
+                style = MaterialTheme.typography.titleMedium
+            )
+        },
+        confirmButton = {
+            TextButton(
+                onClick = { onConfirm() },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .background(
+                        color = Color.Magenta.copy(alpha = 0.4f),
+                        shape = RoundedCornerShape(8.dp)
+                    ),
+            ) {
+                Text(
+                    text = confirmButtonText,
+                    color = Color.White,
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = { onDismiss() },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+            ) {
+                Text(
+                    text = dismissButtonText,
+                    color = Color.Gray,
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            }
+        },
     )
 }
 
