@@ -74,13 +74,13 @@ fun ChatScreen(
             CustomTopAppBar(title = stringResource(id = R.string.chat))
         },
     ) { innerPadding ->
-        ChatContentScreen(innerPadding, isLoading, chatRoomInfo, onChatRoomClick)
         ChatContentScreen(
             innerPadding,
             isLoading,
             chatRoomInfo,
             onChatRoomClick,
             onChatRoomLongClick = { chatRoomId ->
+                vibrate(context)
                 selectedChatRoomId = chatRoomId
                 showDialog = true
             })
