@@ -3,6 +3,7 @@ package com.meezzi.localtalk.repository
 import android.net.Uri
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.toObject
@@ -166,5 +167,14 @@ class ChatRepository {
             null
         }
         return nickname to profileImageUri
+    }
+
+    suspend fun deleteChatRoomParticipant(
+        chatRoomId: String,
+        participantId: String
+    ) {
+        val docRef = db.collection("chat_rooms").document(chatRoomId)
+
+        docRef.update("participants", FieldValue.arrayRemove(participantId)).await()
     }
 }
