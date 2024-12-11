@@ -175,22 +175,26 @@ class ChatRepository {
     ) {
         val docRef = db.collection("chat_rooms").document(chatRoomId)
 
-        docRef.update("participants", FieldValue.arrayRemove(participantId)).await()
+        try {
+            docRef.update("participants", FieldValue.arrayRemove(participantId)).await()
 
-        val participantCount = getParticipantCount(chatRoomId)
-        when (participantCount) {
-            1 -> docRef.update("isActive", false).await()
-            0 -> deleteChatRoom(chatRoomId)
+            val participantCount = getParticipantCount(chatRoomId)
+            when (participantCount) {
+                1 -> docRef.update("isActive", false).await()
+                0 -> deleteChatRoom(chatRoomId)
+            }
+        } catch (e: Exception) {
+            throw e
         }
     }
 
-    suspend fun getParticipantCount(chatRoomId: String): Int {
+    private suspend fun getParticipantCount(chatRoomId: String): Int {
         return try {
             val document = db.collection("chat_rooms").document(chatRoomId).get().await()
             val chatRoom = document.toObject<ChatRoom>()
             chatRoom?.participants?.size ?: 0
         } catch (e: Exception) {
-            -1
+            throw e
         }
     }
 
