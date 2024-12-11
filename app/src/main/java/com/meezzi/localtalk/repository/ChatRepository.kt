@@ -176,6 +176,12 @@ class ChatRepository {
         val docRef = db.collection("chat_rooms").document(chatRoomId)
 
         docRef.update("participants", FieldValue.arrayRemove(participantId)).await()
+
+        val participantCount = getParticipantCount(chatRoomId)
+        when (participantCount) {
+            1 -> docRef.update("isActive", false).await()
+            0 -> deleteChatRoom(chatRoomId)
+        }
     }
 
     suspend fun getParticipantCount(chatRoomId: String): Int {
