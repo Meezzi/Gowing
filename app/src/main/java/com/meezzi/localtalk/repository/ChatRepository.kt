@@ -196,4 +196,23 @@ class ChatRepository {
         )
         docRef.update(updates)
     }
+
+    fun observeIsActive(
+        chatRoomId: String,
+        onResult: (Boolean) -> Unit,
+    ) {
+        val chatRoomRef = db.collection("chat_rooms").document(chatRoomId)
+        chatRoomRef.addSnapshotListener { snapshot, error ->
+            if (error != null) {
+                return@addSnapshotListener
+            }
+
+            if (snapshot != null && snapshot.exists()) {
+                val isActive = snapshot.getBoolean("isActive") ?: true
+                onResult(isActive)
+            } else {
+                onResult(false)
+            }
+        }
+    }
 }
