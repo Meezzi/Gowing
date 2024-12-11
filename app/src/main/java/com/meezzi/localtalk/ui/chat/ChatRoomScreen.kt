@@ -52,9 +52,9 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.meezzi.localtalk.R
 import com.meezzi.localtalk.data.Message
-import com.meezzi.localtalk.ui.common.CustomAlertDialog
 import com.meezzi.localtalk.ui.common.CustomPermissionRationaleDialog
 import com.meezzi.localtalk.ui.common.NavigationMenuTopAppBar
+import com.meezzi.localtalk.ui.common.ShowChatRoomExitDialog
 import com.meezzi.localtalk.util.PermissionHandler
 import com.meezzi.localtalk.util.TimeFormat
 import kotlinx.coroutines.launch
@@ -112,10 +112,7 @@ fun ChatRoomScreen(
         }
 
     if (showDialog) {
-        CustomAlertDialog(
-            message = stringResource(id = R.string.chat_room_exit_message),
-            confirmButtonText = stringResource(id = R.string.chat_room_exit_yes_message),
-            dismissButtonText = stringResource(id = R.string.cancel),
+        ShowChatRoomExitDialog(
             onConfirm = {
                 showDialog = false
                 chatViewModel.exitChatRoom(
@@ -123,9 +120,7 @@ fun ChatRoomScreen(
                     onSuccess = { onNavigateBack() },
                 )
             },
-            onDismiss = {
-                showDialog = false
-            }
+            onDismiss = { showDialog = false }
         )
     }
 
