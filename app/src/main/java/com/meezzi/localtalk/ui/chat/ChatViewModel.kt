@@ -109,6 +109,16 @@ class ChatViewModel(private val chatRepository: ChatRepository) : ViewModel() {
         }
     }
 
+    fun exitChatRoom(
+        chatRoomId: String,
+        onSuccess: () -> Unit,
+    ) {
+        viewModelScope.launch {
+            chatRepository.deleteChatRoomParticipant(chatRoomId, currentUserId.value)
+            onSuccess()
+        }
+    }
+
     companion object {
         fun provideFactory(repository: ChatRepository) = viewModelFactory {
             initializer {
