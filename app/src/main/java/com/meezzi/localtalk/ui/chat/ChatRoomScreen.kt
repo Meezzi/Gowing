@@ -80,9 +80,6 @@ fun ChatRoomScreen(
 
     LaunchedEffect(chatRoomId) {
         chatViewModel.updateChatRoomStatus(chatRoomId)
-    }
-
-    LaunchedEffect(messages) {
         chatViewModel.fetchMessages(chatRoomId)
     }
 
