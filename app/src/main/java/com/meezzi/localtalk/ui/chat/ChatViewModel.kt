@@ -1,6 +1,7 @@
 package com.meezzi.localtalk.ui.chat
 
 import android.net.Uri
+import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
@@ -39,6 +40,9 @@ class ChatViewModel(private val chatRepository: ChatRepository) : ViewModel() {
 
     private val _errorMessage = MutableStateFlow("")
     val errorMessage = _errorMessage
+
+    private val _snackbarHostState = SnackbarHostState()
+    val snackbarHostState = _snackbarHostState
 
     init {
         setCurrentUserId()
