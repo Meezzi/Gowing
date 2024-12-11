@@ -37,8 +37,15 @@ class ChatViewModel(private val chatRepository: ChatRepository) : ViewModel() {
     private val _chatRoomInfo = MutableStateFlow<List<Pair<ChatRoom, Pair<String, Uri?>>>>(emptyList())
     val chatRoomInfo = _chatRoomInfo
 
+    private val _errorMessage = MutableStateFlow("")
+    val errorMessage = _errorMessage
+
     init {
         setCurrentUserId()
+    }
+
+    fun clearErrorMessage() {
+        _errorMessage.value = ""
     }
 
     private fun setCurrentUserId() {
@@ -117,9 +124,13 @@ class ChatViewModel(private val chatRepository: ChatRepository) : ViewModel() {
         onSuccess: () -> Unit,
     ) {
         viewModelScope.launch {
-            chatRepository.deleteChatRoomParticipant(chatRoomId, currentUserId.value)
-            _isChatRoomActive.value = false
-            onSuccess()
+            try {
+                chatRepository.deleteChatRoomParticipant(chatRoomId, currentUserId.value)
+                _isChatRoomActive.value = false
+                onSuccess()
+            } catch (e: Exception) {
+                _errorMessage.value = e.message ?: "알 수 없는 오류가 발생하였습니다."
+            }
         }
     }
 
