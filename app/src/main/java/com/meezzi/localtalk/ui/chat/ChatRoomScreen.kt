@@ -74,6 +74,10 @@ fun ChatRoomScreen(
     val currentUserId by chatViewModel.currentUserId.collectAsState()
     val messages by chatViewModel.messages.collectAsState()
 
+    LaunchedEffect(chatRoomId) {
+        chatViewModel.updateChatRoomStatus(chatRoomId)
+    }
+
     LaunchedEffect(messages) {
         chatViewModel.fetchMessages(chatRoomId)
     }
