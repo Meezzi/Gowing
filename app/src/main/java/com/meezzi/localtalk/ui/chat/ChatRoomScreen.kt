@@ -68,6 +68,7 @@ fun ChatRoomScreen(
     var showPermissionRationaleDialog by remember { mutableStateOf(false) }
     var showDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
+    val isChatRoomActive by chatViewModel.isChatRoomActive.collectAsState()
     val userNickname by chatViewModel.userNickname.collectAsState()
     val profileImageUri by chatViewModel.profileImageUri.collectAsState()
     val chatContent by chatViewModel.chatContent.collectAsState()
@@ -142,6 +143,7 @@ fun ChatRoomScreen(
     ) { innerPadding ->
         ChatRoomContentScreen(
             innerPadding,
+            isChatRoomActive = isChatRoomActive,
             currentUserId = currentUserId,
             userNickname = userNickname,
             userProfileImage = profileImageUri,
@@ -178,6 +180,7 @@ fun ChatRoomScreen(
 @Composable
 fun ChatRoomContentScreen(
     innerPadding: PaddingValues,
+    isChatRoomActive: Boolean,
     currentUserId: String,
     userNickname: String,
     userProfileImage: Uri?,
@@ -214,7 +217,24 @@ fun ChatRoomContentScreen(
             }
         }
 
-        MessageInputBar(messageInput, onContentChange, onSendMessage, onAddImageClick)
+        if (!isChatRoomActive) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.White)
+            ) {
+                Text(
+                    text = stringResource(R.string.chat_room_not_found),
+                    modifier =Modifier.padding(12.dp),
+                    style = MaterialTheme.typography.titleMedium
+                )
+            }
+        }
+        else {
+            MessageInputBar(messageInput, onContentChange, onSendMessage, onAddImageClick)
+        }
     }
 }
 

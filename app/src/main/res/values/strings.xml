@@ -71,6 +71,7 @@
     <string name="chat_room_exit">채팅방 나가기</string>
     <string name="chat_room_exit_message">채팅방을 나가면 이 채팅방의 모든 대화 내용이 삭제됩니다. 채팅방에서 나가시겠어요?</string>
     <string name="chat_room_exit_yes_message">네, 나갈래요.</string>
+    <string name="chat_room_not_found">채팅방을 찾을 수 없습니다.</string>
 
     <!--   액션 공통   -->
     <string name="action_back">뒤로 가기</string>
