@@ -1,7 +1,7 @@
 package com.meezzi.localtalk.ui.chat
 
 import android.net.Uri
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -19,11 +19,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -33,18 +38,35 @@ import com.meezzi.localtalk.data.ChatRoom
 import com.meezzi.localtalk.ui.common.CustomTopAppBar
 import com.meezzi.localtalk.ui.common.EmptyView
 import com.meezzi.localtalk.ui.common.LoadingView
+import com.meezzi.localtalk.ui.common.ShowChatRoomExitDialog
 import com.meezzi.localtalk.util.TimeFormat
+import com.meezzi.localtalk.util.vibrate
 
 @Composable
 fun ChatScreen(
     chatViewModel: ChatViewModel,
     onChatRoomClick: (String) -> Unit,
 ) {
+    val context = LocalContext.current
     val isLoading by chatViewModel.isLoading.collectAsState()
     val chatRoomInfo by chatViewModel.chatRoomInfo.collectAsState()
+    var showDialog by remember { mutableStateOf(false) }
+    var selectedChatRoomId by remember { mutableStateOf("") }
 
     LaunchedEffect(chatRoomInfo) {
         chatViewModel.fetchChatRoomListWithDetails()
+    }
+
+    if (showDialog) {
+        ShowChatRoomExitDialog(
+            onConfirm = {
+                showDialog = false
+                chatViewModel.exitChatRoom(selectedChatRoomId) {
+                    chatViewModel.fetchChatRoomListWithDetails()
+                }
+            },
+            onDismiss = { showDialog = false }
+        )
     }
 
     Scaffold(
@@ -53,6 +75,15 @@ fun ChatScreen(
         },
     ) { innerPadding ->
         ChatContentScreen(innerPadding, isLoading, chatRoomInfo, onChatRoomClick)
+        ChatContentScreen(
+            innerPadding,
+            isLoading,
+            chatRoomInfo,
+            onChatRoomClick,
+            onChatRoomLongClick = { chatRoomId ->
+                selectedChatRoomId = chatRoomId
+                showDialog = true
+            })
     }
 }
 
@@ -62,11 +93,17 @@ fun ChatContentScreen(
     isLoading: Boolean,
     chatRoomInfo: List<Pair<ChatRoom, Pair<String, Uri?>>>,
     onChatRoomClick: (String) -> Unit,
+    onChatRoomLongClick: (String) -> Unit,
 ) {
     when {
         isLoading -> LoadingView()
         chatRoomInfo.isEmpty() -> EmptyView(stringResource(id = R.string.no_chat_rooms))
-        else -> ChatRoomList(innerPadding, chatRoomInfo = chatRoomInfo, onChatRoomClick)
+        else -> ChatRoomList(
+            innerPadding,
+            chatRoomInfo,
+            onChatRoomClick,
+            onChatRoomLongClick
+        )
     }
 }
 
@@ -75,6 +112,7 @@ fun ChatRoomList(
     innerPadding: PaddingValues,
     chatRoomInfo: List<Pair<ChatRoom, Pair<String, Uri?>>>,
     onChatRoomClick: (String) -> Unit,
+    onChatRoomLongClick: (String) -> Unit,
 ) {
     LazyColumn(modifier = Modifier.padding(innerPadding)) {
         items(chatRoomInfo) { (chatRoom, userInfo) ->
@@ -83,7 +121,8 @@ fun ChatRoomList(
                 chatRoom = chatRoom,
                 nickname = nickname,
                 profileImageUri = profileImageUri,
-                onChatRoomClick = { onChatRoomClick(chatRoom.chatRoomId) }
+                onChatRoomClick = { onChatRoomClick(chatRoom.chatRoomId) },
+                onChatRoomLongClick = { onChatRoomLongClick(chatRoom.chatRoomId) }
             )
         }
     }
@@ -94,13 +133,21 @@ fun ChatRoomItem(
     chatRoom: ChatRoom,
     nickname: String,
     profileImageUri: Uri?,
-    onChatRoomClick: () -> Unit
+    onChatRoomClick: () -> Unit,
+    onChatRoomLongClick: () -> Unit,
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(12.dp)
-            .clickable { onChatRoomClick() },
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onLongPress = {
+                        onChatRoomLongClick()
+                    },
+                    onTap = { onChatRoomClick() }
+                )
+            },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
