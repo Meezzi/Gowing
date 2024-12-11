@@ -88,9 +88,10 @@ class ChatViewModel(private val chatRepository: ChatRepository) : ViewModel() {
         }
     }
 
-    fun fetchOtherUserNickname(chatRoomId: String) {
+    fun observeOtherUserNickname(chatRoomId: String) {
         viewModelScope.launch {
-            chatRepository.getUserNickname(chatRoomId) { nickname ->
+            val otherUserId = chatRepository.fetchOtherUserId(chatRoomId)
+            chatRepository.observeNickname(otherUserId) { nickname ->
                 _userNickname.value = nickname
             }
         }

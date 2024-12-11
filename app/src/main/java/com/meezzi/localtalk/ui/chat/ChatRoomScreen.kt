@@ -81,6 +81,7 @@ fun ChatRoomScreen(
     LaunchedEffect(chatRoomId) {
         chatViewModel.updateChatRoomStatus(chatRoomId)
         chatViewModel.fetchMessages(chatRoomId)
+        chatViewModel.observeOtherUserNickname(chatRoomId)
     }
 
     LaunchedEffect(errorMessage) {
@@ -94,7 +95,6 @@ fun ChatRoomScreen(
     }
 
     LaunchedEffect(userNickname, profileImageUri) {
-        chatViewModel.fetchOtherUserNickname(chatRoomId)
         chatViewModel.fetchProfileImageUri(chatRoomId)
     }
 

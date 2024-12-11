@@ -92,13 +92,19 @@ class ChatRepository {
             }
     }
 
-    suspend fun getUserNickname(chatRoomId: String, onResult: (String) -> Unit) {
-        val otherUserId = fetchOtherUserId(chatRoomId)
-        val otherUserNickname = fetchNickname(otherUserId)
-        onResult(otherUserNickname)
+    fun observeNickname(userId: String, onResult: (String) -> Unit) {
+        db.collection("profiles")
+            .document(userId)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    return@addSnapshotListener
+                }
+                val nickname = snapshot?.getString("nickname") ?: "닉네임 없음"
+                onResult(nickname)
+            }
     }
 
-    private suspend fun fetchOtherUserId(chatRoomId: String): String {
+    suspend fun fetchOtherUserId(chatRoomId: String): String {
         return try {
             val document = db.collection("chat_rooms").document(chatRoomId).get().await()
             if (document.exists()) {
