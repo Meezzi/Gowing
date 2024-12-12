@@ -153,6 +153,14 @@ class ChatViewModel(private val chatRepository: ChatRepository) : ViewModel() {
         }
     }
 
+    fun checkAndDeleteIfNoMessage(chatRoomId: String) {
+        viewModelScope.launch {
+            if(chatRepository.isMessageEmpty(chatRoomId)) {
+                chatRepository.deleteChatRoom(chatRoomId)
+            }
+        }
+    }
+
     companion object {
         fun provideFactory(repository: ChatRepository) = viewModelFactory {
             initializer {
