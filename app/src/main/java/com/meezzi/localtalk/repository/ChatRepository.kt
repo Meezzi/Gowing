@@ -214,7 +214,7 @@ class ChatRepository {
         }
     }
 
-    private suspend fun deleteChatRoom(chatRoomId: String) {
+    suspend fun deleteChatRoom(chatRoomId: String) {
         val docRef = db.collection("chat_rooms").document(chatRoomId)
         docRef.delete().await()
         val updates = hashMapOf<String, Any>(
@@ -240,5 +240,16 @@ class ChatRepository {
                 onResult(false)
             }
         }
+    }
+
+    suspend fun isMessageEmpty(chatRoomId: String): Boolean {
+        val message = db.collection("chat_rooms")
+            .document(chatRoomId)
+            .collection("messages")
+            .limit(1)
+            .get()
+            .await()
+
+        return message.isEmpty
     }
 }
