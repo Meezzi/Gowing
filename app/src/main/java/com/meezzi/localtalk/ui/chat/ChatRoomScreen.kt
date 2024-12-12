@@ -3,6 +3,7 @@ package com.meezzi.localtalk.ui.chat
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -95,6 +96,11 @@ fun ChatRoomScreen(
         }
     }
 
+    BackHandler {
+        chatViewModel.checkAndDeleteIfNoMessage(chatRoomId)
+        onNavigateBack()
+    }
+
     val multiplePhotoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickMultipleVisualMedia(maxItems = 10)
     ) { uris ->
@@ -144,7 +150,10 @@ fun ChatRoomScreen(
                 onMenuItemClick = {
                     showDialog = true
                 },
-                onNavigateBack = { onNavigateBack() },
+                onNavigateBack = {
+                    chatViewModel.checkAndDeleteIfNoMessage(chatRoomId)
+                    onNavigateBack()
+                },
             )
         },
         snackbarHost = { SnackbarHost(hostState = chatViewModel.snackbarHostState) }
