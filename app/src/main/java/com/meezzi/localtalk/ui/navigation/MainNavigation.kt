@@ -16,7 +16,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.google.firebase.auth.FirebaseAuth
-import com.meezzi.localtalk.repository.UserRepository
 import com.meezzi.localtalk.ui.boardDetail.BoardDetailScreen
 import com.meezzi.localtalk.ui.addPost.AddPostScreen
 import com.meezzi.localtalk.ui.addPost.AddPostViewModel
@@ -94,15 +93,6 @@ fun MainNavHost(
             )
         }
 
-        composable(Screens.Profile.name) {
-            ProfileScreen(
-                onEditProfileClick = {
-                    navController.navigate(Screens.CreateProfile.name)
-                },
-                profileViewModel = ProfileViewModel(UserRepository())
-            )
-        }
-
         composable(Screen.Home.route) {
             HomeScreen(
                 homeViewModel = homeViewModel,
@@ -144,7 +134,7 @@ fun MainNavHost(
                 onEditProfileClick = {
                     navController.navigate(Screens.CreateProfile.name)
                 },
-                profileViewModel = ProfileViewModel(UserRepository())
+                profileViewModel = profileViewModel,
             )
         }
 
