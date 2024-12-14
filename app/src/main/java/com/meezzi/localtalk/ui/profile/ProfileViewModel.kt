@@ -6,12 +6,16 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.meezzi.localtalk.data.Post
+import com.meezzi.localtalk.repository.HomeRepository
 import com.meezzi.localtalk.repository.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class ProfileViewModel(private val userRepository: UserRepository) : ViewModel() {
+class ProfileViewModel(
+    private val userRepository: UserRepository,
+    private val homeRepository: HomeRepository,
+) : ViewModel() {
 
     private val _nickname = MutableStateFlow("닉네임")
     val nickname: StateFlow<String> = _nickname
@@ -95,9 +99,12 @@ class ProfileViewModel(private val userRepository: UserRepository) : ViewModel()
     }
 
     companion object {
-        fun provideFactory(repository: UserRepository) = viewModelFactory {
+        fun provideFactory(
+            userRepository: UserRepository,
+            homeRepository: HomeRepository
+        ) = viewModelFactory {
             initializer {
-                ProfileViewModel(repository)
+                ProfileViewModel(userRepository, homeRepository)
             }
         }
     }
