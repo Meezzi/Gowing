@@ -136,7 +136,6 @@ fun MainNavHost(
                 },
                 profileViewModel = profileViewModel,
                 onNavigateToPostDetail = { city, categoryId, postId ->
-                    navController.popBackStack()
                     navController.navigate("${Screens.PostDetail.name}/$city/$categoryId/$postId")
                 }
             )
