@@ -38,8 +38,6 @@ class ProfileViewModel(
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage
 
-    init {
-        loadUserProfile()
     private val _myPosts = MutableStateFlow<List<Post>>(emptyList())
     val myPosts = _myPosts
 
@@ -86,7 +84,7 @@ class ProfileViewModel(
         }
     }
 
-    private fun loadUserProfile() {
+    fun loadUserProfile() {
         userRepository.getProfileData { nickname ->
             _nickname.value = nickname
         }

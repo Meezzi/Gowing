@@ -45,6 +45,11 @@ fun ProfileScreen(
     val region by profileViewModel.region.collectAsState()
     val profileImageUri by profileViewModel.profileImageUri.collectAsState()
 
+    LaunchedEffect(Unit) {
+        profileViewModel.loadRegion()
+        profileViewModel.loadUserProfile()
+    }
+
     if (isLoading) {
         LoadingView()
     } else {
