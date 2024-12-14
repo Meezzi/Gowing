@@ -17,10 +17,13 @@ class ProfileViewModel(
     private val homeRepository: HomeRepository,
 ) : ViewModel() {
 
+    private val _isLoading = MutableStateFlow(true)
+    val isLoading = _isLoading
+
     private val _nickname = MutableStateFlow("닉네임")
     val nickname: StateFlow<String> = _nickname
 
-    private val _region = MutableStateFlow("닉네임")
+    private val _region = MutableStateFlow("지역 없음")
     val region: StateFlow<String> = _region
 
     private val _profileImageUri = MutableStateFlow<Uri?>(null)
@@ -39,6 +42,18 @@ class ProfileViewModel(
         loadUserProfile()
     private val _myPosts = MutableStateFlow<List<Post>>(emptyList())
     val myPosts = _myPosts
+
+    fun loadRegion() {
+        viewModelScope.launch {
+            _isLoading.value = true
+            try {
+                _region.value = homeRepository.getCurrentLocation()
+            } catch (e: Exception) {
+                _errorMessage.value = "지역 정보를 불러오지 못했습니다."
+            } finally {
+                _isLoading.value = false
+            }
+        }
     }
 
     fun saveUserProfile(nickname: String, profileImage: Uri?) {
