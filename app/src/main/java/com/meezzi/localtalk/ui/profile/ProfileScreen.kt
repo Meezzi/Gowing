@@ -1,49 +1,42 @@
 package com.meezzi.localtalk.ui.profile
 
 import android.net.Uri
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import coil.compose.rememberAsyncImagePainter
 import com.meezzi.localtalk.R
+import com.meezzi.localtalk.data.Post
+import com.meezzi.localtalk.data.ProfileTab
+import com.meezzi.localtalk.ui.boardDetail.PostListView
 import com.meezzi.localtalk.ui.common.CustomTopAppBar
 import com.meezzi.localtalk.ui.common.LoadingView
+import kotlinx.coroutines.launch
 
 @Composable
 fun ProfileScreen(
     profileViewModel: ProfileViewModel,
     onEditProfileClick: () -> Unit,
+    onNavigateToPostDetail: (String, String, String) -> Unit,
 ) {
     val isLoading by profileViewModel.isLoading.collectAsState()
     val nickname by profileViewModel.nickname.collectAsState()
     val region by profileViewModel.region.collectAsState()
     val profileImageUri by profileViewModel.profileImageUri.collectAsState()
+    val myPosts by profileViewModel.myPosts.collectAsState()
 
     LaunchedEffect(Unit) {
         profileViewModel.loadRegion()
@@ -67,7 +60,9 @@ fun ProfileScreen(
                 nickname,
                 region,
                 profileImageUri,
+                myPosts,
                 onEditProfileClick,
+                onNavigateToPostDetail,
             )
         }
     }
@@ -79,7 +74,9 @@ fun ProfileContentScreen(
     nickname: String,
     region: String,
     profileImageUri: Uri?,
+    myPosts: List<Post>,
     onEditProfileClick: () -> Unit,
+    onNavigateToPostDetail: (String, String, String) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -92,6 +89,7 @@ fun ProfileContentScreen(
             profileImage = profileImageUri,
             onEditProfileClick = onEditProfileClick,
         )
+        ProfileTabs(myPosts, onNavigateToPostDetail)
     }
 }
 
@@ -157,5 +155,41 @@ private fun ProfileNameAndRegion(name: String, region: String) {
             fontSize = 16.sp,
             color = Color.DarkGray,
         )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ProfileTabs(
+    myPosts: List<Post>,
+    onNavigateToPostDetail: (String, String, String) -> Unit
+) {
+    val scope = rememberCoroutineScope()
+    val pagerState = rememberPagerState(pageCount = { ProfileTab.entries.size })
+
+    Column {
+        PrimaryTabRow(
+            selectedTabIndex = pagerState.currentPage,
+            modifier = Modifier.fillMaxWidth(),
+            divider = { }
+        ) {
+            ProfileTab.entries.forEachIndexed { index, tab ->
+                Tab(
+                    selected = pagerState.currentPage == index,
+                    onClick = { scope.launch { pagerState.animateScrollToPage(index) } },
+                    text = { Text(text = tab.text, overflow = TextOverflow.Ellipsis) }
+                )
+            }
+        }
+
+        HorizontalPager(
+            state = pagerState,
+            modifier = Modifier.fillMaxSize()
+        ) { page ->
+            when (ProfileTab.entries[page]) {
+                ProfileTab.MyPost -> PostListView(myPosts, onNavigateToPostDetail)
+                ProfileTab.LikedPost -> PostListView(myPosts, onNavigateToPostDetail)
+            }
+        }
     }
 }

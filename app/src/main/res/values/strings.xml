@@ -31,6 +31,9 @@
     <!--   로그인 화면   -->
     <string name="sign_in_with_google">구글 로그인</string>
 
+    <!--   프로필 화면   -->
+    <string name="profile_edit">프로필 수정</string>
+
     <!--   프로필 생성 화면   -->
     <string name="nickname_input">닉네임을 입력하세요</string>
     <string name="nickname_input_hint">닉네임은 최대 15자까지 가능합니다.</string>
