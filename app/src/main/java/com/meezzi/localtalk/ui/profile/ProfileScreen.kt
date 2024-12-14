@@ -50,6 +50,12 @@ fun ProfileScreen(
         profileViewModel.loadUserProfile()
     }
 
+    LaunchedEffect(region) {
+        if (region.isNotEmpty() && region != "지역 없음") {
+            profileViewModel.loadMyPosts(region)
+        }
+    }
+
     if (isLoading) {
         LoadingView()
     } else {
