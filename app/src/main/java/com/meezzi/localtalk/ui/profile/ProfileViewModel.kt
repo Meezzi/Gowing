@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.meezzi.localtalk.data.Post
 import com.meezzi.localtalk.repository.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -32,6 +33,8 @@ class ProfileViewModel(private val userRepository: UserRepository) : ViewModel()
 
     init {
         loadUserProfile()
+    private val _myPosts = MutableStateFlow<List<Post>>(emptyList())
+    val myPosts = _myPosts
     }
 
     fun saveUserProfile(nickname: String, profileImage: Uri?) {
@@ -71,6 +74,23 @@ class ProfileViewModel(private val userRepository: UserRepository) : ViewModel()
 
         userRepository.getProfileImageUri { uri ->
             _profileImageUri.value = uri
+        }
+    }
+
+    fun loadMyPosts(city: String) {
+        viewModelScope.launch {
+            try {
+                userRepository.fetchMyPosts(
+                    city = city,
+                    onComplete = { postList ->
+                        _myPosts.value = postList.toList()
+                        _isLoading.value = false
+                    }
+                )
+            } catch (e: Exception) {
+                _errorMessage.value = e.message ?: "알 수 없는 오류가 발생하였습니다."
+                _isLoading.value = false
+            }
         }
     }
 
