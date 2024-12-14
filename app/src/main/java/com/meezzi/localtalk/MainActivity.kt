@@ -35,7 +35,8 @@ class MainActivity : ComponentActivity() {
 
     private val profileViewModel by viewModels<ProfileViewModel> {
         ProfileViewModel.provideFactory(
-            UserRepository()
+            UserRepository(),
+            HomeRepository(this),
         )
     }
 

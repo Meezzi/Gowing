@@ -5,17 +5,25 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.meezzi.localtalk.data.Post
+import com.meezzi.localtalk.repository.HomeRepository
 import com.meezzi.localtalk.repository.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class ProfileViewModel(private val userRepository: UserRepository) : ViewModel() {
+class ProfileViewModel(
+    private val userRepository: UserRepository,
+    private val homeRepository: HomeRepository,
+) : ViewModel() {
+
+    private val _isLoading = MutableStateFlow(true)
+    val isLoading = _isLoading
 
     private val _nickname = MutableStateFlow("닉네임")
     val nickname: StateFlow<String> = _nickname
 
-    private val _region = MutableStateFlow("닉네임")
+    private val _region = MutableStateFlow("지역 없음")
     val region: StateFlow<String> = _region
 
     private val _profileImageUri = MutableStateFlow<Uri?>(null)
@@ -30,8 +38,20 @@ class ProfileViewModel(private val userRepository: UserRepository) : ViewModel()
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage
 
-    init {
-        loadUserProfile()
+    private val _myPosts = MutableStateFlow<List<Post>>(emptyList())
+    val myPosts = _myPosts
+
+    fun loadRegion() {
+        viewModelScope.launch {
+            _isLoading.value = true
+            try {
+                _region.value = homeRepository.getCurrentLocation()
+            } catch (e: Exception) {
+                _errorMessage.value = "지역 정보를 불러오지 못했습니다."
+            } finally {
+                _isLoading.value = false
+            }
+        }
     }
 
     fun saveUserProfile(nickname: String, profileImage: Uri?) {
@@ -64,7 +84,7 @@ class ProfileViewModel(private val userRepository: UserRepository) : ViewModel()
         }
     }
 
-    private fun loadUserProfile() {
+    fun loadUserProfile() {
         userRepository.getProfileData { nickname ->
             _nickname.value = nickname
         }
@@ -74,10 +94,30 @@ class ProfileViewModel(private val userRepository: UserRepository) : ViewModel()
         }
     }
 
+    fun loadMyPosts(city: String) {
+        viewModelScope.launch {
+            try {
+                userRepository.fetchMyPosts(
+                    city = city,
+                    onComplete = { postList ->
+                        _myPosts.value = postList.toList()
+                        _isLoading.value = false
+                    }
+                )
+            } catch (e: Exception) {
+                _errorMessage.value = e.message ?: "알 수 없는 오류가 발생하였습니다."
+                _isLoading.value = false
+            }
+        }
+    }
+
     companion object {
-        fun provideFactory(repository: UserRepository) = viewModelFactory {
+        fun provideFactory(
+            userRepository: UserRepository,
+            homeRepository: HomeRepository
+        ) = viewModelFactory {
             initializer {
-                ProfileViewModel(repository)
+                ProfileViewModel(userRepository, homeRepository)
             }
         }
     }

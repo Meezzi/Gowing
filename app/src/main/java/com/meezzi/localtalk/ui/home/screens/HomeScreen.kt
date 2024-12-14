@@ -133,9 +133,9 @@ fun PostListSection(
     Column {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(start = 16.dp, top = 8.dp, end = 16.dp, bottom = 8.dp),
+            modifier = Modifier.padding(start = 16.dp, end = 16.dp),
         ) {
-            if(icon!=null && title != null) {
+            if (icon != null && title != null) {
                 Icon(
                     painter = icon,
                     contentDescription = stringResource(id = R.string.icon),

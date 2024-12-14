@@ -3,8 +3,12 @@ package com.meezzi.localtalk.repository
 import android.net.Uri
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestore
+import com.google.firebase.firestore.toObject
 import com.google.firebase.storage.storage
+import com.meezzi.localtalk.data.Categories
+import com.meezzi.localtalk.data.Post
 import com.meezzi.localtalk.data.User
 import kotlinx.coroutines.tasks.await
 
@@ -88,5 +92,29 @@ class UserRepository {
                     onComplete("")
                 }
         } ?: onComplete("")
+    }
+
+    suspend fun fetchMyPosts(
+        city: String,
+        onComplete: (List<Post>) -> Unit,
+    ) {
+        val userId = currentUser?.uid
+        val categoryIds = Categories.entries.map { it.name.lowercase() }
+        val posts = mutableListOf<Post>()
+
+        for (categoryId in categoryIds) {
+            val querySnapshot =
+                db.collection("posts").document(city.split(" ")[0]).collection(categoryId)
+                    .whereEqualTo("authorId", userId)
+                    .orderBy("timestamp", Query.Direction.DESCENDING)
+                    .get()
+                    .await()
+
+            for (document in querySnapshot) {
+                val post = document.toObject<Post>()
+                posts.add(post)
+            }
+        }
+        onComplete(posts)
     }
 }
