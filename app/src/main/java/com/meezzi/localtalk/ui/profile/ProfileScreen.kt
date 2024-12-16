@@ -22,8 +22,8 @@ import com.meezzi.localtalk.R
 import com.meezzi.localtalk.data.Post
 import com.meezzi.localtalk.data.ProfileTab
 import com.meezzi.localtalk.ui.boardDetail.PostListView
-import com.meezzi.localtalk.ui.common.CustomTopAppBar
 import com.meezzi.localtalk.ui.common.LoadingView
+import com.meezzi.localtalk.ui.common.NavigationMenuTopAppBar
 import kotlinx.coroutines.launch
 
 @Composable
@@ -31,6 +31,7 @@ fun ProfileScreen(
     profileViewModel: ProfileViewModel,
     onEditProfileClick: () -> Unit,
     onNavigateToPostDetail: (String, String, String) -> Unit,
+    onNavigateToSetting: () -> Unit,
 ) {
     val isLoading by profileViewModel.isLoading.collectAsState()
     val nickname by profileViewModel.nickname.collectAsState()
@@ -53,7 +54,15 @@ fun ProfileScreen(
         LoadingView()
     } else {
         Scaffold(
-            topBar = { CustomTopAppBar(title = "프로필") }
+            topBar = {
+                NavigationMenuTopAppBar(
+                    title = stringResource(id = R.string.profile),
+                    listOf("설정"),
+                    onMenuItemClick = {
+                        onNavigateToSetting()
+                    }
+                )
+            }
         ) { innerPadding ->
             ProfileContentScreen(
                 innerPadding,
