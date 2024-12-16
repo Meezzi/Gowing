@@ -1,5 +1,6 @@
 package com.meezzi.localtalk.ui.setting
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -25,6 +26,7 @@ import com.meezzi.localtalk.ui.common.CenterTopAppBar
 @Composable
 fun SettingScreen(
     onNavigateToBack: () -> Unit,
+    onNavigateToInfo: (String) -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -34,13 +36,14 @@ fun SettingScreen(
             )
         },
     ) { innerPadding ->
-        SettingContentScreen(innerPadding)
+        SettingContentScreen(innerPadding, onNavigateToInfo)
     }
 }
 
 @Composable
 fun SettingContentScreen(
     innerPadding: PaddingValues,
+    onNavigateToInfo: (String) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -49,6 +52,7 @@ fun SettingContentScreen(
     ) {
         SettingsItem(
             title = stringResource(R.string.my_information),
+            onClick = onNavigateToInfo
         )
     }
 }
@@ -57,10 +61,12 @@ fun SettingContentScreen(
 fun SettingsItem(
     title: String,
     subTitle: String? = null,
+    onClick: (String) -> Unit
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .clickable(onClick = { onClick(title) })
             .padding(horizontal = 16.dp, vertical = 12.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
