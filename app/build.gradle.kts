@@ -100,7 +100,7 @@ dependencies {
     // Image Loading
     implementation(libs.coil.compose)
 
-    // Lotti
+    // Lottie
     implementation(libs.lottie.compose)
 
     testImplementation(libs.junit)
