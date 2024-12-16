@@ -229,6 +229,15 @@ fun MainNavHost(
                 },
             )
         }
+
+        composable("${Screens.SettingInfo.name}/{title}") { backStackEntry ->
+            val title = backStackEntry.arguments?.getString("title")
+            SettingInfoScreen(
+                title = title ?: "",
+                profileViewModel = profileViewModel,
+                onNavigateToBack = { navController.popBackStack() },
+            )
+        }
     }
 }
 
