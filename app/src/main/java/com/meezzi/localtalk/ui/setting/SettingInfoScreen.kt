@@ -25,6 +25,7 @@ fun SettingInfoScreen(
     onLogout: () -> Unit,
     profileViewModel: ProfileViewModel,
     onNavigateToBack: () -> Unit,
+    onNavigateToLogin: () -> Unit,
 ) {
 
     val email by profileViewModel.email.collectAsState()
@@ -43,7 +44,7 @@ fun SettingInfoScreen(
     ) { innerPadding ->
         when (title) {
             stringResource(id = R.string.my_information) -> {
-                MyInformation(innerPadding, email, onLogout)
+                MyInformation(innerPadding, email, onLogout, onNavigateToLogin)
             }
         }
     }
@@ -53,7 +54,8 @@ fun SettingInfoScreen(
 fun MyInformation(
     innerPadding: PaddingValues,
     email: String,
-    onLogout: () -> Unit
+    onLogout: () -> Unit,
+    onNavigateToLogin: () -> Unit,
 ) {
     var showDialog by remember { mutableStateOf(false) }
 
@@ -78,6 +80,7 @@ fun MyInformation(
                 onConfirm = {
                     showDialog = false
                     onLogout()
+                    onNavigateToLogin()
                 },
                 onDismiss = { showDialog = false }
             )
