@@ -100,6 +100,9 @@ dependencies {
     // Image Loading
     implementation(libs.coil.compose)
 
+    // Lotti
+    implementation(libs.lottie.compose)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
