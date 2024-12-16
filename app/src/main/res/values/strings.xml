@@ -76,6 +76,9 @@
     <string name="chat_room_exit_yes_message">네, 나갈래요.</string>
     <string name="chat_room_not_found">채팅방을 찾을 수 없습니다.</string>
 
+    <!--   설정 화면   -->
+    <string name="my_information">내 정보</string>
+
     <!--   액션 공통   -->
     <string name="action_back">뒤로 가기</string>
     <string name="action_loading">로딩 중</string>
