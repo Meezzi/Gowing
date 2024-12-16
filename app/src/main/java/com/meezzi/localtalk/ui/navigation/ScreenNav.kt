@@ -17,6 +17,7 @@ enum class Screens {
     Search,
     BoardDetail,
     ChatRoom,
+    Setting,
 }
 
 sealed class Screen(
