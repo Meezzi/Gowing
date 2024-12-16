@@ -76,6 +76,31 @@ fun NavigationTopAppBar(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+fun CenterTopAppBar(
+    title: String,
+    onNavigateToBack: () -> Unit,
+) {
+    CenterAlignedTopAppBar(
+        title = {
+            Text(
+                text = title,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        },
+        navigationIcon = {
+            IconButton(onClick = { onNavigateToBack() }) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = stringResource(id = R.string.action_back)
+                )
+            }
+        },
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
 fun NavigationMenuTopAppBar(
     title: String?,
     menuItems: List<String>,
