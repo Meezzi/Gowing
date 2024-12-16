@@ -237,6 +237,7 @@ fun MainNavHost(
                 profileViewModel = profileViewModel,
                 onLogout = { introViewModel.signOutWithGoogle() },
                 onNavigateToBack = { navController.popBackStack() },
+                onNavigateToLogin = { navController.navigate(Screens.Login.name) }
             )
         }
     }
