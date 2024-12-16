@@ -3,12 +3,17 @@ package com.meezzi.localtalk.ui.setting
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import com.meezzi.localtalk.ui.common.CenterTopAppBar
+import com.meezzi.localtalk.ui.profile.ProfileViewModel
 
 @Composable
 fun SettingInfoScreen(
     title: String,
+    profileViewModel: ProfileViewModel,
     onNavigateToBack: () -> Unit,
 ) {
+
+    val email by profileViewModel.email.collectAsState()
+
     Scaffold(
         topBar = {
             CenterTopAppBar(
