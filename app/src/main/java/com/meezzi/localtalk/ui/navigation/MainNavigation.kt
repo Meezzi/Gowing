@@ -36,6 +36,8 @@ import com.meezzi.localtalk.ui.profile.CreateProfileScreen
 import com.meezzi.localtalk.ui.profile.ProfileScreen
 import com.meezzi.localtalk.ui.profile.ProfileViewModel
 import com.meezzi.localtalk.ui.search.SearchScreen
+import com.meezzi.localtalk.ui.setting.SettingInfoScreen
+import com.meezzi.localtalk.ui.setting.SettingScreen
 
 @Composable
 fun MainNavHost(
@@ -137,7 +139,10 @@ fun MainNavHost(
                 profileViewModel = profileViewModel,
                 onNavigateToPostDetail = { city, categoryId, postId ->
                     navController.navigate("${Screens.PostDetail.name}/$city/$categoryId/$postId")
-                }
+                },
+                onNavigateToSetting = {
+                    navController.navigate(Screens.Setting.name)
+                },
             )
         }
 
@@ -214,6 +219,25 @@ fun MainNavHost(
                 chatRoomId = chatRoomId!!,
                 chatViewModel = chatViewModel,
                 onNavigateBack = { navController.popBackStack() })
+        }
+
+        composable(Screens.Setting.name) {
+            SettingScreen(
+                onNavigateToBack = { navController.popBackStack() },
+                onNavigateToInfo = { title ->
+                    navController.navigate("${Screens.SettingInfo.name}/$title")
+                },
+            )
+        }
+
+        composable("${Screens.SettingInfo.name}/{title}") { backStackEntry ->
+            val title = backStackEntry.arguments?.getString("title")
+            SettingInfoScreen(
+                title = title ?: "",
+                profileViewModel = profileViewModel,
+                onLogout = { introViewModel.signOutWithGoogle() },
+                onNavigateToBack = { navController.popBackStack() },
+            )
         }
     }
 }

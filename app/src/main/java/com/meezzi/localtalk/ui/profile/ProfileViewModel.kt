@@ -20,6 +20,9 @@ class ProfileViewModel(
     private val _isLoading = MutableStateFlow(true)
     val isLoading = _isLoading
 
+    private val _email = MutableStateFlow("")
+    val email = _email
+
     private val _nickname = MutableStateFlow("닉네임")
     val nickname: StateFlow<String> = _nickname
 
@@ -51,6 +54,12 @@ class ProfileViewModel(
             } finally {
                 _isLoading.value = false
             }
+        }
+    }
+
+    fun fetchUserEmail() {
+        viewModelScope.launch {
+            _email.value = userRepository.fetchUserEmail()
         }
     }
 

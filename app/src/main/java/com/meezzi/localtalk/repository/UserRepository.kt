@@ -21,6 +21,10 @@ class UserRepository {
     private val currentUser
         get() = FirebaseAuth.getInstance().currentUser
 
+    fun fetchUserEmail(): String {
+        return currentUser?.email ?: "이메일을 찾을 수 없습니다."
+    }
+
     suspend fun isNicknameDuplicate(nickname: String): Boolean {
         return try {
             val querySnapshot = db.collection("profiles")
