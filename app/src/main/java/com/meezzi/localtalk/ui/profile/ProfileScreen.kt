@@ -57,10 +57,10 @@ fun ProfileScreen(
             topBar = {
                 NavigationMenuTopAppBar(
                     title = stringResource(id = R.string.profile),
-                    listOf("설정"),
+                    menuItems = listOf("설정"),
                     onMenuItemClick = {
                         onNavigateToSetting()
-                    }
+                    },
                 )
             }
         ) { innerPadding ->

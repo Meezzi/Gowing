@@ -11,6 +11,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -29,7 +30,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.meezzi.localtalk.R
 
@@ -104,19 +107,22 @@ fun CenterTopAppBar(
 fun NavigationMenuTopAppBar(
     title: String?,
     menuItems: List<String>,
+    navigationIcon: ImageVector? = null,
     onMenuItemClick: (String) -> Unit,
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit = { },
 ) {
     var isMenuExpanded by remember { mutableStateOf(false) }
 
     TopAppBar(
         title = { Text(text = title ?: stringResource(id = R.string.action_loading)) },
         navigationIcon = {
-            IconButton(onClick = onNavigateBack) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = stringResource(id = R.string.action_back)
-                )
+            if (navigationIcon != null) {
+                IconButton(onClick = onNavigateBack) {
+                    Icon(
+                        imageVector = navigationIcon,
+                        contentDescription = stringResource(id = R.string.action_back)
+                    )
+                }
             }
         },
         actions = {
