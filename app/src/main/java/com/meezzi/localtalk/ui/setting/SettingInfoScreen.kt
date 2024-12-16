@@ -14,6 +14,10 @@ fun SettingInfoScreen(
 
     val email by profileViewModel.email.collectAsState()
 
+    LaunchedEffect(Unit) {
+        profileViewModel.fetchUserEmail()
+    }
+
     Scaffold(
         topBar = {
             CenterTopAppBar(
