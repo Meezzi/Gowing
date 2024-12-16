@@ -1,12 +1,17 @@
 package com.meezzi.localtalk.ui.intro.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -23,15 +28,40 @@ import com.meezzi.localtalk.R
 fun LoginScreen(
     onSignInClick: () -> Unit,
 ) {
-    Surface(
+    Box(
         modifier = Modifier
             .fillMaxSize()
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(
+                        Color(0xFFBFD8FD), Color(0xFFE9D6F7)
+                    )
+                )
+            )
     ) {
         Column(
             modifier = Modifier
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
+                .fillMaxSize()
+                .padding(horizontal = 30.dp),
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.Top
+        ) {
+            Spacer(modifier = Modifier.height(80.dp))
+            WelcomeText()
+        }
+
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            SplashLogoAnimation()
+        }
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = 150.dp),
+            contentAlignment = Alignment.BottomCenter
         ) {
             SignInGoogleButton(onClick = onSignInClick)
         }
