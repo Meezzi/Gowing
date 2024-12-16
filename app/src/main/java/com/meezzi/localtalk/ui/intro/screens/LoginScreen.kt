@@ -12,6 +12,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.meezzi.localtalk.R
 
 @Composable
@@ -31,6 +35,18 @@ fun LoginScreen(
             SignInGoogleButton(onClick = onSignInClick)
         }
     }
+}
+
+@Composable
+private fun SplashLogoAnimation() {
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.pigeon_flying_animation))
+    val logoAnimationState = animateLottieCompositionAsState(composition = composition)
+
+    LottieAnimation(
+        composition = composition,
+        progress = { logoAnimationState.progress },
+        modifier = Modifier.size(300.dp)
+    )
 }
 
 @Composable
