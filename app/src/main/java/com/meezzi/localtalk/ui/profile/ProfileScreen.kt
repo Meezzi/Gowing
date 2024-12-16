@@ -184,7 +184,8 @@ fun ProfileTabs(
 
         HorizontalPager(
             state = pagerState,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
+            verticalAlignment = Alignment.Top
         ) { page ->
             when (ProfileTab.entries[page]) {
                 ProfileTab.MyPost -> PostListView(myPosts, onNavigateToPostDetail)
