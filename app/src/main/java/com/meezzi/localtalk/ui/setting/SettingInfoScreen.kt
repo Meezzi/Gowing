@@ -22,6 +22,7 @@ import com.meezzi.localtalk.ui.profile.ProfileViewModel
 @Composable
 fun SettingInfoScreen(
     title: String,
+    onLogout: () -> Unit,
     profileViewModel: ProfileViewModel,
     onNavigateToBack: () -> Unit,
 ) {
@@ -42,7 +43,7 @@ fun SettingInfoScreen(
     ) { innerPadding ->
         when (title) {
             stringResource(id = R.string.my_information) -> {
-                MyInformation(innerPadding, email)
+                MyInformation(innerPadding, email, onLogout)
             }
         }
     }

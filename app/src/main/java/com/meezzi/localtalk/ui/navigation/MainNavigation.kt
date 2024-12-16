@@ -36,6 +36,7 @@ import com.meezzi.localtalk.ui.profile.CreateProfileScreen
 import com.meezzi.localtalk.ui.profile.ProfileScreen
 import com.meezzi.localtalk.ui.profile.ProfileViewModel
 import com.meezzi.localtalk.ui.search.SearchScreen
+import com.meezzi.localtalk.ui.setting.SettingInfoScreen
 import com.meezzi.localtalk.ui.setting.SettingScreen
 
 @Composable
@@ -142,7 +143,6 @@ fun MainNavHost(
                 onNavigateToSetting = {
                     navController.navigate(Screens.Setting.name)
                 },
-                }
             )
         }
 
@@ -235,6 +235,7 @@ fun MainNavHost(
             SettingInfoScreen(
                 title = title ?: "",
                 profileViewModel = profileViewModel,
+                onLogout = { introViewModel.signOutWithGoogle() },
                 onNavigateToBack = { navController.popBackStack() },
             )
         }
