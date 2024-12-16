@@ -24,6 +24,8 @@
     <string name="icon">아이콘</string>
     <string name="menu">메뉴</string>
     <string name="image">이미지</string>
+    <string name="yes">네</string>
+    <string name="no">아니오</string>
 
     <!--   오류 메세지   -->
     <string name="error_message_not_found">알 수 없는 오류가 발생했습니다.</string>
@@ -78,6 +80,8 @@
 
     <!--   설정 화면   -->
     <string name="my_information">내 정보</string>
+    <string name="logout">로그아웃</string>
+    <string name="logout_confirmation_message">로그아웃하시겠어요?</string>
 
     <!--   액션 공통   -->
     <string name="action_back">뒤로 가기</string>

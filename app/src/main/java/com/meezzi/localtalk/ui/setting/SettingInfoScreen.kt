@@ -20,3 +20,39 @@ fun SettingInfoScreen(
 
     }
 }
+
+@Composable
+fun MyInformation(
+    innerPadding: PaddingValues,
+    email: String,
+    onLogout: () -> Unit
+) {
+    var showDialog by remember { mutableStateOf(false) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(innerPadding)
+    ) {
+        SettingsItem(
+            title = email,
+            subTitle = stringResource(R.string.logout),
+            onClick = {
+                showDialog = true
+            }
+        )
+
+        if (showDialog) {
+            CustomAlertDialog(
+                message = stringResource(R.string.logout_confirmation_message),
+                confirmButtonText = stringResource(id = R.string.yes),
+                dismissButtonText = stringResource(id = R.string.no),
+                onConfirm = {
+                    showDialog = false
+                    onLogout()
+                },
+                onDismiss = { showDialog = false }
+            )
+        }
+    }
+}
