@@ -38,6 +38,7 @@ fun ProfileScreen(
     val region by profileViewModel.region.collectAsState()
     val profileImageUri by profileViewModel.profileImageUri.collectAsState()
     val myPosts by profileViewModel.myPosts.collectAsState()
+    val likedPosts by profileViewModel.likedPosts.collectAsState()
 
     LaunchedEffect(Unit) {
         profileViewModel.loadRegion()
@@ -47,6 +48,7 @@ fun ProfileScreen(
     LaunchedEffect(region) {
         if (region.isNotEmpty() && region != "지역 없음") {
             profileViewModel.loadMyPosts(region)
+            profileViewModel.loadLikedPost()
         }
     }
 
@@ -70,6 +72,7 @@ fun ProfileScreen(
                 region,
                 profileImageUri,
                 myPosts,
+                likedPosts,
                 onEditProfileClick,
                 onNavigateToPostDetail,
             )
@@ -84,6 +87,7 @@ fun ProfileContentScreen(
     region: String,
     profileImageUri: Uri?,
     myPosts: List<Post>,
+    likedPosts: List<Post>,
     onEditProfileClick: () -> Unit,
     onNavigateToPostDetail: (String, String, String) -> Unit,
 ) {
@@ -98,7 +102,7 @@ fun ProfileContentScreen(
             profileImage = profileImageUri,
             onEditProfileClick = onEditProfileClick,
         )
-        ProfileTabs(myPosts, onNavigateToPostDetail)
+        ProfileTabs(myPosts, likedPosts, onNavigateToPostDetail)
     }
 }
 
@@ -171,6 +175,7 @@ private fun ProfileNameAndRegion(name: String, region: String) {
 @Composable
 fun ProfileTabs(
     myPosts: List<Post>,
+    likedPosts: List<Post>,
     onNavigateToPostDetail: (String, String, String) -> Unit
 ) {
     val scope = rememberCoroutineScope()
@@ -198,7 +203,7 @@ fun ProfileTabs(
         ) { page ->
             when (ProfileTab.entries[page]) {
                 ProfileTab.MyPost -> PostListView(myPosts, onNavigateToPostDetail)
-                ProfileTab.LikedPost -> PostListView(myPosts, onNavigateToPostDetail)
+                ProfileTab.LikedPost -> PostListView(likedPosts, onNavigateToPostDetail)
             }
         }
     }
