@@ -44,6 +44,9 @@ class ProfileViewModel(
     private val _myPosts = MutableStateFlow<List<Post>>(emptyList())
     val myPosts = _myPosts
 
+    private val _likedPosts = MutableStateFlow<List<Post>>(emptyList())
+    val likedPosts = _likedPosts
+
     fun loadRegion() {
         viewModelScope.launch {
             _isLoading.value = true
@@ -117,6 +120,12 @@ class ProfileViewModel(
                 _errorMessage.value = e.message ?: "알 수 없는 오류가 발생하였습니다."
                 _isLoading.value = false
             }
+        }
+    }
+
+    fun loadLikedPost() {
+        viewModelScope.launch {
+            _likedPosts.value = userRepository.fetchLikedPosts()
         }
     }
 
