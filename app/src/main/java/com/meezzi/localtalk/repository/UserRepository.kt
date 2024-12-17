@@ -10,6 +10,7 @@ import com.google.firebase.storage.storage
 import com.meezzi.localtalk.data.Categories
 import com.meezzi.localtalk.data.Post
 import com.meezzi.localtalk.data.User
+import com.meezzi.localtalk.util.FirestoreUtils.getPostById
 import kotlinx.coroutines.tasks.await
 
 class UserRepository {
@@ -120,5 +121,29 @@ class UserRepository {
             }
         }
         onComplete(posts)
+    }
+
+    suspend fun fetchLikedPosts(): List<Post> {
+        val userId = currentUser?.uid ?: return emptyList()
+        val likedPosts = mutableListOf<Post>()
+
+        try {
+            val documentSnapshot = db.collection("profiles").document(userId).get().await()
+            val likedPostList =
+                documentSnapshot["likedPostList"] as? List<Map<String, String>> ?: emptyList()
+
+            likedPostList.forEach { likedPostData ->
+                val city = likedPostData["city"] ?: return@forEach
+                val categoryId = likedPostData["categoryId"] ?: return@forEach
+                val postId = likedPostData["postId"] ?: return@forEach
+
+                val post = getPostById(city, categoryId, postId)
+                post?.let { likedPosts.add(it) }
+            }
+        } catch (e: Exception) {
+            throw e
+        }
+
+        return likedPosts
     }
 }
