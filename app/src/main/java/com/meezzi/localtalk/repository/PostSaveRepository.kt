@@ -142,6 +142,24 @@ class PostSaveRepository {
             .update("likes", FieldValue.increment(1))
     }
 
+    fun addLikedPost(
+        postId: String,
+        city: String,
+        categoryId: String,
+        onComplete: (Boolean) -> Unit
+    ) {
+        val userId = currentUser?.uid ?: ""
+
+        val likedPostData = mapOf(
+            "postId" to postId,
+            "city" to city,
+            "categoryId" to categoryId
+        )
+
+        db.collection("profiles").document(userId)
+            .update("likedPostList", FieldValue.arrayUnion(likedPostData))
+    }
+
     fun minusLikeCount(
         postId: String,
         city: String,
