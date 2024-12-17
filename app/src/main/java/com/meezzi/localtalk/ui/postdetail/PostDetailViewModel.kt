@@ -110,7 +110,7 @@ class PostDetailViewModel(private val postSaveRepository: PostSaveRepository) : 
             if (_isLiked.value) {
                 postSaveRepository.minusLikeCount(postId, city, categoryId)
             } else {
-                postSaveRepository.plusLikeCount(postId, city, categoryId)
+                postSaveRepository.addLikedPost(postId, city, categoryId)
             }
             postSaveRepository.getLikeCount(
                 postId = postId,
