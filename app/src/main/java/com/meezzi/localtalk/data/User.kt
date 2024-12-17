@@ -5,5 +5,6 @@ import android.net.Uri
 data class User(
     var userId: String,
     var nickname: String,
-    var profileImageUrl: Uri? = null
+    var profileImageUrl: Uri? = null,
+    var likedPostList: List<Post> = emptyList()
 )

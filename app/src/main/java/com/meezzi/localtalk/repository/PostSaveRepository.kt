@@ -130,7 +130,7 @@ class PostSaveRepository {
             }
     }
 
-    fun plusLikeCount(
+    private fun plusLikeCount(
         postId: String,
         city: String,
         categoryId: String
@@ -140,6 +140,29 @@ class PostSaveRepository {
             .collection(categoryId)
             .document(postId)
             .update("likes", FieldValue.increment(1))
+    }
+
+    fun addLikedPost(
+        postId: String,
+        city: String,
+        categoryId: String,
+    ) {
+        val userId = currentUser?.uid ?: ""
+
+        val likedPostData = mapOf(
+            "postId" to postId,
+            "city" to city,
+            "categoryId" to categoryId
+        )
+
+        db.collection("profiles").document(userId)
+            .update("likedPostList", FieldValue.arrayUnion(likedPostData))
+            .addOnSuccessListener {
+                plusLikeCount(postId, city, categoryId)
+            }
+            .addOnFailureListener { e ->
+                throw e
+            }
     }
 
     fun minusLikeCount(
