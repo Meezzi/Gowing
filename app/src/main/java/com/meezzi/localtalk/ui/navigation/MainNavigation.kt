@@ -42,6 +42,7 @@ fun MainNavHost(
 ) {
 
     val introViewModel: IntroViewModel = hiltViewModel()
+    val postDetailViewModel : PostDetailViewModel = hiltViewModel()
 
     val startDestination = remember {
         if (FirebaseAuth.getInstance().currentUser != null) {
@@ -158,11 +159,7 @@ fun MainNavHost(
                 categoryId = categoryId,
                 postDetailViewModel = postDetailViewModel,
                 onNavigateBack = { navController.popBackStack() },
-                onImageClick = { selectedImageIndex ->
-                    postDetailViewModel.updateSelectedImageIndex(selectedImageIndex)
-                    postDetailViewModel.updateImageList(
-                        postDetailViewModel.post.value?.postImageUrl ?: emptyList()
-                    )
+                onNavigateToImageViewer = {
                     navController.navigate(Screens.ImageViewer.name)
                 },
                 onNavigateChat = { chatRoomId ->

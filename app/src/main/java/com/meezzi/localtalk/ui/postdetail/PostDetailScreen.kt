@@ -70,7 +70,7 @@ fun PostDetailScreen(
     postDetailViewModel: PostDetailViewModel,
     chatViewModel: ChatViewModel = hiltViewModel(),
     onNavigateBack: () -> Unit,
-    onImageClick: (Int) -> Unit,
+    onNavigateToImageViewer: () -> Unit,
     onNavigateChat: (String) -> Unit,
 ) {
     val post by postDetailViewModel.post.collectAsState()
@@ -163,7 +163,13 @@ fun PostDetailScreen(
                         onLikeClick = {
                             postDetailViewModel.togglePostLike(postId, city, categoryId)
                         },
-                        onImageClick = onImageClick,
+                        onImageClick = { selectedImageIndex ->
+                            postDetailViewModel.updateSelectedImageIndex(selectedImageIndex)
+                            postDetailViewModel.updateImageList(
+                                postDetailViewModel.post.value?.postImageUrl ?: emptyList()
+                            )
+                            onNavigateToImageViewer()
+                        },
                         onCommentLikeClick = { commentId ->
                             postDetailViewModel.toggleCommentLike(
                                 postId,
@@ -327,7 +333,7 @@ fun PostImages(
                         .clickable {
                             onImageClick(index)
                         },
-                    contentScale = ContentScale.Crop
+                    contentScale = ContentScale.Crop,
                 )
             }
         }
