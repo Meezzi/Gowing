@@ -6,6 +6,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.meezzi.localtalk.repository.AuthRepository
 import com.meezzi.localtalk.repository.BoardRepository
+import com.meezzi.localtalk.repository.ChatRepository
 import com.meezzi.localtalk.repository.HomeRepository
 import dagger.Module
 import dagger.Provides
@@ -42,6 +43,15 @@ object AppModule {
         firebaseAuth: FirebaseAuth
     ): BoardRepository {
         return BoardRepository(firestore, firebaseAuth)
+    }
+
+    @Singleton
+    @Provides
+    fun provideChatRepository(
+        firestore: FirebaseFirestore,
+        firebaseAuth: FirebaseAuth
+    ): ChatRepository {
+        return ChatRepository(firestore, firebaseAuth)
     }
 
     @Singleton

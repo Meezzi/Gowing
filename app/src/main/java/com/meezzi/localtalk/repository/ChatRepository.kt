@@ -2,7 +2,7 @@ package com.meezzi.localtalk.repository
 
 import android.net.Uri
 import com.google.firebase.Timestamp
-import com.google.firebase.auth.ktx.auth
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -14,10 +14,12 @@ import com.meezzi.localtalk.data.Message
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-class ChatRepository @Inject constructor() {
+class ChatRepository @Inject constructor(
+    private val db: FirebaseFirestore,
+    auth: FirebaseAuth,
+) {
 
-    private val db = FirebaseFirestore.getInstance()
-    private val currentUserId = Firebase.auth.currentUser?.uid
+    private val currentUserId = auth.currentUser?.uid
 
     fun getCurrentUserId(): String = currentUserId.toString()
 
