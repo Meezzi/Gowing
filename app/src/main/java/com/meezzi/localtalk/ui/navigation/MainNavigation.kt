@@ -37,7 +37,6 @@ import com.meezzi.localtalk.ui.setting.SettingScreen
 @Composable
 fun MainNavHost(
     navController: NavHostController,
-    postDetailViewModel: PostDetailViewModel,
     boardDetailViewModel: BoardDetailViewModel,
 ) {
 
@@ -228,7 +227,6 @@ fun MainNavHost(
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MainScreenView(
-    postDetailViewModel: PostDetailViewModel,
     boardDetailViewModel: BoardDetailViewModel,
 ) {
     val navController = rememberNavController()
@@ -257,7 +255,6 @@ fun MainScreenView(
         Box {
             MainNavHost(
                 navController = navController,
-                postDetailViewModel = postDetailViewModel,
                 boardDetailViewModel = boardDetailViewModel,
             )
         }
