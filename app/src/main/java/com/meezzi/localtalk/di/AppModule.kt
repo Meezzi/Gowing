@@ -13,6 +13,7 @@ import com.meezzi.localtalk.repository.AuthRepository
 import com.meezzi.localtalk.repository.BoardRepository
 import com.meezzi.localtalk.repository.ChatRepository
 import com.meezzi.localtalk.repository.HomeRepository
+import com.meezzi.localtalk.repository.PostSaveRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -58,6 +59,16 @@ object AppModule {
         firebaseAuth: FirebaseAuth
     ): ChatRepository {
         return ChatRepository(firestore, firebaseAuth)
+    }
+
+    @Singleton
+    @Provides
+    fun providePostSaveRepository(
+        firestore: FirebaseFirestore,
+        fireStorage: FirebaseStorage,
+        firebaseAuth: FirebaseAuth
+    ): PostSaveRepository {
+        return PostSaveRepository(firestore, fireStorage, firebaseAuth)
     }
 
     @Singleton

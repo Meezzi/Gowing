@@ -1,27 +1,26 @@
 package com.meezzi.localtalk.repository
 
 import android.net.Uri
-import com.google.firebase.Firebase
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.toObject
 import com.google.firebase.firestore.toObjects
-import com.google.firebase.storage.storage
+import com.google.firebase.storage.FirebaseStorage
 import com.meezzi.localtalk.data.Comment
 import com.meezzi.localtalk.data.Post
 import java.util.Calendar
 import javax.inject.Inject
 
-class PostSaveRepository @Inject constructor() {
+class PostSaveRepository @Inject constructor(
+    private val db: FirebaseFirestore,
+    private val storage: FirebaseStorage,
+    auth: FirebaseAuth,
+) {
 
-    private val db = Firebase.firestore
-    private val storageRef = Firebase.storage.reference
-
-    private val currentUser
-        get() = FirebaseAuth.getInstance().currentUser
+    private val currentUser = auth.currentUser
 
     fun savePostWithImages(
         post: Post,
@@ -53,7 +52,8 @@ class PostSaveRepository @Inject constructor() {
 
         val timeStamp = System.currentTimeMillis().toString()
 
-        val imagesRef = storageRef.child("posts/${city}/${categoryId}/${postId}/$timeStamp.png")
+        val imagesRef =
+            storage.reference.child("posts/${city}/${categoryId}/${postId}/$timeStamp.png")
         val uploadTask = imagesRef.putFile(uri)
 
         uploadTask.addOnFailureListener {
@@ -180,7 +180,7 @@ class PostSaveRepository @Inject constructor() {
 
     fun getProfileImageUri(authorId: String, onComplete: (Uri?) -> Unit) {
 
-        val profileImageRef = storageRef.child("images/${authorId}_profile_image")
+        val profileImageRef = storage.reference.child("images/${authorId}_profile_image")
         profileImageRef.downloadUrl.addOnSuccessListener { uri ->
             onComplete(uri)
         }.addOnFailureListener {
