@@ -3,8 +3,6 @@ package com.meezzi.localtalk.ui.addPost
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.meezzi.localtalk.data.Categories
@@ -12,11 +10,14 @@ import com.meezzi.localtalk.data.CategorySection
 import com.meezzi.localtalk.data.Post
 import com.meezzi.localtalk.repository.PostSaveRepository
 import com.meezzi.localtalk.ui.home.HomeViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class AddPostViewModel(
+@HiltViewModel
+class AddPostViewModel @Inject constructor(
     private val postSaveRepository: PostSaveRepository,
     private val homeViewModel: HomeViewModel,
 ) : ViewModel() {
@@ -115,16 +116,5 @@ class AddPostViewModel(
         _selectedImageUris.value = emptyList()
         _selectedCategory.value = null
         _isAnonymous.value = false
-    }
-
-    companion object {
-        fun provideFactory(
-            repository: PostSaveRepository,
-            homeViewModel: HomeViewModel
-        ) = viewModelFactory {
-            initializer {
-                AddPostViewModel(repository, homeViewModel)
-            }
-        }
     }
 }
