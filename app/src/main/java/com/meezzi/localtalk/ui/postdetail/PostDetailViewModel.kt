@@ -3,17 +3,20 @@ package com.meezzi.localtalk.ui.postdetail
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.meezzi.localtalk.data.Comment
 import com.meezzi.localtalk.data.Post
 import com.meezzi.localtalk.repository.PostSaveRepository
 import com.meezzi.localtalk.util.TimeFormat
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class PostDetailViewModel(private val postSaveRepository: PostSaveRepository) : ViewModel() {
+@HiltViewModel
+class PostDetailViewModel @Inject constructor(
+    private val postSaveRepository: PostSaveRepository
+) : ViewModel() {
 
     private val _post = MutableStateFlow<Post?>(null)
     val post: StateFlow<Post?> = _post
@@ -198,14 +201,6 @@ class PostDetailViewModel(private val postSaveRepository: PostSaveRepository) : 
             )
             _commentLikeStates.value = _commentLikeStates.value.toMutableMap().apply {
                 this[commentId] = !isLiked
-            }
-        }
-    }
-
-    companion object {
-        fun provideFactory(repository: PostSaveRepository) = viewModelFactory {
-            initializer {
-                PostDetailViewModel(repository)
             }
         }
     }
