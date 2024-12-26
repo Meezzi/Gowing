@@ -32,6 +32,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.meezzi.localtalk.R
 import com.meezzi.localtalk.ui.common.TextTitleLarge
@@ -39,7 +40,7 @@ import com.meezzi.localtalk.ui.common.TextTitleLarge
 @Composable
 fun CreateProfileScreen(
     onProfileSaved: (String, Uri?) -> Unit,
-    profileViewModel: ProfileViewModel
+    profileViewModel: ProfileViewModel = hiltViewModel()
 ) {
     var profileImageUri by rememberSaveable { mutableStateOf<Uri?>(null) }
 

@@ -14,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.meezzi.localtalk.R
 import com.meezzi.localtalk.ui.common.CenterTopAppBar
 import com.meezzi.localtalk.ui.common.CustomAlertDialog
@@ -23,7 +24,7 @@ import com.meezzi.localtalk.ui.profile.ProfileViewModel
 fun SettingInfoScreen(
     title: String,
     onLogout: () -> Unit,
-    profileViewModel: ProfileViewModel,
+    profileViewModel: ProfileViewModel = hiltViewModel(),
     onNavigateToBack: () -> Unit,
     onNavigateToLogin: () -> Unit,
 ) {
