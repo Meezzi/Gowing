@@ -73,10 +73,15 @@ fun HomeScreenContent(
     val latestPostList by homeViewModel.latestPostList.collectAsState()
     val isLoading by homeViewModel.isLoading.collectAsState()
 
-    LaunchedEffect(hotPostList, latestPostList) {
+    LaunchedEffect(Unit) {
         homeViewModel.getAddress()
-        homeViewModel.getHotPostList()
-        homeViewModel.getLatestPostList()
+    }
+
+    LaunchedEffect(address) {
+        if (address.isNotBlank()) {
+            homeViewModel.getHotPostList()
+            homeViewModel.getLatestPostList()
+        }
     }
 
     Scaffold(
