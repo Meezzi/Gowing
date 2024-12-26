@@ -33,9 +33,10 @@ object AppModule {
     @Singleton
     @Provides
     fun provideHomeRepository(
-        @ApplicationContext context: Context
+        @ApplicationContext context: Context,
+        fusedLocationProviderClient: FusedLocationProviderClient
     ): HomeRepository {
-        return HomeRepository(context)
+        return HomeRepository(context, fusedLocationProviderClient)
     }
 
     @Singleton
