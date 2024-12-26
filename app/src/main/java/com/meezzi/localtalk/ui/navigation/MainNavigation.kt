@@ -61,17 +61,27 @@ fun MainNavHost(
     ) {
         composable(Screens.Login.name) {
             LoginScreen(
-                onLoginSuccess = {
+                onNavigateToHome = {
                     navController.navigate(Screen.Home.route)
+                },
+                onNavigateToCreateProfile = {
+                    navController.navigate(Screens.CreateProfile.name) {
+                        popUpTo(Screens.Login.name) {
+                            inclusive = true
+                        }
+                    }
                 }
             )
         }
 
         composable(Screens.CreateProfile.name) {
             CreateProfileScreen(
-                onProfileSaved = { nickname, profileImage ->
-                    profileViewModel.saveUserProfile(nickname, profileImage)
-                    navController.navigate(Screen.Home.route)
+                onNavigateBack = {
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(Screens.CreateProfile.name) {
+                            inclusive = true
+                        }
+                    }
                 },
             )
         }

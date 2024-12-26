@@ -39,7 +39,7 @@ import com.meezzi.localtalk.ui.common.TextTitleLarge
 
 @Composable
 fun CreateProfileScreen(
-    onProfileSaved: (String, Uri?) -> Unit,
+    onNavigateBack: () -> Unit,
     profileViewModel: ProfileViewModel = hiltViewModel()
 ) {
     var profileImageUri by rememberSaveable { mutableStateOf<Uri?>(null) }
@@ -89,7 +89,10 @@ fun CreateProfileScreen(
             Spacer(modifier = Modifier.height(10.dp))
 
         }
-        SaveProfileButton(nickname, profileImageUri, isNicknameValid, onProfileSaved)
+        SaveProfileButton(nickname, profileImageUri, isNicknameValid) {
+            profileViewModel.saveUserProfile(nickname, profileImageUri)
+            onNavigateBack()
+        }
 
     }
 }
@@ -122,10 +125,10 @@ private fun SaveProfileButton(
     nickname: String,
     profileImage: Uri?,
     isNicknameValid: Boolean,
-    onProfileSaved: (String, Uri?) -> Unit
+    onSave: () -> Unit,
 ) {
     Button(
-        onClick = { onProfileSaved(nickname, profileImage) },
+        onClick = onSave,
         modifier = Modifier
             .fillMaxWidth()
             .height(50.dp),
