@@ -12,8 +12,9 @@ import com.google.firebase.storage.ktx.storage
 import com.meezzi.localtalk.data.ChatRoom
 import com.meezzi.localtalk.data.Message
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
-class ChatRepository {
+class ChatRepository @Inject constructor() {
 
     private val db = FirebaseFirestore.getInstance()
     private val currentUserId = Firebase.auth.currentUser?.uid
