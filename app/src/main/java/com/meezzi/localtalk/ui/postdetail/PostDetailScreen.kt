@@ -53,6 +53,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.meezzi.localtalk.R
 import com.meezzi.localtalk.data.Comment
@@ -67,7 +68,7 @@ fun PostDetailScreen(
     categoryId: String,
     postId: String,
     postDetailViewModel: PostDetailViewModel,
-    chatViewModel: ChatViewModel,
+    chatViewModel: ChatViewModel = hiltViewModel(),
     onNavigateBack: () -> Unit,
     onImageClick: (Int) -> Unit,
     onNavigateChat: (String) -> Unit,
