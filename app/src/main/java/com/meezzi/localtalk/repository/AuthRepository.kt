@@ -6,26 +6,19 @@ import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
-import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.auth.auth
 import com.meezzi.localtalk.BuildConfig
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class AuthRepository @Inject constructor(
-    @ApplicationContext private val context: Context
+    private val credentialManager: CredentialManager,
+    private val auth: FirebaseAuth
 ) {
 
-    private val credentialManager = CredentialManager.create(context)
-    private var auth: FirebaseAuth = Firebase.auth
-
     suspend fun signInWithGoogle(context: Context): FirebaseUser? {
-
-        auth = Firebase.auth
 
         // 구글 로그인 요청 인스턴스화
         // GetGoogleIdOption으로 사용자의 Google ID Token 검색

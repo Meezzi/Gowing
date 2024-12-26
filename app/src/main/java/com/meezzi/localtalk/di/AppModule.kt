@@ -1,6 +1,8 @@
 package com.meezzi.localtalk.di
 
 import android.content.Context
+import androidx.credentials.CredentialManager
+import com.google.firebase.auth.FirebaseAuth
 import com.meezzi.localtalk.repository.AuthRepository
 import com.meezzi.localtalk.repository.HomeRepository
 import dagger.Module
@@ -17,9 +19,10 @@ object AppModule {
     @Singleton
     @Provides
     fun provideAuthRepository(
-        @ApplicationContext context: Context
+        credentialManager: CredentialManager,
+        firebaseAuth: FirebaseAuth
     ): AuthRepository {
-        return AuthRepository(context)
+        return AuthRepository(credentialManager, firebaseAuth)
     }
 
     @Singleton
@@ -29,4 +32,16 @@ object AppModule {
     ): HomeRepository {
         return HomeRepository(context)
     }
+
+    @Singleton
+    @Provides
+    fun provideCredentialManager(
+        @ApplicationContext context: Context
+    ): CredentialManager {
+        return CredentialManager.create(context)
+    }
+
+    @Singleton
+    @Provides
+    fun provideFirebaseAuth(): FirebaseAuth = FirebaseAuth.getInstance()
 }
