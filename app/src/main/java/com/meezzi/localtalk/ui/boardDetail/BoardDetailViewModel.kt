@@ -2,16 +2,19 @@ package com.meezzi.localtalk.ui.boardDetail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.meezzi.localtalk.data.Post
 import com.meezzi.localtalk.repository.BoardRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class BoardDetailViewModel(private val boardRepository: BoardRepository) : ViewModel() {
+@HiltViewModel
+class BoardDetailViewModel @Inject constructor(
+    private val boardRepository: BoardRepository
+) : ViewModel() {
 
     private val _postList = MutableStateFlow<List<Post>>(emptyList())
     val postList: StateFlow<List<Post>> = _postList.asStateFlow()
@@ -64,16 +67,6 @@ class BoardDetailViewModel(private val boardRepository: BoardRepository) : ViewM
                     _isLoading.value = false
                 }
             )
-        }
-    }
-
-    companion object {
-        fun provideFactory(
-            boardRepository: BoardRepository,
-        ) = viewModelFactory {
-            initializer {
-                BoardDetailViewModel(boardRepository)
-            }
         }
     }
 }
