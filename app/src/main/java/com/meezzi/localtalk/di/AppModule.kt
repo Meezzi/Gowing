@@ -2,6 +2,7 @@ package com.meezzi.localtalk.di
 
 import android.content.Context
 import com.meezzi.localtalk.repository.AuthRepository
+import com.meezzi.localtalk.repository.HomeRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,5 +20,13 @@ object AppModule {
         @ApplicationContext context: Context
     ): AuthRepository {
         return AuthRepository(context)
+    }
+
+    @Singleton
+    @Provides
+    fun provideHomeRepository(
+        @ApplicationContext context: Context
+    ): HomeRepository {
+        return HomeRepository(context)
     }
 }
