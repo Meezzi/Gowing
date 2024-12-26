@@ -12,25 +12,16 @@ import androidx.compose.ui.Modifier
 import com.meezzi.localtalk.repository.BoardRepository
 import com.meezzi.localtalk.repository.HomeRepository
 import com.meezzi.localtalk.repository.PostSaveRepository
-import com.meezzi.localtalk.repository.UserRepository
 import com.meezzi.localtalk.ui.addPost.AddPostViewModel
 import com.meezzi.localtalk.ui.boardDetail.BoardDetailViewModel
 import com.meezzi.localtalk.ui.home.HomeViewModel
 import com.meezzi.localtalk.ui.navigation.MainScreenView
 import com.meezzi.localtalk.ui.postdetail.PostDetailViewModel
-import com.meezzi.localtalk.ui.profile.ProfileViewModel
 import com.meezzi.localtalk.ui.theme.LocalTalkTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
-    private val profileViewModel by viewModels<ProfileViewModel> {
-        ProfileViewModel.provideFactory(
-            UserRepository(),
-            HomeRepository(this),
-        )
-    }
 
     private val homeViewModel by viewModels<HomeViewModel> {
         HomeViewModel.provideFactory(
@@ -69,7 +60,6 @@ class MainActivity : ComponentActivity() {
                         .imePadding()
                 ) {
                     MainScreenView(
-                        profileViewModel = profileViewModel,
                         homeViewModel = homeViewModel,
                         addPostViewModel = addPostViewModel,
                         postDetailViewModel = postDetailViewModel,

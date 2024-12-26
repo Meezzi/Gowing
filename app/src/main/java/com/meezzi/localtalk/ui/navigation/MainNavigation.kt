@@ -32,7 +32,6 @@ import com.meezzi.localtalk.ui.postdetail.PostDetailScreen
 import com.meezzi.localtalk.ui.postdetail.PostDetailViewModel
 import com.meezzi.localtalk.ui.profile.CreateProfileScreen
 import com.meezzi.localtalk.ui.profile.ProfileScreen
-import com.meezzi.localtalk.ui.profile.ProfileViewModel
 import com.meezzi.localtalk.ui.search.SearchScreen
 import com.meezzi.localtalk.ui.setting.SettingInfoScreen
 import com.meezzi.localtalk.ui.setting.SettingScreen
@@ -40,7 +39,6 @@ import com.meezzi.localtalk.ui.setting.SettingScreen
 @Composable
 fun MainNavHost(
     navController: NavHostController,
-    profileViewModel: ProfileViewModel,
     homeViewModel: HomeViewModel,
     addPostViewModel: AddPostViewModel,
     postDetailViewModel: PostDetailViewModel,
@@ -75,7 +73,6 @@ fun MainNavHost(
                     profileViewModel.saveUserProfile(nickname, profileImage)
                     navController.navigate(Screen.Home.route)
                 },
-                profileViewModel = profileViewModel,
             )
         }
 
@@ -119,7 +116,6 @@ fun MainNavHost(
                 onEditProfileClick = {
                     navController.navigate(Screens.CreateProfile.name)
                 },
-                profileViewModel = profileViewModel,
                 onNavigateToPostDetail = { city, categoryId, postId ->
                     navController.navigate("${Screens.PostDetail.name}/$city/$categoryId/$postId")
                 },
@@ -215,7 +211,6 @@ fun MainNavHost(
             val title = backStackEntry.arguments?.getString("title")
             SettingInfoScreen(
                 title = title ?: "",
-                profileViewModel = profileViewModel,
                 onLogout = { introViewModel.signOutWithGoogle() },
                 onNavigateToBack = { navController.popBackStack() },
                 onNavigateToLogin = {
@@ -233,7 +228,6 @@ fun MainNavHost(
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MainScreenView(
-    profileViewModel: ProfileViewModel,
     homeViewModel: HomeViewModel,
     addPostViewModel: AddPostViewModel,
     postDetailViewModel: PostDetailViewModel,
@@ -265,7 +259,6 @@ fun MainScreenView(
         Box {
             MainNavHost(
                 navController = navController,
-                profileViewModel = profileViewModel,
                 homeViewModel = homeViewModel,
                 addPostViewModel = addPostViewModel,
                 postDetailViewModel = postDetailViewModel,
