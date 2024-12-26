@@ -4,25 +4,16 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.ui.Modifier
-import com.meezzi.localtalk.repository.BoardRepository
-import com.meezzi.localtalk.ui.boardDetail.BoardDetailViewModel
 import com.meezzi.localtalk.ui.navigation.MainScreenView
 import com.meezzi.localtalk.ui.theme.LocalTalkTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
-    private val boardDetailViewModel by viewModels<BoardDetailViewModel> {
-        BoardDetailViewModel.provideFactory(
-            BoardRepository(),
-        )
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,9 +25,7 @@ class MainActivity : ComponentActivity() {
                         .fillMaxSize()
                         .imePadding()
                 ) {
-                    MainScreenView(
-                        boardDetailViewModel = boardDetailViewModel,
-                    )
+                    MainScreenView()
                 }
             }
         }

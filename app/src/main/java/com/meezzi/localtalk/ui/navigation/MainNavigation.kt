@@ -18,9 +18,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.meezzi.localtalk.ui.boardDetail.BoardDetailScreen
 import com.meezzi.localtalk.ui.addPost.AddPostScreen
 import com.meezzi.localtalk.ui.board.BoardScreen
-import com.meezzi.localtalk.ui.boardDetail.BoardDetailViewModel
 import com.meezzi.localtalk.ui.chat.ChatRoomScreen
 import com.meezzi.localtalk.ui.chat.ChatScreen
+import com.meezzi.localtalk.ui.home.HomeViewModel
 import com.meezzi.localtalk.ui.home.screens.AddPostFloatingButton
 import com.meezzi.localtalk.ui.home.screens.HomeScreen
 import com.meezzi.localtalk.ui.intro.IntroViewModel
@@ -37,11 +37,11 @@ import com.meezzi.localtalk.ui.setting.SettingScreen
 @Composable
 fun MainNavHost(
     navController: NavHostController,
-    boardDetailViewModel: BoardDetailViewModel,
 ) {
 
     val introViewModel: IntroViewModel = hiltViewModel()
-    val postDetailViewModel : PostDetailViewModel = hiltViewModel()
+    val postDetailViewModel: PostDetailViewModel = hiltViewModel()
+    val homeViewModel: HomeViewModel = hiltViewModel()
 
     val startDestination = remember {
         if (FirebaseAuth.getInstance().currentUser != null) {
@@ -84,6 +84,7 @@ fun MainNavHost(
 
         composable(Screen.Home.route) {
             HomeScreen(
+                homeViewModel = homeViewModel,
                 onNavigateToPostDetail = { city, categoryId, postId ->
                     navController.navigate("${Screens.PostDetail.name}/$city/$categoryId/$postId")
                 }
@@ -182,7 +183,7 @@ fun MainNavHost(
             val categoryId = backStackEntry.arguments?.getString("categoryId")
             BoardDetailScreen(
                 categoryId = categoryId,
-                boardDetailViewModel = boardDetailViewModel,
+                homeViewModel = homeViewModel,
                 onNavigateBack = { navController.popBackStack() },
                 onNavigateToPostDetail = { city, categoryId, postId ->
                     navController.navigate("${Screens.PostDetail.name}/$city/$categoryId/$postId")
@@ -226,9 +227,7 @@ fun MainNavHost(
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun MainScreenView(
-    boardDetailViewModel: BoardDetailViewModel,
-) {
+fun MainScreenView() {
     val navController = rememberNavController()
     val currentBackStack by navController.currentBackStackEntryAsState()
     val currentDestination = currentBackStack?.destination
@@ -255,7 +254,6 @@ fun MainScreenView(
         Box {
             MainNavHost(
                 navController = navController,
-                boardDetailViewModel = boardDetailViewModel,
             )
         }
     }
