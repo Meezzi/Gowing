@@ -1,5 +1,6 @@
 package com.meezzi.localtalk.ui.intro
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.Firebase
@@ -25,11 +26,11 @@ class IntroViewModel @Inject constructor(
     private val _authState = MutableStateFlow(auth.currentUser)
     val authState: StateFlow<FirebaseUser?> = _authState
 
-    fun signInWithGoogle() {
+    fun signInWithGoogle(context: Context) {
 
         viewModelScope.launch {
             try {
-                val user = authRepository.signInWithGoogle()
+                val user = authRepository.signInWithGoogle(context)
                 _authState.value = user
             } catch (e: Exception) {
 

@@ -23,7 +23,7 @@ class AuthRepository @Inject constructor(
     private val credentialManager = CredentialManager.create(context)
     private var auth: FirebaseAuth = Firebase.auth
 
-    suspend fun signInWithGoogle(): FirebaseUser? {
+    suspend fun signInWithGoogle(context: Context): FirebaseUser? {
 
         auth = Firebase.auth
 

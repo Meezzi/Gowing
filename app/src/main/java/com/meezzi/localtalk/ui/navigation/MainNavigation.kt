@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -50,7 +49,7 @@ fun MainNavHost(
     chatViewModel: ChatViewModel,
 ) {
 
-    val user by introViewModel.authState.collectAsStateWithLifecycle()
+    val introViewModel: IntroViewModel = hiltViewModel()
 
     val startDestination = remember {
         if (FirebaseAuth.getInstance().currentUser != null) {
@@ -60,27 +59,15 @@ fun MainNavHost(
         }
     }
 
-    LaunchedEffect(user) {
-        if (user != null) {
-            val hasData = introViewModel.hasUserData()
-            val destination = if (hasData) Screen.Home.route else Screens.CreateProfile.name
-            navController.navigate(destination) {
-                popUpTo(Screens.Login.name) {
-                    inclusive = true
-                }
-            }
-        }
-    }
-
     NavHost(
         navController = navController,
         startDestination = startDestination,
     ) {
         composable(Screens.Login.name) {
             LoginScreen(
-                onSignInClick = {
-                    introViewModel.signInWithGoogle()
-                },
+                onLoginSuccess = {
+                    navController.navigate(Screen.Home.route)
+                }
             )
         }
 
