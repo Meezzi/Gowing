@@ -2,6 +2,8 @@ package com.meezzi.localtalk.di
 
 import android.content.Context
 import androidx.credentials.CredentialManager
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.meezzi.localtalk.repository.AuthRepository
@@ -60,6 +62,14 @@ object AppModule {
         @ApplicationContext context: Context
     ): CredentialManager {
         return CredentialManager.create(context)
+    }
+
+    @Singleton
+    @Provides
+    fun provideFusedLocationProviderClient(
+        @ApplicationContext context: Context
+    ): FusedLocationProviderClient {
+        return LocationServices.getFusedLocationProviderClient(context)
     }
 
     @Singleton
