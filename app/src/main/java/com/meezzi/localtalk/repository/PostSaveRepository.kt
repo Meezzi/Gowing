@@ -13,8 +13,9 @@ import com.google.firebase.storage.storage
 import com.meezzi.localtalk.data.Comment
 import com.meezzi.localtalk.data.Post
 import java.util.Calendar
+import javax.inject.Inject
 
-class PostSaveRepository {
+class PostSaveRepository @Inject constructor() {
 
     private val db = Firebase.firestore
     private val storageRef = Firebase.storage.reference
