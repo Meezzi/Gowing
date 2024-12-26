@@ -12,8 +12,9 @@ import com.meezzi.localtalk.data.Post
 import com.meezzi.localtalk.data.User
 import com.meezzi.localtalk.util.FirestoreUtils.getPostById
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
-class UserRepository {
+class UserRepository @Inject constructor() {
 
     val db = Firebase.firestore
     val storage = Firebase.storage
