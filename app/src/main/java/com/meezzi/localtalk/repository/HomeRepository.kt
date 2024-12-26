@@ -8,11 +8,15 @@ import android.location.Location
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.LocationServices
 import com.meezzi.localtalk.R
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.tasks.await
 import java.io.IOException
 import java.util.Locale
+import javax.inject.Inject
 
-class HomeRepository(private val context: Context) {
+class HomeRepository @Inject constructor(
+    @ApplicationContext private val context: Context
+) {
 
     suspend fun getCurrentLocation(): String {
 
