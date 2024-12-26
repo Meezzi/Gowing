@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -42,7 +42,6 @@ import com.meezzi.localtalk.ui.setting.SettingScreen
 @Composable
 fun MainNavHost(
     navController: NavHostController,
-    introViewModel: IntroViewModel,
     profileViewModel: ProfileViewModel,
     homeViewModel: HomeViewModel,
     addPostViewModel: AddPostViewModel,
@@ -252,7 +251,6 @@ fun MainNavHost(
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MainScreenView(
-    introViewModel: IntroViewModel,
     profileViewModel: ProfileViewModel,
     homeViewModel: HomeViewModel,
     addPostViewModel: AddPostViewModel,
@@ -286,7 +284,6 @@ fun MainScreenView(
         Box {
             MainNavHost(
                 navController = navController,
-                introViewModel = introViewModel,
                 profileViewModel = profileViewModel,
                 homeViewModel = homeViewModel,
                 addPostViewModel = addPostViewModel,

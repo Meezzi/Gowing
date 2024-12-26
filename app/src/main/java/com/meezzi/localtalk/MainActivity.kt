@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.ui.Modifier
-import com.meezzi.localtalk.repository.AuthRepository
 import com.meezzi.localtalk.repository.BoardRepository
 import com.meezzi.localtalk.repository.ChatRepository
 import com.meezzi.localtalk.repository.HomeRepository
@@ -19,19 +18,14 @@ import com.meezzi.localtalk.ui.addPost.AddPostViewModel
 import com.meezzi.localtalk.ui.boardDetail.BoardDetailViewModel
 import com.meezzi.localtalk.ui.chat.ChatViewModel
 import com.meezzi.localtalk.ui.home.HomeViewModel
-import com.meezzi.localtalk.ui.intro.IntroViewModel
 import com.meezzi.localtalk.ui.navigation.MainScreenView
 import com.meezzi.localtalk.ui.postdetail.PostDetailViewModel
 import com.meezzi.localtalk.ui.profile.ProfileViewModel
 import com.meezzi.localtalk.ui.theme.LocalTalkTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
-    private val introViewModel by viewModels<IntroViewModel> {
-        IntroViewModel.provideFactory(
-            AuthRepository(this)
-        )
-    }
 
     private val profileViewModel by viewModels<ProfileViewModel> {
         ProfileViewModel.provideFactory(
@@ -83,7 +77,6 @@ class MainActivity : ComponentActivity() {
                         .imePadding()
                 ) {
                     MainScreenView(
-                        introViewModel = introViewModel,
                         profileViewModel = profileViewModel,
                         homeViewModel = homeViewModel,
                         addPostViewModel = addPostViewModel,

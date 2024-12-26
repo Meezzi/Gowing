@@ -2,19 +2,22 @@ package com.meezzi.localtalk.ui.intro
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.firestore
 import com.meezzi.localtalk.repository.AuthRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
-class IntroViewModel(private val authRepository: AuthRepository) : ViewModel() {
+@HiltViewModel
+class IntroViewModel @Inject constructor(
+    private val authRepository: AuthRepository
+) : ViewModel() {
 
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val db = Firebase.firestore
@@ -58,13 +61,5 @@ class IntroViewModel(private val authRepository: AuthRepository) : ViewModel() {
             }.await()
 
         return hasUserData
-    }
-
-    companion object {
-        fun provideFactory(repository: AuthRepository) = viewModelFactory {
-            initializer {
-                IntroViewModel(repository)
-            }
-        }
     }
 }
