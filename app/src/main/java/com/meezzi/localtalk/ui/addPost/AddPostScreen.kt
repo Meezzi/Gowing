@@ -63,6 +63,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.meezzi.localtalk.R
 import com.meezzi.localtalk.data.CategorySection
@@ -71,7 +72,7 @@ import com.meezzi.localtalk.ui.common.CustomPermissionRationaleDialog
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddPostScreen(
-    addPostViewModel: AddPostViewModel,
+    addPostViewModel: AddPostViewModel = hiltViewModel(),
     onNavigationBack: () -> Unit,
     onSavePost: (String, String, String) -> Unit
 ) {
