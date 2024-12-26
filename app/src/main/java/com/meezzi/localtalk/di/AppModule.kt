@@ -3,7 +3,9 @@ package com.meezzi.localtalk.di
 import android.content.Context
 import androidx.credentials.CredentialManager
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.meezzi.localtalk.repository.AuthRepository
+import com.meezzi.localtalk.repository.BoardRepository
 import com.meezzi.localtalk.repository.HomeRepository
 import dagger.Module
 import dagger.Provides
@@ -44,4 +46,8 @@ object AppModule {
     @Singleton
     @Provides
     fun provideFirebaseAuth(): FirebaseAuth = FirebaseAuth.getInstance()
+
+    @Provides
+    @Singleton
+    fun provideFirestore(): FirebaseFirestore = FirebaseFirestore.getInstance()
 }
