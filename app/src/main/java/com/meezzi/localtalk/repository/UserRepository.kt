@@ -1,12 +1,11 @@
 package com.meezzi.localtalk.repository
 
 import android.net.Uri
-import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.toObject
-import com.google.firebase.storage.storage
+import com.google.firebase.storage.FirebaseStorage
 import com.meezzi.localtalk.data.Categories
 import com.meezzi.localtalk.data.Post
 import com.meezzi.localtalk.data.User
@@ -14,14 +13,13 @@ import com.meezzi.localtalk.util.FirestoreUtils.getPostById
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-class UserRepository @Inject constructor() {
+class UserRepository @Inject constructor(
+    private val db: FirebaseFirestore,
+    private val storage: FirebaseStorage,
+    auth: FirebaseAuth,
+) {
 
-    val db = Firebase.firestore
-    val storage = Firebase.storage
-    var storageRef = storage.reference
-
-    private val currentUser
-        get() = FirebaseAuth.getInstance().currentUser
+    private val currentUser = auth.currentUser
 
     fun fetchUserEmail(): String {
         return currentUser?.email ?: "이메일을 찾을 수 없습니다."
@@ -40,7 +38,7 @@ class UserRepository @Inject constructor() {
     }
 
     private fun saveProfileImage(profileImageUri: Uri?) {
-        val imageRef = storageRef.child("images/${currentUser?.uid}_profile_image")
+        val imageRef = storage.reference.child("images/${currentUser?.uid}_profile_image")
         val uploadTask = profileImageUri?.let { imageRef.putFile(it) }
 
         uploadTask?.addOnFailureListener {
@@ -70,7 +68,8 @@ class UserRepository @Inject constructor() {
 
     fun getProfileImageUri(onComplete: (Uri?) -> Unit) {
         currentUser?.let { user ->
-            val profileImageRef = storageRef.child("images/${currentUser?.uid}_profile_image")
+            val profileImageRef =
+                storage.reference.child("images/${currentUser?.uid}_profile_image")
 
             profileImageRef.downloadUrl.addOnSuccessListener { uri ->
                 onComplete(uri)
