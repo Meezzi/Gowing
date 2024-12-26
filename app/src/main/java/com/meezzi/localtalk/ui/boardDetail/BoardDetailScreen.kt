@@ -13,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+ import androidx.hilt.navigation.compose.hiltViewModel
 import com.meezzi.localtalk.R
 import com.meezzi.localtalk.data.Categories
 import com.meezzi.localtalk.data.Post
@@ -25,7 +26,7 @@ import com.meezzi.localtalk.ui.postdetail.ErrorView
 @Composable
 fun BoardDetailScreen(
     categoryId: String?,
-    homeViewModel: HomeViewModel,
+    homeViewModel: HomeViewModel = hiltViewModel(),
     boardDetailViewModel: BoardDetailViewModel,
     onNavigateBack: () -> Unit,
     onNavigateToPostDetail: (String, String, String) -> Unit,
