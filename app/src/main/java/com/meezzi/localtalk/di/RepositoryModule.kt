@@ -3,12 +3,9 @@ package com.meezzi.localtalk.di
 import android.content.Context
 import androidx.credentials.CredentialManager
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.ktx.storage
 import com.meezzi.localtalk.repository.AuthRepository
 import com.meezzi.localtalk.repository.BoardRepository
 import com.meezzi.localtalk.repository.ChatRepository
@@ -24,7 +21,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object AppModule {
+object RepositoryModule {
 
     @Singleton
     @Provides
@@ -81,32 +78,4 @@ object AppModule {
     ): UserRepository {
         return UserRepository(firestore, fireStorage, firebaseAuth)
     }
-
-    @Singleton
-    @Provides
-    fun provideCredentialManager(
-        @ApplicationContext context: Context
-    ): CredentialManager {
-        return CredentialManager.create(context)
-    }
-
-    @Singleton
-    @Provides
-    fun provideFusedLocationProviderClient(
-        @ApplicationContext context: Context
-    ): FusedLocationProviderClient {
-        return LocationServices.getFusedLocationProviderClient(context)
-    }
-
-    @Singleton
-    @Provides
-    fun provideFirebaseAuth(): FirebaseAuth = FirebaseAuth.getInstance()
-
-    @Provides
-    @Singleton
-    fun provideFirestore(): FirebaseFirestore = FirebaseFirestore.getInstance()
-
-    @Singleton
-    @Provides
-    fun provideFirebaseStorage(): FirebaseStorage = Firebase.storage
 }
