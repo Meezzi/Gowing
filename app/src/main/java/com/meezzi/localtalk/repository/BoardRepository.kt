@@ -1,8 +1,7 @@
 package com.meezzi.localtalk.repository
 
-import com.google.firebase.Firebase
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.firestore
+ import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.toObjects
 import com.meezzi.localtalk.data.Categories
 import com.meezzi.localtalk.data.Post
@@ -11,11 +10,12 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-class BoardRepository @Inject constructor() {
+class BoardRepository @Inject constructor(
+    private val db: FirebaseFirestore,
+    auth: FirebaseAuth,
+) {
 
-    private val db = Firebase.firestore
-    private val currentUser
-        get() = FirebaseAuth.getInstance().currentUser
+    private val currentUser = auth.currentUser
 
     fun fetchPostsByCategory(
         city: String,

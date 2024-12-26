@@ -37,6 +37,15 @@ object AppModule {
 
     @Singleton
     @Provides
+    fun provideBoardRepository(
+        firestore: FirebaseFirestore,
+        firebaseAuth: FirebaseAuth
+    ): BoardRepository {
+        return BoardRepository(firestore, firebaseAuth)
+    }
+
+    @Singleton
+    @Provides
     fun provideCredentialManager(
         @ApplicationContext context: Context
     ): CredentialManager {
