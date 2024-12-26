@@ -9,8 +9,9 @@ import com.meezzi.localtalk.data.Post
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
-class BoardRepository {
+class BoardRepository @Inject constructor() {
 
     private val db = Firebase.firestore
     private val currentUser
