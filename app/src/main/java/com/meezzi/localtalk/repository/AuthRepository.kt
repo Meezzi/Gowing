@@ -12,9 +12,13 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.auth
 import com.meezzi.localtalk.BuildConfig
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
-class AuthRepository(private val context: Context) {
+class AuthRepository @Inject constructor(
+    @ApplicationContext private val context: Context
+) {
 
     private val credentialManager = CredentialManager.create(context)
     private var auth: FirebaseAuth = Firebase.auth
