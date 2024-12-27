@@ -23,7 +23,6 @@ import com.meezzi.localtalk.ui.chat.ChatScreen
 import com.meezzi.localtalk.ui.home.HomeViewModel
 import com.meezzi.localtalk.ui.home.screens.AddPostFloatingButton
 import com.meezzi.localtalk.ui.home.screens.HomeScreen
-import com.meezzi.localtalk.ui.intro.IntroViewModel
 import com.meezzi.localtalk.ui.intro.screens.LoginScreen
 import com.meezzi.localtalk.ui.postdetail.ImageViewerScreen
 import com.meezzi.localtalk.ui.postdetail.PostDetailScreen
@@ -39,7 +38,6 @@ fun MainNavHost(
     navController: NavHostController,
 ) {
 
-    val introViewModel: IntroViewModel = hiltViewModel()
     val postDetailViewModel: PostDetailViewModel = hiltViewModel()
     val homeViewModel: HomeViewModel = hiltViewModel()
 
@@ -211,7 +209,6 @@ fun MainNavHost(
             val title = backStackEntry.arguments?.getString("title")
             SettingInfoScreen(
                 title = title ?: "",
-                onLogout = { introViewModel.signOutWithGoogle() },
                 onNavigateToBack = { navController.popBackStack() },
                 onNavigateToLogin = {
                     navController.navigate(Screens.Login.name) {

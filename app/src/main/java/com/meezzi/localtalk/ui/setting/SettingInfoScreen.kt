@@ -18,12 +18,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.meezzi.localtalk.R
 import com.meezzi.localtalk.ui.common.CenterTopAppBar
 import com.meezzi.localtalk.ui.common.CustomAlertDialog
+import com.meezzi.localtalk.ui.intro.IntroViewModel
 import com.meezzi.localtalk.ui.profile.ProfileViewModel
 
 @Composable
 fun SettingInfoScreen(
     title: String,
-    onLogout: () -> Unit,
+    introViewModel: IntroViewModel = hiltViewModel(),
     profileViewModel: ProfileViewModel = hiltViewModel(),
     onNavigateToBack: () -> Unit,
     onNavigateToLogin: () -> Unit,
@@ -45,7 +46,13 @@ fun SettingInfoScreen(
     ) { innerPadding ->
         when (title) {
             stringResource(id = R.string.my_information) -> {
-                MyInformation(innerPadding, email, onLogout, onNavigateToLogin)
+                MyInformation(
+                    innerPadding,
+                    email,
+                ) {
+                    introViewModel.signOutWithGoogle()
+                    onNavigateToLogin()
+                }
             }
         }
     }
@@ -56,7 +63,6 @@ fun MyInformation(
     innerPadding: PaddingValues,
     email: String,
     onLogout: () -> Unit,
-    onNavigateToLogin: () -> Unit,
 ) {
     var showDialog by remember { mutableStateOf(false) }
 
@@ -81,7 +87,6 @@ fun MyInformation(
                 onConfirm = {
                     showDialog = false
                     onLogout()
-                    onNavigateToLogin()
                 },
                 onDismiss = { showDialog = false }
             )
