@@ -7,27 +7,48 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.meezzi.localtalk.R
+import com.meezzi.localtalk.ui.intro.IntroViewModel
 
 @Composable
 fun LoginScreen(
-    onSignInClick: () -> Unit,
+    onNavigateToHome: () -> Unit,
+    onNavigateToCreateProfile: () -> Unit,
+    introViewModel: IntroViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
+    val authState by introViewModel.authState.collectAsState()
+
+    LaunchedEffect(authState) {
+        if (authState != null) {
+            val hasData = introViewModel.hasUserData()
+            if (hasData) {
+                onNavigateToHome()
+            } else {
+                onNavigateToCreateProfile()
+            }
+        }
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -63,7 +84,7 @@ fun LoginScreen(
                 .padding(bottom = 150.dp),
             contentAlignment = Alignment.BottomCenter
         ) {
-            SignInGoogleButton(onClick = onSignInClick)
+            SignInGoogleButton(onClick = { introViewModel.signInWithGoogle(context) })
         }
     }
 }

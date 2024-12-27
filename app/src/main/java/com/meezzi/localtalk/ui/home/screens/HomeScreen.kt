@@ -38,6 +38,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
@@ -51,7 +52,7 @@ import com.meezzi.localtalk.util.TimeFormat
 
 @Composable
 fun HomeScreen(
-    homeViewModel: HomeViewModel,
+    homeViewModel: HomeViewModel = hiltViewModel(),
     onNavigateToPostDetail: (String, String, String) -> Unit,
 ) {
 
@@ -72,10 +73,15 @@ fun HomeScreenContent(
     val latestPostList by homeViewModel.latestPostList.collectAsState()
     val isLoading by homeViewModel.isLoading.collectAsState()
 
-    LaunchedEffect(hotPostList, latestPostList) {
+    LaunchedEffect(Unit) {
         homeViewModel.getAddress()
-        homeViewModel.getHotPostList()
-        homeViewModel.getLatestPostList()
+    }
+
+    LaunchedEffect(address) {
+        if (address.isNotBlank()) {
+            homeViewModel.getHotPostList()
+            homeViewModel.getLatestPostList()
+        }
     }
 
     Scaffold(

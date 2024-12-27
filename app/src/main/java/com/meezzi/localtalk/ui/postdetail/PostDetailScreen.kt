@@ -53,6 +53,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.meezzi.localtalk.R
 import com.meezzi.localtalk.data.Comment
@@ -67,9 +68,9 @@ fun PostDetailScreen(
     categoryId: String,
     postId: String,
     postDetailViewModel: PostDetailViewModel,
-    chatViewModel: ChatViewModel,
+    chatViewModel: ChatViewModel = hiltViewModel(),
     onNavigateBack: () -> Unit,
-    onImageClick: (Int) -> Unit,
+    onNavigateToImageViewer: () -> Unit,
     onNavigateChat: (String) -> Unit,
 ) {
     val post by postDetailViewModel.post.collectAsState()
@@ -162,7 +163,13 @@ fun PostDetailScreen(
                         onLikeClick = {
                             postDetailViewModel.togglePostLike(postId, city, categoryId)
                         },
-                        onImageClick = onImageClick,
+                        onImageClick = { selectedImageIndex ->
+                            postDetailViewModel.updateSelectedImageIndex(selectedImageIndex)
+                            postDetailViewModel.updateImageList(
+                                postDetailViewModel.post.value?.postImageUrl ?: emptyList()
+                            )
+                            onNavigateToImageViewer()
+                        },
                         onCommentLikeClick = { commentId ->
                             postDetailViewModel.toggleCommentLike(
                                 postId,
@@ -326,7 +333,7 @@ fun PostImages(
                         .clickable {
                             onImageClick(index)
                         },
-                    contentScale = ContentScale.Crop
+                    contentScale = ContentScale.Crop,
                 )
             }
         }

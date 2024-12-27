@@ -3,16 +3,17 @@ package com.meezzi.localtalk.ui.profile
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.meezzi.localtalk.data.Post
 import com.meezzi.localtalk.repository.HomeRepository
 import com.meezzi.localtalk.repository.UserRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class ProfileViewModel(
+@HiltViewModel
+class ProfileViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val homeRepository: HomeRepository,
 ) : ViewModel() {
@@ -126,17 +127,6 @@ class ProfileViewModel(
     fun loadLikedPost() {
         viewModelScope.launch {
             _likedPosts.value = userRepository.fetchLikedPosts()
-        }
-    }
-
-    companion object {
-        fun provideFactory(
-            userRepository: UserRepository,
-            homeRepository: HomeRepository
-        ) = viewModelFactory {
-            initializer {
-                ProfileViewModel(userRepository, homeRepository)
-            }
         }
     }
 }

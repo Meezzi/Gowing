@@ -6,17 +6,20 @@ import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.location.Location
 import androidx.core.app.ActivityCompat
-import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.FusedLocationProviderClient
 import com.meezzi.localtalk.R
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.tasks.await
 import java.io.IOException
 import java.util.Locale
+import javax.inject.Inject
 
-class HomeRepository(private val context: Context) {
+class HomeRepository @Inject constructor(
+    @ApplicationContext private val context: Context,
+    private val fusedLocationProviderClient: FusedLocationProviderClient,
+) {
 
     suspend fun getCurrentLocation(): String {
-
-        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
 
         if (ActivityCompat.checkSelfPermission(
                 context,
@@ -30,7 +33,7 @@ class HomeRepository(private val context: Context) {
         }
 
         try {
-            val location: Location? = fusedLocationClient.lastLocation.await()
+            val location: Location? = fusedLocationProviderClient.lastLocation.await()
             if (location != null) {
                 val geocoder = Geocoder(context, Locale.getDefault())
                 val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)

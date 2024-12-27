@@ -3,27 +3,31 @@ package com.meezzi.localtalk.ui.addPost
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.meezzi.localtalk.data.Categories
 import com.meezzi.localtalk.data.CategorySection
 import com.meezzi.localtalk.data.Post
+import com.meezzi.localtalk.repository.HomeRepository
 import com.meezzi.localtalk.repository.PostSaveRepository
-import com.meezzi.localtalk.ui.home.HomeViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class AddPostViewModel(
+@HiltViewModel
+class AddPostViewModel @Inject constructor(
     private val postSaveRepository: PostSaveRepository,
-    private val homeViewModel: HomeViewModel,
+    private val homeRepository: HomeRepository,
 ) : ViewModel() {
 
     val categories: List<CategorySection> = Categories.entries.map { categoryType ->
         CategorySection(id = categoryType.name.lowercase(), name = categoryType.displayName)
     }
+
+    private val _address = MutableStateFlow("")
+    val address = _address
 
     private val _selectedCategory = MutableStateFlow<CategorySection?>(null)
     val selectedCategory: StateFlow<CategorySection?> = _selectedCategory
@@ -67,14 +71,18 @@ class AddPostViewModel(
         _isAnonymous.value = isAnonymous
     }
 
+    suspend fun updateAddress() {
+        _address.value = homeRepository.getCurrentLocation().split(" ")[0]
+    }
+
     fun savePost(
         onSuccess: (String, String, String) -> Unit,
         onFailure: (Exception) -> Unit
     ) {
         val category = selectedCategory.value
-        val address = homeViewModel.address.value.split(" ")[0]
+        val address = _address.value
 
-        if (category != null && address.isNotEmpty()) {
+        if (category != null) {
             viewModelScope.launch {
 
                 val authorName =
@@ -115,16 +123,5 @@ class AddPostViewModel(
         _selectedImageUris.value = emptyList()
         _selectedCategory.value = null
         _isAnonymous.value = false
-    }
-
-    companion object {
-        fun provideFactory(
-            repository: PostSaveRepository,
-            homeViewModel: HomeViewModel
-        ) = viewModelFactory {
-            initializer {
-                AddPostViewModel(repository, homeViewModel)
-            }
-        }
     }
 }

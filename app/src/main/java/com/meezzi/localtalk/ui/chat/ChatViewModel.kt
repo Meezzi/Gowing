@@ -9,10 +9,15 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.meezzi.localtalk.data.ChatRoom
 import com.meezzi.localtalk.data.Message
 import com.meezzi.localtalk.repository.ChatRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class ChatViewModel(private val chatRepository: ChatRepository) : ViewModel() {
+@HiltViewModel
+class ChatViewModel @Inject constructor(
+    private val chatRepository: ChatRepository
+) : ViewModel() {
 
     private val _isLoading = MutableStateFlow(true)
     val isLoading = _isLoading
@@ -155,7 +160,7 @@ class ChatViewModel(private val chatRepository: ChatRepository) : ViewModel() {
 
     fun checkAndDeleteIfNoMessage(chatRoomId: String) {
         viewModelScope.launch {
-            if(chatRepository.isMessageEmpty(chatRoomId)) {
+            if (chatRepository.isMessageEmpty(chatRoomId)) {
                 chatRepository.deleteChatRoom(chatRoomId)
             }
         }

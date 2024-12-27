@@ -4,10 +4,9 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -18,23 +17,18 @@ import androidx.navigation.navArgument
 import com.google.firebase.auth.FirebaseAuth
 import com.meezzi.localtalk.ui.boardDetail.BoardDetailScreen
 import com.meezzi.localtalk.ui.addPost.AddPostScreen
-import com.meezzi.localtalk.ui.addPost.AddPostViewModel
 import com.meezzi.localtalk.ui.board.BoardScreen
-import com.meezzi.localtalk.ui.boardDetail.BoardDetailViewModel
 import com.meezzi.localtalk.ui.chat.ChatRoomScreen
 import com.meezzi.localtalk.ui.chat.ChatScreen
-import com.meezzi.localtalk.ui.chat.ChatViewModel
 import com.meezzi.localtalk.ui.home.HomeViewModel
 import com.meezzi.localtalk.ui.home.screens.AddPostFloatingButton
 import com.meezzi.localtalk.ui.home.screens.HomeScreen
-import com.meezzi.localtalk.ui.intro.IntroViewModel
 import com.meezzi.localtalk.ui.intro.screens.LoginScreen
 import com.meezzi.localtalk.ui.postdetail.ImageViewerScreen
 import com.meezzi.localtalk.ui.postdetail.PostDetailScreen
 import com.meezzi.localtalk.ui.postdetail.PostDetailViewModel
 import com.meezzi.localtalk.ui.profile.CreateProfileScreen
 import com.meezzi.localtalk.ui.profile.ProfileScreen
-import com.meezzi.localtalk.ui.profile.ProfileViewModel
 import com.meezzi.localtalk.ui.search.SearchScreen
 import com.meezzi.localtalk.ui.setting.SettingInfoScreen
 import com.meezzi.localtalk.ui.setting.SettingScreen
@@ -42,16 +36,10 @@ import com.meezzi.localtalk.ui.setting.SettingScreen
 @Composable
 fun MainNavHost(
     navController: NavHostController,
-    introViewModel: IntroViewModel,
-    profileViewModel: ProfileViewModel,
-    homeViewModel: HomeViewModel,
-    addPostViewModel: AddPostViewModel,
-    postDetailViewModel: PostDetailViewModel,
-    boardDetailViewModel: BoardDetailViewModel,
-    chatViewModel: ChatViewModel,
 ) {
 
-    val user by introViewModel.authState.collectAsStateWithLifecycle()
+    val postDetailViewModel: PostDetailViewModel = hiltViewModel()
+    val homeViewModel: HomeViewModel = hiltViewModel()
 
     val startDestination = remember {
         if (FirebaseAuth.getInstance().currentUser != null) {
@@ -61,37 +49,34 @@ fun MainNavHost(
         }
     }
 
-    LaunchedEffect(user) {
-        if (user != null) {
-            val hasData = introViewModel.hasUserData()
-            val destination = if (hasData) Screen.Home.route else Screens.CreateProfile.name
-            navController.navigate(destination) {
-                popUpTo(Screens.Login.name) {
-                    inclusive = true
-                }
-            }
-        }
-    }
-
     NavHost(
         navController = navController,
         startDestination = startDestination,
     ) {
         composable(Screens.Login.name) {
             LoginScreen(
-                onSignInClick = {
-                    introViewModel.signInWithGoogle()
+                onNavigateToHome = {
+                    navController.navigate(Screen.Home.route)
                 },
+                onNavigateToCreateProfile = {
+                    navController.navigate(Screens.CreateProfile.name) {
+                        popUpTo(Screens.Login.name) {
+                            inclusive = true
+                        }
+                    }
+                }
             )
         }
 
         composable(Screens.CreateProfile.name) {
             CreateProfileScreen(
-                onProfileSaved = { nickname, profileImage ->
-                    profileViewModel.saveUserProfile(nickname, profileImage)
-                    navController.navigate(Screen.Home.route)
+                onNavigateBack = {
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(Screens.CreateProfile.name) {
+                            inclusive = true
+                        }
+                    }
                 },
-                profileViewModel = profileViewModel,
             )
         }
 
@@ -124,7 +109,6 @@ fun MainNavHost(
 
         composable(Screen.Chat.route) {
             ChatScreen(
-                chatViewModel = chatViewModel,
                 onChatRoomClick = { chatRoomId ->
                     navController.navigate("${Screens.ChatRoom.name}/$chatRoomId")
                 }
@@ -136,7 +120,6 @@ fun MainNavHost(
                 onEditProfileClick = {
                     navController.navigate(Screens.CreateProfile.name)
                 },
-                profileViewModel = profileViewModel,
                 onNavigateToPostDetail = { city, categoryId, postId ->
                     navController.navigate("${Screens.PostDetail.name}/$city/$categoryId/$postId")
                 },
@@ -148,7 +131,6 @@ fun MainNavHost(
 
         composable(Screens.AddPost.name) {
             AddPostScreen(
-                addPostViewModel = addPostViewModel,
                 onNavigationBack = { navController.popBackStack() },
                 onSavePost = { city, categoryId, postId ->
                     navController.popBackStack()
@@ -174,13 +156,8 @@ fun MainNavHost(
                 city = city,
                 categoryId = categoryId,
                 postDetailViewModel = postDetailViewModel,
-                chatViewModel = chatViewModel,
                 onNavigateBack = { navController.popBackStack() },
-                onImageClick = { selectedImageIndex ->
-                    postDetailViewModel.updateSelectedImageIndex(selectedImageIndex)
-                    postDetailViewModel.updateImageList(
-                        postDetailViewModel.post.value?.postImageUrl ?: emptyList()
-                    )
+                onNavigateToImageViewer = {
                     navController.navigate(Screens.ImageViewer.name)
                 },
                 onNavigateChat = { chatRoomId ->
@@ -205,7 +182,6 @@ fun MainNavHost(
             BoardDetailScreen(
                 categoryId = categoryId,
                 homeViewModel = homeViewModel,
-                boardDetailViewModel = boardDetailViewModel,
                 onNavigateBack = { navController.popBackStack() },
                 onNavigateToPostDetail = { city, categoryId, postId ->
                     navController.navigate("${Screens.PostDetail.name}/$city/$categoryId/$postId")
@@ -217,7 +193,6 @@ fun MainNavHost(
             val chatRoomId = backStackEntry.arguments?.getString("chatRoomId")
             ChatRoomScreen(
                 chatRoomId = chatRoomId!!,
-                chatViewModel = chatViewModel,
                 onNavigateBack = { navController.popBackStack() })
         }
 
@@ -234,8 +209,6 @@ fun MainNavHost(
             val title = backStackEntry.arguments?.getString("title")
             SettingInfoScreen(
                 title = title ?: "",
-                profileViewModel = profileViewModel,
-                onLogout = { introViewModel.signOutWithGoogle() },
                 onNavigateToBack = { navController.popBackStack() },
                 onNavigateToLogin = {
                     navController.navigate(Screens.Login.name) {
@@ -251,15 +224,7 @@ fun MainNavHost(
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun MainScreenView(
-    introViewModel: IntroViewModel,
-    profileViewModel: ProfileViewModel,
-    homeViewModel: HomeViewModel,
-    addPostViewModel: AddPostViewModel,
-    postDetailViewModel: PostDetailViewModel,
-    boardDetailViewModel: BoardDetailViewModel,
-    chatViewModel: ChatViewModel,
-) {
+fun MainScreenView() {
     val navController = rememberNavController()
     val currentBackStack by navController.currentBackStackEntryAsState()
     val currentDestination = currentBackStack?.destination
@@ -286,13 +251,6 @@ fun MainScreenView(
         Box {
             MainNavHost(
                 navController = navController,
-                introViewModel = introViewModel,
-                profileViewModel = profileViewModel,
-                homeViewModel = homeViewModel,
-                addPostViewModel = addPostViewModel,
-                postDetailViewModel = postDetailViewModel,
-                boardDetailViewModel = boardDetailViewModel,
-                chatViewModel = chatViewModel,
             )
         }
     }

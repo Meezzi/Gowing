@@ -17,6 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.meezzi.localtalk.R
 import com.meezzi.localtalk.data.Post
@@ -28,7 +29,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun ProfileScreen(
-    profileViewModel: ProfileViewModel,
+    profileViewModel: ProfileViewModel = hiltViewModel(),
     onEditProfileClick: () -> Unit,
     onNavigateToPostDetail: (String, String, String) -> Unit,
     onNavigateToSetting: () -> Unit,

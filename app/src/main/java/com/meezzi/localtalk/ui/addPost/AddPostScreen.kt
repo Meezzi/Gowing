@@ -45,6 +45,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -63,6 +64,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.meezzi.localtalk.R
 import com.meezzi.localtalk.data.CategorySection
@@ -71,7 +73,7 @@ import com.meezzi.localtalk.ui.common.CustomPermissionRationaleDialog
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddPostScreen(
-    addPostViewModel: AddPostViewModel,
+    addPostViewModel: AddPostViewModel = hiltViewModel(),
     onNavigationBack: () -> Unit,
     onSavePost: (String, String, String) -> Unit
 ) {
@@ -125,6 +127,10 @@ fun AddPostScreen(
                 showPermissionRationaleDialog = true
             }
         }
+
+    LaunchedEffect(Unit) {
+        addPostViewModel.updateAddress()
+    }
 
     Scaffold(
         topBar = {
