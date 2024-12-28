@@ -23,7 +23,6 @@ object UtilsModule {
         return CredentialManager.create(context)
     }
 
-    @Singleton
     @Provides
     fun provideFusedLocationProviderClient(
         @ApplicationContext context: Context
