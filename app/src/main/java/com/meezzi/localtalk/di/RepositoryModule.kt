@@ -69,7 +69,6 @@ object RepositoryModule {
         return PostSaveRepository(firestore, fireStorage, firebaseAuth)
     }
 
-    @Singleton
     @Provides
     fun provideUserRepository(
         firestore: FirebaseFirestore,
