@@ -84,13 +84,6 @@ class AddPostViewModel @Inject constructor(
 
         if (category != null) {
             viewModelScope.launch {
-
-                val authorName =
-                    if (isAnonymous.value) "익명"
-                    else {
-                        FirebaseAuth.getInstance().currentUser?.displayName
-                    }
-
                 val post = Post(
                     city = address,
                     category = category,
@@ -98,7 +91,7 @@ class AddPostViewModel @Inject constructor(
                     title = title.value,
                     content = content.value,
                     authorId = "",
-                    authorName = authorName,
+                    authorName = "",
                     isAnonymous = isAnonymous.value,
                     timestamp = Timestamp.now(),
                     postImageUrl = selectedImageUris.value.map { it.toString() },
@@ -108,6 +101,7 @@ class AddPostViewModel @Inject constructor(
                 postSaveRepository.savePostWithImages(
                     post = post,
                     imageUris = selectedImageUris.value,
+                    isAnonymous = isAnonymous.value,
                     onSuccess = { city, categoryId, postId ->
                         onSuccess(city, categoryId, postId)
                     },
