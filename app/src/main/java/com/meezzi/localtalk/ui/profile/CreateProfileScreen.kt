@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -54,46 +55,48 @@ fun CreateProfileScreen(
         profileImageUri = uri
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceBetween,
-    ) {
+    Scaffold { innerPadding ->
         Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween,
         ) {
-            Spacer(modifier = Modifier.height(50.dp))
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Spacer(modifier = Modifier.height(50.dp))
 
-            TextTitleLarge("프로필을 설정해주세요")
+                TextTitleLarge("프로필을 설정해주세요")
 
-            Spacer(modifier = Modifier.height(40.dp))
+                Spacer(modifier = Modifier.height(40.dp))
 
-            ProfileImage(
-                profileImageUri = profileImageUri,
-                onEditProfileImage = {
-                    galleryLauncher.launch("image/*")
-                }
-            )
+                ProfileImage(
+                    profileImageUri = profileImageUri,
+                    onEditProfileImage = {
+                        galleryLauncher.launch("image/*")
+                    }
+                )
 
-            Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(20.dp))
 
-            EditNicknameField(
-                nickname = nickname,
-                onNicknameChange = { newNickname -> nickname = newNickname },
-                nicknameErrorMessage = nicknameErrorMessage,
-                profileViewModel = profileViewModel,
-            )
+                EditNicknameField(
+                    nickname = nickname,
+                    onNicknameChange = { newNickname -> nickname = newNickname },
+                    nicknameErrorMessage = nicknameErrorMessage,
+                    profileViewModel = profileViewModel,
+                )
 
-            Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(10.dp))
 
+            }
+            SaveProfileButton(nickname, profileImageUri, isNicknameValid) {
+                profileViewModel.saveUserProfile(nickname, profileImageUri)
+                onNavigateBack()
+            }
         }
-        SaveProfileButton(nickname, profileImageUri, isNicknameValid) {
-            profileViewModel.saveUserProfile(nickname, profileImageUri)
-            onNavigateBack()
-        }
-
     }
 }
 
