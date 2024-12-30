@@ -25,10 +25,21 @@ class PostSaveRepository @Inject constructor(
     fun savePostWithImages(
         post: Post,
         imageUris: List<Uri>?,
+        isAnonymous: Boolean,
         onSuccess: (String, String, String) -> Unit,
         onFailure: (Exception) -> Unit,
     ) {
         val postId = db.collection("posts").document().id
+        val userId = currentUser?.uid ?: ""
+
+        if (isAnonymous) {
+            savePost(
+                postId = postId,
+                post = post.copy(authorName = "익명"),
+                onSuccess = { onSuccess(post.city, post.category.id, postId) },
+                onFailure = onFailure
+            )
+        } else {
 
         if (!imageUris.isNullOrEmpty()) {
             imageUris.forEach { uri ->
