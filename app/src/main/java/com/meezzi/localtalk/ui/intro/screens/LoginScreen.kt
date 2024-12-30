@@ -31,7 +31,7 @@ import com.meezzi.localtalk.ui.intro.IntroViewModel
 
 @Composable
 fun LoginScreen(
-    onNavigateToHome: () -> Unit,
+    onNavigateToPermission: () -> Unit,
     onNavigateToCreateProfile: () -> Unit,
     introViewModel: IntroViewModel = hiltViewModel()
 ) {
@@ -42,7 +42,7 @@ fun LoginScreen(
         if (authState != null) {
             val hasData = introViewModel.hasUserData()
             if (hasData) {
-                onNavigateToHome()
+                onNavigateToPermission()
             } else {
                 onNavigateToCreateProfile()
             }

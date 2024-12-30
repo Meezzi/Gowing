@@ -53,19 +53,8 @@ import com.meezzi.localtalk.util.TimeFormat
 @Composable
 fun HomeScreen(
     homeViewModel: HomeViewModel = hiltViewModel(),
+    onNavigateToPermission: () -> Unit,
     onNavigateToPostDetail: (String, String, String) -> Unit,
-) {
-
-    CheckPermissions {
-        HomeScreenContent(homeViewModel, onNavigateToPostDetail)
-    }
-
-}
-
-@Composable
-fun HomeScreenContent(
-    homeViewModel: HomeViewModel,
-    onNavigateToPostDetail: (String, String, String) -> Unit
 ) {
 
     val address by homeViewModel.address.collectAsState()
@@ -84,12 +73,16 @@ fun HomeScreenContent(
         }
     }
 
-    Scaffold(
-        topBar = {
-            CustomTopAppBar(address)
-        },
-    ) { innerPadding ->
-        PostLists(innerPadding, hotPostList, latestPostList, isLoading, onNavigateToPostDetail)
+    if (address == stringResource(id = R.string.permission_header_content)) {
+        onNavigateToPermission()
+    } else {
+        Scaffold(
+            topBar = {
+                CustomTopAppBar(address)
+            },
+        ) { innerPadding ->
+            PostLists(innerPadding, hotPostList, latestPostList, isLoading, onNavigateToPostDetail)
+        }
     }
 }
 
