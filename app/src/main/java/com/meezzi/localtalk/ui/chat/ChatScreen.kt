@@ -169,7 +169,7 @@ fun ChatRoomItem(
         }
 
         Text(
-            text = TimeFormat().formatMessageTime(chatRoom.lastMessageTime!!),
+            text = TimeFormat().formatTimestmpToTime(chatRoom.lastMessageTime!!),
             color = Color.Gray,
             style = MaterialTheme.typography.bodySmall
         )

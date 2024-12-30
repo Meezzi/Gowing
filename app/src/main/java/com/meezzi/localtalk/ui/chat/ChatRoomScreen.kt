@@ -411,7 +411,7 @@ fun MessageContent(
 
 @Composable
 private fun Time(message: Message) {
-    val time = TimeFormat().formatMessageTime(message.timestamp)
+    val time = TimeFormat().formatTimestmpToTime(message.timestamp)
 
     Text(
         text = time,

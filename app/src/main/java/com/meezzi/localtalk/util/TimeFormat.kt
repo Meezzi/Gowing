@@ -21,7 +21,7 @@ class TimeFormat {
         return format.format(date)
     }
 
-    fun formatMessageTime(timestamp: Timestamp): String {
+    fun formatTimestmpToTime(timestamp: Timestamp): String {
         return try {
             val timeFormat = SimpleDateFormat("a h:mm", Locale.getDefault())
             timestamp.toDate().let { timeFormat.format(it) }
