@@ -24,6 +24,7 @@ import com.meezzi.localtalk.ui.home.HomeViewModel
 import com.meezzi.localtalk.ui.home.screens.AddPostFloatingButton
 import com.meezzi.localtalk.ui.home.screens.HomeScreen
 import com.meezzi.localtalk.ui.intro.screens.LoginScreen
+import com.meezzi.localtalk.ui.permission.PermissionScreen
 import com.meezzi.localtalk.ui.postdetail.ImageViewerScreen
 import com.meezzi.localtalk.ui.postdetail.PostDetailScreen
 import com.meezzi.localtalk.ui.postdetail.PostDetailViewModel
@@ -77,6 +78,18 @@ fun MainNavHost(
                         }
                     }
                 },
+            )
+        }
+
+        composable(Screens.Permission.name) {
+            PermissionScreen(
+                onNavigateToHome = {
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(0) {
+                            inclusive = true
+                        }
+                    }
+                }
             )
         }
 

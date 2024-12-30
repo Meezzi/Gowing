@@ -8,6 +8,7 @@ import com.meezzi.localtalk.R
 
 enum class Screens {
     Login,
+    Permission,
     Home,
     CreateProfile,
     Profile,
