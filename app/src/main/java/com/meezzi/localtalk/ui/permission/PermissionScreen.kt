@@ -1,16 +1,17 @@
 package com.meezzi.localtalk.ui.permission
 
+import android.Manifest
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Settings
@@ -20,6 +21,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -38,57 +40,78 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.MultiplePermissionsState
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.meezzi.localtalk.R
+import com.meezzi.localtalk.ui.common.CustomTopAppBar
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun PermissionScreen(
-    state: MultiplePermissionsState,
+    onNavigateToHome: () -> Unit,
 ) {
     val context = LocalContext.current
+    val permissions = listOf(
+        Manifest.permission.ACCESS_COARSE_LOCATION,
+        Manifest.permission.ACCESS_FINE_LOCATION
+    )
 
-    var showRationale by remember(state) {
-        mutableStateOf(false)
-    }
+    val permissionState = rememberMultiplePermissionsState(permissions = permissions)
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(30.dp)
-    ) {
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.Start,
-        ) {
-            PermissionHeader()
-
-            Spacer(modifier = Modifier.padding(10.dp))
-
-            PermissionContent()
-
-            ConfirmButton(state) { showRationale = true }
-        }
-
-        FloatingActionButton(
-            modifier = Modifier.align(Alignment.BottomEnd),
-            onClick = {
-                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    data = Uri.parse("package:${context.packageName}")
-                }
-                context.startActivity(intent)
+    if (permissionState.allPermissionsGranted) {
+        onNavigateToHome()
+    } else {
+        Scaffold(
+            topBar = {
+                CustomTopAppBar(title = stringResource(R.string.permission_header_title))
             },
-        ) {
-            Icon(
-                imageVector = Icons.Rounded.Settings,
-                contentDescription = stringResource(R.string.setting)
+            floatingActionButton = {
+                FloatingActionButton(
+                    onClick = { openAppSettings(context) }
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.Settings,
+                        contentDescription = stringResource(R.string.setting)
+                    )
+                }
+            }
+        ) { innerPadding ->
+            PermissionScreenContent(
+                innerPadding = innerPadding,
+                state = permissionState,
             )
         }
     }
+}
+
+@OptIn(ExperimentalPermissionsApi::class)
+@Composable
+private fun PermissionScreenContent(
+    innerPadding: PaddingValues,
+    state: MultiplePermissionsState,
+) {
+    var showRationale by remember { mutableStateOf(false) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(innerPadding)
+            .padding(start = 20.dp, end = 20.dp),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.Start,
+    ) {
+
+        PermissionContent()
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        ConfirmButton(state) { showRationale = true }
+    }
 
     if (showRationale) {
-        PermissionRationaleDialog(state) { showRationale = false }
+        PermissionRationaleDialog(
+            state = state,
+            onDismiss = { showRationale = false }
+        )
     }
 }
 
@@ -128,28 +151,14 @@ private fun PermissionContent() {
     }
 }
 
-@Composable
-private fun PermissionHeader() {
-    Text(
-        text = stringResource(R.string.permission_header_title),
-        style = MaterialTheme.typography.headlineSmall,
-        fontWeight = FontWeight.SemiBold,
-    )
-
-    Spacer(modifier = Modifier.padding(5.dp))
-
-    Text(
-        text = stringResource(R.string.permission_header_content),
-        style = MaterialTheme.typography.bodyLarge,
-    )
-}
-
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 private fun ConfirmButton(
-    state: MultiplePermissionsState, onShowRationale: () -> Unit
+    state: MultiplePermissionsState,
+    onShowRationale: () -> Unit
 ) {
-    Button(modifier = Modifier.fillMaxWidth(),
+    Button(
+        modifier = Modifier.fillMaxWidth(),
         shape = RectangleShape,
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.primary,
@@ -169,16 +178,14 @@ private fun ConfirmButton(
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun PermissionRationaleDialog(
-    state: MultiplePermissionsState, onDismiss: () -> Unit
+private fun PermissionRationaleDialog(
+    state: MultiplePermissionsState,
+    onDismiss: () -> Unit,
 ) {
-    AlertDialog(onDismissRequest = onDismiss,
-        title = {
-            Text(text = stringResource(R.string.permission_dialog_title))
-        },
-        text = {
-            Text(text = stringResource(R.string.permission_dialog_content))
-        },
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(text = stringResource(R.string.permission_dialog_title)) },
+        text = { Text(text = stringResource(R.string.permission_dialog_content)) },
         confirmButton = {
             TextButton(onClick = {
                 state.launchMultiplePermissionRequest()
@@ -193,4 +200,12 @@ fun PermissionRationaleDialog(
             }
         }
     )
+}
+
+private fun openAppSettings(context: android.content.Context) {
+    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+        flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        data = Uri.parse("package:${context.packageName}")
+    }
+    context.startActivity(intent)
 }

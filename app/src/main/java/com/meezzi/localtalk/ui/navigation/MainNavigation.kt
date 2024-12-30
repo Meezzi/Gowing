@@ -24,6 +24,7 @@ import com.meezzi.localtalk.ui.home.HomeViewModel
 import com.meezzi.localtalk.ui.home.screens.AddPostFloatingButton
 import com.meezzi.localtalk.ui.home.screens.HomeScreen
 import com.meezzi.localtalk.ui.intro.screens.LoginScreen
+import com.meezzi.localtalk.ui.permission.PermissionScreen
 import com.meezzi.localtalk.ui.postdetail.ImageViewerScreen
 import com.meezzi.localtalk.ui.postdetail.PostDetailScreen
 import com.meezzi.localtalk.ui.postdetail.PostDetailViewModel
@@ -43,7 +44,7 @@ fun MainNavHost(
 
     val startDestination = remember {
         if (FirebaseAuth.getInstance().currentUser != null) {
-            Screen.Home.route
+            Screens.Permission.name
         } else {
             Screens.Login.name
         }
@@ -55,8 +56,12 @@ fun MainNavHost(
     ) {
         composable(Screens.Login.name) {
             LoginScreen(
-                onNavigateToHome = {
-                    navController.navigate(Screen.Home.route)
+                onNavigateToPermission = {
+                    navController.navigate(Screens.Permission.name) {
+                        popUpTo(0) {
+                            inclusive = true
+                        }
+                    }
                 },
                 onNavigateToCreateProfile = {
                     navController.navigate(Screens.CreateProfile.name) {
@@ -80,9 +85,28 @@ fun MainNavHost(
             )
         }
 
+        composable(Screens.Permission.name) {
+            PermissionScreen(
+                onNavigateToHome = {
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(0) {
+                            inclusive = true
+                        }
+                    }
+                }
+            )
+        }
+
         composable(Screen.Home.route) {
             HomeScreen(
                 homeViewModel = homeViewModel,
+                onNavigateToPermission = {
+                    navController.navigate(Screens.Permission.name) {
+                        popUpTo(0) {
+                            inclusive = true
+                        }
+                    }
+                },
                 onNavigateToPostDetail = { city, categoryId, postId ->
                     navController.navigate("${Screens.PostDetail.name}/$city/$categoryId/$postId")
                 }
