@@ -25,22 +25,44 @@ class PostSaveRepository @Inject constructor(
     fun savePostWithImages(
         post: Post,
         imageUris: List<Uri>?,
+        isAnonymous: Boolean,
         onSuccess: (String, String, String) -> Unit,
         onFailure: (Exception) -> Unit,
     ) {
         val postId = db.collection("posts").document().id
+        val userId = currentUser?.uid ?: ""
 
-        if (!imageUris.isNullOrEmpty()) {
-            imageUris.forEach { uri ->
-                uploadImage(uri, post.city, post.category.id, postId)
-            }
+        if (isAnonymous) {
+            savePost(
+                postId = postId,
+                post = post.copy(authorName = "익명"),
+                onSuccess = { onSuccess(post.city, post.category.id, postId) },
+                onFailure = onFailure
+            )
+        } else {
+            db.collection("profiles")
+                .document(userId)
+                .get()
+                .addOnSuccessListener { document ->
+                    val nickname = document?.getString("nickname") ?: "닉네임 없음"
+
+                    if (!imageUris.isNullOrEmpty()) {
+                        imageUris.forEach { uri ->
+                            uploadImage(uri, post.city, post.category.id, postId)
+                        }
+                    }
+
+                    savePost(
+                        postId = postId,
+                        post = post.copy(authorName = nickname),
+                        onSuccess = { onSuccess(post.city, post.category.id, postId) },
+                        onFailure = onFailure
+                    )
+                }
+                .addOnFailureListener { exception ->
+                    onFailure(exception)
+                }
         }
-        savePost(
-            postId = postId,
-            post = post,
-            onSuccess = { onSuccess(post.city, post.category.id, postId) },
-            onFailure = onFailure
-        )
     }
 
     private fun uploadImage(
