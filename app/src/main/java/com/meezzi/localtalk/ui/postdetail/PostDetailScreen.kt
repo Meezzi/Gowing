@@ -60,6 +60,7 @@ import com.meezzi.localtalk.data.Comment
 import com.meezzi.localtalk.data.Post
 import com.meezzi.localtalk.ui.chat.ChatViewModel
 import com.meezzi.localtalk.ui.common.NavigationMenuTopAppBar
+import com.meezzi.localtalk.util.TimeFormat
 import kotlinx.coroutines.launch
 
 @Composable
@@ -290,7 +291,9 @@ fun PostAuthorInfo(
                 style = MaterialTheme.typography.bodyLarge
             )
             Text(
-                text = "${post.timestamp}",
+                text = "${TimeFormat().toFormattedString(post.timestamp)} ${
+                    TimeFormat().formatTimestmpToTime(post.timestamp)
+                }",
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                 style = MaterialTheme.typography.bodySmall,
             )
